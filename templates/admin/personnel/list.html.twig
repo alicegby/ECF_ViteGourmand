@@ -1,0 +1,74 @@
+{# templates/admin/personnel/list.html.twig #}
+{% block title %}Liste du personnel{% endblock %}
+
+{% block body %}
+<h1>Liste du personnel</h1>
+
+<a href="{{ path('personnel_new') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouveau personnel
+</a>
+
+<form method="get" action="{{ path ('personnel_list') }}" class="filter-form">
+
+    <label for="category">Catégorie : </label>
+    <select name="category" id="category">
+        <option value="">Toutes</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
+                {{ category.nom }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="keyword">Mot-clé : </label>
+    <input type="text" name="keyword" id="keyword" value="{{ keyword|default('') }}" placeholder="Titre du personnel">
+
+    <button type="submit" class="btn">
+        <img src="{{ asset('Visuels/Icônes/Search_Beige.png') }}" alt="Filtrer">Filtrer
+    </button>
+
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Titre du personnel</th>
+            <th>Catégorie</th>
+            <th>Description</th>
+            <th>Stock</th>
+            <th>Prix par heure</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for personnel in personnels %}
+        <tr>
+            <td>{{ personnel.titrePersonnel }}</td>
+            <td>{{ personnel.category ? personnel.category.nom : '-' }}</td>
+            <td>{{ personnel.description }}</td>
+            <td>{{ personnel.stock }}</td>
+            <td>{{ personnel.prixParHeure }}</td>
+            <td class="actions">
+                <a href="{{ path('personnel_show', {'id': personnel.id}) }}" class="btn">
+                    <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
+                </a>
+                <a href="{{ path('personnel_edit', {'id': personnel.id}) }}" class="btn">
+                    <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+                </a>
+                <form action="{{ path('personnel_delete', {'id': personnel.id}) }}" method="post" onsubmit="return confirm('Supprimer ce personnel ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ personnel.id) }}">
+                    <button type="submit" class="btn">
+                        <img src="{{ asset('Visuel/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+                    </button>
+                </form>
+            </td>
+        </tr>
+    {% else %}
+    <tr>
+        <td>Aucun personnel trouvé.</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

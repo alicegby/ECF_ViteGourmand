@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la condition{% endblock %}
+
+{% block body %}
+<h1>Détails de la condition</h1>
+
+<p>{{ condition.libelle }}</p>
+
+<a href="{{ path('condition_edit') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
+</a>
+<a href="{{ path('condition_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+{% endblock %}

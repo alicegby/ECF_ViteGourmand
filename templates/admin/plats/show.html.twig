@@ -1,0 +1,35 @@
+{# templates/admin/plats/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du plat{% endblock %}
+
+{% block body %}
+<h1>{{ plat.titrePlat }}</h1>
+
+<p>Catégorie : {{ plat.category ? plat.category.nom : '-' }}</p>
+<p>Description : {{ plat.description }}</p>
+<p>Stock : {{ plat.stock }}</p>
+
+<h2>Allergènes</h2>
+{% if plat.allergenes|length > 0 %}
+    <ul>
+        {% for allergene in plat.allergenes %}
+            <li>{{ allergene.nom }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Aucun allergène</p>
+{% endif %}
+
+{% if plat.image %}
+    <h2>Image</h2>
+    <img src="{{ asset(plat.image) }}" alt="{{ plat.altTexte }}">
+{% endif %}
+
+<a href="{{ path('plats_edit') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
+</a>
+<a href="{{ path('plats_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour"> Retour à la liste
+</a>
+{% endblock %}

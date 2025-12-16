@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Badges{% endblock %}
+
+{% block body %}
+<h1>Liste des badges</h1>
+
+<a href="{{ path('badge_new') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">
+    Nouveau badge
+</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Icône</th>
+            <th>Actif</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for badge in badges %}
+            <tr>
+                <td>{{ badge.nom }}</td>
+                <td>{{ badge.description }}</td>
+                <td>
+                    <img src="{{ asset(badge.icone) }}" alt="{{ badge.nom }}" style="height:40px;">
+                </td>
+                <td>
+                    {{ badge.actif ? 'Oui' : 'Non' }}
+                </td>
+                <td>
+                    <a href="{{ path('badge_show', {'id': badge.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">
+                        Voir
+                    </a>
+
+                    <a href="{{ path('badge_edit', {'id': badge.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+                        Modifier
+                    </a>
+
+                    <form method="post"
+                          action="{{ path('badge_delete', {'id': badge.id}) }}"
+                          onsubmit="return confirm('Supprimer ce badge ?');">
+
+                        <button type="submit" class="btn">
+                            <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
+                            Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucun badge trouvé</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

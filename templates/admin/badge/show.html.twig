@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail du badge{% endblock %}
+
+{% block body %}
+<h1>Détails du badge</h1>
+
+<p>{{ badge.nom }}</p>
+<p>{{ badge.description }}</p>
+<p>Condition d'obtention :<br>{{ badge.conditionObtention }}</p>
+<p>Actif : {{ badge.actif ? 'Oui' : 'Non' }}</p>
+
+<p>
+    <strong>Icône :</strong><br>
+    <img src="{{ asset(badge.icone) }}" alt="{{ badge.nom }}">
+</p>
+
+<a href="{{ path('badge_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">
+    Retour à la liste
+</a>
+{% endblock %}

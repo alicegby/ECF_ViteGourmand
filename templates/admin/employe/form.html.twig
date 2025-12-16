@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+{{ employe.id ? 'Modifier l’employé' : 'Créer un employé' }}
+{% endblock %}
+
+{% block body %}
+<h1>{{ employe.id ? 'Modifier l’employé' : 'Créer un employé' }}</h1>
+
+{{ form_start(form) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.prenom) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.motDePasse) }}
+    {{ form_row(form.telephone) }}
+    {{ form_row(form.role) }}
+
+    <button type="submit" class="btn">
+        {% if employe is defined %}
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+        {% else %}
+            <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Créer
+        {% endif %}
+    </button>
+{{ form_end(form) }}
+
+<a href="{{ path('employe_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+{% endblock %}

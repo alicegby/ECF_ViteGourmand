@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des catégories - Fromages{% endblock %}
+
+{% block body %}
+<h1>Liste des catégories - Fromages</h1>
+
+<a href="{{ path('categorycheese_new') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouvelle catégorie
+</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for category in categories %}
+            <tr>
+                <td>{{ category.libelle }}</td>
+                <td>
+                    <a href="{{ path('categorycheese_show', {'id': category.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
+                    </a>
+                    <a href="{{ path('categorycheese_edit', {'id': category.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+                    </a>
+                    <form action="{{ path('categorycheese_delete', {'id': category.id}) }}" method="post" onsubmit="return confirm('Supprimer cette catégorie ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                        <button type="submit" class="btn">
+                            <img src="{{ asset('Visuel/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

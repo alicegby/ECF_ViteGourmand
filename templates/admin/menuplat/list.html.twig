@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Menu-Plats{% endblock %}
+
+{% block body %}
+<h1>Liste des Menu-Plats</h1>
+
+<a href="{{ path('menuplat_new') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouvelle association
+</a>
+
+<form method="get" action="{{ path('menuplat_list') }}" class="filter-form">
+    <label for="menu">Menu :</label>
+    <select name="menu" id="menu">
+        <option value="">Tous</option>
+        {% for menu in menus %}
+            <option value="{{ menu.id }}" {% if selectedMenu == menu.id %}selected{% endif %}>
+                {{ menu.titreMenu }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="plat">Plat :</label>
+    <select name="plat" id="plat">
+        <option value="">Tous</option>
+        {% for plat in plats %}
+            <option value="{{ plat.id }}" {% if selectedPlat == plat.id %}selected{% endif %}>
+                {{ plat.titrePlat }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit" class="btn">
+        <img src="{{ asset('Visuels/Icônes/Search_Beige.png') }}" alt="Filtrer">Filtrer
+    </button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Menu</th>
+            <th>Plat</th>
+            <th>Ordre</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for mp in menuPlats %}
+            <tr>
+                <td>{{ mp.menu.nom }}</td>
+                <td>{{ mp.plat.titrePlat }}</td>
+                <td>{{ mp.ordre }}</td>
+                <td>
+                    <a href="{{ path('menuplat_show', {'id': mp.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
+                    </a>
+                    <a href="{{ path('menuplat_edit', {'id': mp.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+                    </a>
+                    <form action="{{ path('menuplat_delete', {'id': mp.id}) }}" method="post" onsubmit="return confirm('Supprimer cette liaison ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ mp.id) }}">
+                        <button type="submit" class="btn">
+                            <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

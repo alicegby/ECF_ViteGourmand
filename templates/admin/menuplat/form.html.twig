@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ menuPlat is defined ? 'Modifier l\'association' : 'Nouvelle association' }}
+{% endblock %}
+
+{% block body %}
+<h1>{{ menuPlat is defined ? 'Modifier l\'association' : 'Nouvelle association' }}</h1>
+
+{{ form_start(form) }}
+    <div>
+        {{ form_label(form.menu) }}
+        {{ form_widget(form.menu) }}
+        {{ form_errors(form.menu) }}
+    </div>
+
+    <div>
+        {{ form_label(form.plat) }}
+        {{ form_widget(form.plat) }}
+        {{ form_errors(form.plat) }}
+    </div>
+
+    <div>
+        {{ form_label(form.ordre) }}
+        {{ form_widget(form.ordre) }}
+        {{ form_errors(form.ordre) }}
+    </div>
+
+    <button type="submit" class="btn">
+        {% if menuPlat is defined %}
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+        {% else %}
+            <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer">Créer
+        {% endif %}
+    </button>
+{{ form_end(form) }}
+
+<a href="{{ path('menuplat_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+{% endblock %}

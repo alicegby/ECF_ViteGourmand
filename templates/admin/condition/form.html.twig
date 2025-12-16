@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ condition is defined ? 'Modifier la condition' : 'Nouvelle condition' }}{% endblock %}
+
+{% block body %}
+<h1>{{ condition is defined ? 'Modifier la condition' : 'Nouvelle condition' }}</h1>
+
+{{ form_start(form) }}
+    <div>
+        {{ form_label(form.libelle) }}
+        {{ form_widget(form.libelle) }}
+        {{ form_errors(form.libelle) }}
+    </div>
+
+    <button type="submit" class="btn">
+        {% if condition is defined %}
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+        {% else %}
+            <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer">Créer
+        {% endif %}
+    </button>
+{{ form_end(form) }}
+
+<a href="{{ path('condition_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+{% endblock %}

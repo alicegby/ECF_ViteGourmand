@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Conditions{% endblock %}
+
+{% block body %}
+<h1>Liste des Conditions</h1>
+
+<a href="{{ path('condition_new') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouvelle condition
+</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for condition in conditions %}
+            <tr>
+                <td>{{ condition.libelle }}</td>
+                <td>
+                    <a href="{{ path('condition_show', {'id': condition.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
+                    </a>
+                    <a href="{{ path('condition_edit', {'id': condition.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+                    </a>
+                    <form action="{{ path('condition_delete', {'id': condition.id}) }}" method="post" onsubmit="return confirm('Supprimer cette condition ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ condition.id) }}">
+                        <button type="submit" class="btn">
+                            <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

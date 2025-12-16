@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des réductions{% endblock %}
+
+{% block body %}
+<h1>Liste des réductions</h1>
+
+<a href="{{ path('reduction_new') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouvelle réduction
+</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Condition quantité</th>
+            <th>Réduction (%)</th>
+            <th>Actif</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for reduction in reductions %}
+            <tr>
+                <td>{{ reduction.type }}</td>
+                <td>{{ reduction.conditionQuantite ?: '-' }}</td>
+                <td>{{ reduction.reduction }}</td>
+                <td>{{ reduction.actif ? 'Oui' : 'Non' }}</td>
+                <td>
+                    <a href="{{ path('reduction_edit', {'id': reduction.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+                    </a>
+                    <form action="{{ path('reduction_delete', {'id': reduction.id}) }}" method="post" onsubmit="return confirm('Supprimer cette réduction ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reduction.id) }}">
+                        <button type="submit" class="btn">
+                            <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

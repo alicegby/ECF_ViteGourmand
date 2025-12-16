@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du Menu{% endblock %}
+
+{% block body %}
+<h1>{{ menu.nom }}</h1>
+
+<p>Thème : {{ menu.theme ? menu.theme.nom : '-' }}</p>
+<p>Régime : {{ menu.regime ? menu.regime.nom : '-' }}</p>
+<p>Nombre de personnes minimum : {{ menu.nbPersMin }}</p>
+<p>Stock : {{ menu.stock }}</p>
+<p>Prix par personne : {{ menu.prixParPersonne }} €</p>
+<p>Description : {{ menu.description }}</p>
+
+<h2>Conditions</h2>
+{% if menu.conditions|length > 0 %}
+    <ul>
+        {% for condition in menu.conditions %}
+            <li>{{ condition.nom }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Aucune condition</p>
+{% endif %}
+
+<h2>Images</h2>
+{% if menu.images|length > 0 %}
+    <div class="images">
+        {% for image in menu.images %}
+            <div class="image">
+                <img src="{{ asset(image.url) }}" alt="{{ image.altText }}">
+                {% if image.estPrincipale %}
+                    <p>Image principale</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>Aucune image</p>
+{% endif %}
+
+<h2>Plats associés</h2>
+{% if menu.menuPlats|length > 0 %}
+    <ul>
+        {% for mp in menu.menuPlats %}
+            <li>{{ mp.plat.nom }} - {{ mp.quantite }} {{ mp.plat.unite }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Aucun plat associé</p>
+{% endif %}
+
+<a href="{{ path('menu_edit') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
+</a>
+<a href="{{ path('menu_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+{% endblock %}

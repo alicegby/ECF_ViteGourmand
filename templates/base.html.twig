@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Vite &amp; Gourmand{% endblock %}</title>
+        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+        {% block stylesheets %}{% endblock %}
+    </head>
+
+    <body>
+        <!-- HEADER -->
+        <header class="site-header">
+            <a href="{{ path('menus_list') }}" class="bandeau-commande">COMMANDER</a>
+
+            <div class="header-content">
+                <h1>VITE &amp; GOURMAND</h1>
+                <a class="logo-container" href="{{ path('homepage') }}">
+                    <img src="{{ asset('Visuels/Logo.png') }}" alt="Logo - Vite &amp; Gourmand" class="logo">
+                </a>
+
+                <nav class="menu">
+                    <h2 class="menu-links"><a href="{{ path('homepage') }}">ACCUEIL</a></h2>
+                    <h2 class="menu-links"><a href="{{ path('menus_list') }}">MENUS</a></h2>
+                    <h2 class="menu_links"><a href="{{ path('contact') }}">CONTACT</a></h2>
+                </nav>
+
+                <div class="icons">
+                    <a href="{{ path('panier') }}">
+                        <img src="{{ asset('Visuels/Icônes/Panier.png')}}" alt="Panier - Vite &amp; Gourmand" class="header-icon">
+                    </a>
+                    <a href="{{ path('login') }}">
+                        <img src="{{ asset('Visuels/Icônes/Compte.png') }}" alt="Compte - Vite &amp; Gourmand" class="header-icon">
+                    </a>
+                </div>
+                <div class="burger">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+            </div>
+
+            <nav class="mobile-menu">
+                <button class="close-btn">&times;</button>
+                <img src="{{ asset('Visuels/Logo.png') }}" alt="Logo - Vite &amp; Gourmand" class="mobile-menu-image">
+                <a href="{{ path('homepage') }}">ACCUEIL</a>
+                <a href="{{ path('menus_list') }}">COMMANDER</a>
+                <a href="{{ path('login') }}">CONNEXION</a>
+                <a href="{{ path('contact') }}">CONTACT</a>
+            </nav>
+        </header>
+
+        <!-- CONTENU DE PAGES INJECTÉ -->
+        <main>
+            {% block content %}
+            {# Contenu spécifique à chaque page injecté ici #}
+            {% endblock %}
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <div class="footer-columns">
+
+                <div class="footer-left">
+                    <address>
+                        Vite &amp; Gourmand <br>
+                        12, rue de l'Océan - 33000 Bordeaux <br><br>
+                        <strong>Horaires : <br></strong>
+                        {% for hours, days in openings_hours %}
+                            {% set open, close = hours|split('-') %}
+                            {{ days|join(', ') }} : {{ open|slice(0,5) }} - {{ close|slice(0,5) }}<br>
+                        {% endfor %}
+                    </address>
+                </div>
+
+                <div class="footer-middle">
+                    <a class="logo-container" href="{{ path('homepage') }}">
+                        <img src="{{ asset('Visuels/Logo.png') }}" alt="Logo - Vite &amp; Gourmand" class="logo-footer">
+                    </a>
+                </div>
+
+                <div class="footer-right">
+                    <nav class="footer-nav">
+                        <a href="{{ path('cgv') }}">Conditions Générales de Vente</a>
+                        <a href="{{ path('privacy') }}">Politique de Confidentialité</a>
+                        <a href="{{ path('faq') }}">Questions &amp; Réponses</a>
+                        <a href="{{ path('reviews') }}">Avis</a>
+                        <a href="{{ path('contact') }}">Contact</a>
+                    </nav>
+                </div>
+
+                <div class="footer-bottom">
+                    <p>© Vite &amp; Gourmand - 2026 - Tous droits réservés</p>
+                </div>
+
+            </div>
+
+        </footer>
+
+        <script src="{{ asset('js/main.js') }}"></script>
+
+    </body>
+</html>

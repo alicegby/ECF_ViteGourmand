@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la commande{% endblock %}
+
+{% block body %}
+<h1>Détails de la commande</h1>
+
+<p>ID : {{ commande.id }}</p>
+<p>Client : {{ commande.client.nom }}</p>
+<p>Date commande : {{ commande.dateCommande|date('d/m/Y H:i') }}</p>
+<p>Date livraison : {{ commande.dateLivraison|date('d/m/Y') }} à {{ commande.heureLivraison|date('H:i') }}</p>
+<p>Menu : {{ commande.menu.nom }}</p>
+<p>Nb personnes : {{ commande.nbPersonne }}</p>
+<p>Prix total : {{ commande.prixTotal }} €</p>
+<p>Statut : {{ commande.statutCommande.libelle }}</p>
+<p>Matériel prêt : {{ commande.pretMateriel ? 'Oui' : 'Non' }}</p>
+<p>Matériel restitué : {{ commande.restitutionMateriel ? 'Oui' : 'Non' }}</p>
+<p>Personnel prêt : {{ commande.pretPersonnel ? 'Oui' : 'Non' }}</p>
+
+<a href="{{ path('commande_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+{% endblock %}

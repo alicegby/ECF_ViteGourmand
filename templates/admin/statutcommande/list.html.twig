@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des statuts - Commande{% endblock %}
+
+{% block body %}
+<h1>Liste des statuts - Commande</h1>
+
+<a href="{{ path('statutcommande_new') }}">
+    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouveau statut
+</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Libellé</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for statutCommande in statutsCommande %}
+            <tr>
+                <td>{{ statutCommande.libelle }}</td>
+                <td>
+                    <a href="{{ path('statutcommande_edit', {'id': statutCommande.id}) }}">
+                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+                    </a>
+                    <form action="{{ path('statutcommande_delete', {'id': statutCommande.id}) }}" method="post" onsubmit="return confirm('Supprimer ce statut ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ statutCommande.id) }}">
+                        <button type="submit">
+                            <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+                        </button>
+                    </form>
+                </td> 
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

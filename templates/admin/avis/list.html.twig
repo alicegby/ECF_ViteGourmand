@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des avis{% endblock %}
+
+{% block body %}
+<h1>Liste des avis</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Commande</th>
+            <th>Statut</th>
+            <th>Validé par</th>
+            <th>Date de création</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for avis in avis %}
+            <tr>
+                <td>{{ avis.id }}</td>
+                <td>{{ avis.commande.numeroCommande }}</td>
+                <td>{{ avis.statut.libelle }}</td>
+                <td>{{ avis.validePar ? avis.validePar.nom ~ ' ' ~ avis.validePar.prenom : '—' }}</td>
+                <td>{{ avis.dateCreation ? avis.dateCreation|date('d/m/Y H:i') : '—' }}</td>
+                <td>
+                    <a href="{{ path('avis_show', {'id': avis.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
+                    </a>
+                    <a href="{{ path('avis_edit', {'id': avis.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>Aucun avis trouvé.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

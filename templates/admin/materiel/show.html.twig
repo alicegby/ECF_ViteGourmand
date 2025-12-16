@@ -1,0 +1,26 @@
+{# templates/admin/materiel/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du matériel{% endblock %}
+
+{% block body %}
+<h1>{{ materiel.titreBoisson }}</h1>
+
+<p>Catégorie : {{ materiel.category ? materiel.category.nom : '-' }}</p>
+<p>Description : {{ materiel.description }}</p>
+<p>Stock : {{ materiel.stock }}</p>
+<p>Prix pièce : {{ materiel.prixPiece }}</p>
+
+{% if materiel.image %}
+<h2>Image</h2>
+    <img src="{{ asset(materiel.image) }}" alt="{{ materiel.altTexte }}">
+{% endif %}
+
+<a href="{{ path('materiel_edit') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
+</a>
+<a href="{{ path('materiel_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+
+{% endblock %}

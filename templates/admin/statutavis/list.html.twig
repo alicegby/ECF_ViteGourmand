@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des statuts - Avis{% endblock %}
+
+{% block body %}
+<h1>Liste des statuts - Avis</h1>
+
+<a href="{{ path('statutavis_new') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouvelle catégorie
+</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Libellé</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for statutAvis in statutsAvis %}
+            <tr>
+                <td>{{ statutAvis.libelle }}</td>
+                <td>
+                    <a href="{{ path('statutavis_show', {'id': statutAvis.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
+                    </a>
+                    <a href="{{ path('statutavis_edit', {'id': statutAvis.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+                    </a>
+                    <form action="{{ path('statutavis_delete', {'id': statutAvis.id}) }}" method="post" onsubmit="return confirm('Supprimer ce statut ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ statutAvis.id) }}">
+                        <button type="submit" class="btn">
+                            <img src="{{ asset('Visuel/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

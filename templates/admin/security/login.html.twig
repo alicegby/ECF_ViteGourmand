@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion Admin{% endblock %}
+
+{% block body %}
+<div id="admin-login-container">
+    <h2>Connexion Admin / Employé</h2>
+
+    {# Messages flash #}
+    {% for message in app.flashes('success') %}
+        <div class="flash-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="flash-error">{{ message }}</div>
+    {% endfor %}
+
+    {# Affiche l’erreur si la connexion a échoué #}
+    {% if error %}
+        <div class="flash-error">
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+    {% endif %}
+
+    <form method="post" action="{{ path('admin_login') }}">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" value="{{ last_email }}" name="email" id="email" required autofocus>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" name="password" id="password" required>
+        </div>
+
+        <button type="submit">Se connecter</button>
+    </form>
+
+    <p>
+        Vous êtes un client ? <a href="{{ path('app_login') }}">Connectez-vous ici</a>
+    </p>
+</div>
+{% endblock %}

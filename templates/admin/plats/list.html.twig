@@ -1,0 +1,103 @@
+{# templates/admin/plats/list.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des plats{% endblock %}
+
+{% block body %}
+<h1>Liste des plats</h1>
+
+<a href="{{ path('admin_plats_new') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouveau plat
+</a>
+
+<form method="get" action="{{ path('plats_list') }}" class="filter-form">
+    <label for="category">Catégorie :</label>
+    <select name="category" id="category">
+        <option value="">Toutes</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
+                {{ category.nom }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="allergene">Allergène :</label>
+    <select name="allergene" id="allergene">
+        <option value="">Tous</option>
+        {% for allergene in allergenes %}
+            <option value="{{ allergene.id }}" {% if selectedAllergene == allergene.id %}selected{% endif %}>
+                {{ allergene.nom }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="keyword">Mot-clé :</label>
+    <input type="text" name="keyword" id="keyword" value="{{ keyword|default('') }}" placeholder="Nom du plat">
+
+    <button type="submit" class="btn">
+        <img src="{{ asset('Visuels/Icônes/Search_Beige.png') }}" alt="Filtrer">Filtrer
+    </button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nom du plat</th>
+            <th>Catégorie</th>
+            <th>Description</th>
+            <th>Stock</th>
+            <th>Allergènes</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for plat in plats %}
+            <tr>
+                <td>{{ plat.titrePlat }}</td>
+                <td>{{ plat.category ? plat.category.nom : '-' }}</td>
+                <td>{{ plat.description }}</td>
+                <td>{{ plat.stock }}</td>
+
+                <td>
+                    {% if plat.allergenes|length > 0 %}
+                        {{ plat.allergenes|map(a => a.nom)|join(', ') }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if plat.image %}
+                        <img src="{{ asset(plat.image) }}" alt="{{ plat.altTexte }}">
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <td class="actions">
+                    <a href="{{ path('plats_show', {'id': plat.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
+                    </a>
+
+                    <a href="{{ path('admin_plats_edit', {'id': plat.id}) }}" class="btn">
+                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+                    </a>
+
+                    <form action="{{ path('admin_plats_delete', {'id': plat.id}) }}" method="post" onsubmit="return confirm('Supprimer ce plat ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ plat.id) }}">
+                        <button type="submit" class="btn">
+                            <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>Aucun plat trouvé.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

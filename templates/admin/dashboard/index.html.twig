@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+<div id="dashboard">
+    <h1>Bienvenue {{ app.user.prenom }} {{ app.user.nom }} !</h1>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <h2>Admin</h2>
+        <ul>
+            <li><a href="{{ path('admin_menus') }}">Gérer les menus</a></li>
+            <li><a href="{{ path('admin_orders') }}">Gérer toutes les commandes</a></li>
+            <li><a href="{{ path('admin_users') }}">Gérer les comptes employés</a></li>
+            <li><a href="{{ path('admin_stats') }}">Statistiques / CA par menu</a></li>
+            <li><a href="{{ path('admin_logout') }}">Se déconnecter</a></li>
+        </ul>
+    {% elseif is_granted('ROLE_EMPLOYE') %}
+        <h2>Employé</h2>
+        <ul>
+            <li><a href="{{ path('employee_menus') }}">Gérer les menus et plats</a></li>
+            <li><a href="{{ path('employee_orders') }}">Gérer les commandes (statuts)</a></li>
+            <li><a href="{{ path('employee_reviews') }}">Valider / refuser les avis</a></li>
+            <li><a href="{{ path('employee_logout') }}">Se déconnecter</a></li>
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ reduction is defined ? 'Modifier la réduction' : 'Nouvelle réduction' }}
+{% endblock %}
+
+{% block body %}
+<h1>{{ reduction is defined ? 'Modifier la réduction' : 'Nouvelle réduction' }}</h1>
+
+{{ form_start(form) }}
+    <div>
+        {{ form_label(form.type) }}
+        {{ form_widget(form.type) }}
+        {{ form_errors(form.type) }}
+    </div>
+
+    <div>
+        {{ form_label(form.conditionQuantite) }}
+        {{ form_widget(form.conditionQuantite) }}
+        {{ form_errors(form.conditionQuantite) }}
+    </div>
+
+    <div>
+        {{ form_label(form.reduction) }}
+        {{ form_widget(form.reduction) }}
+        {{ form_errors(form.reduction) }}
+    </div>
+
+    <div>
+        {{ form_label(form.actif) }}
+        {{ form_widget(form.actif) }}
+        {{ form_errors(form.actif) }}
+    </div>
+
+    <button type="submit" class="btn">
+        {% if reduction is defined %}
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+        {% else %}
+            <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Créer
+        {% endif %}
+    </button>
+{{ form_end(form) }}
+
+<a href="{{ path('reduction_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+{% endblock %}

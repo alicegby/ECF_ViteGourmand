@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ personnel is defined ? 'Modifier le personnel' : 'Créer un personnel' }}
+{% endblock %}
+
+{% block body %}
+<h1>{{ personnel is defined ? 'Modifier le personnel' : 'Créer un personne' }}</h1>
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="flash-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+        <div>
+            {{ form_label(form.titrePersonnel) }}
+            {{ form_widget(form.titrePersonnel) }}
+            {{ form_errors(form.titrePersonnel) }}
+        </div>
+        <div>
+            {{ form_label(form.category) }}
+            {{ form_widget(form.category) }}
+            {{ form_errors(form.category) }}
+        </div>
+        <div>
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description) }}
+            {{ form_errors(form.description) }}
+        </div>
+        <div>
+            {{ form_label(form.stock) }}
+            {{ form_widget(form.stock) }}
+            {{ form_errors(form.stock) }}
+        </div>
+        <div>
+            {{ form_label(form.prixParHeure) }}
+            {{ form_widget(form.prixParHeure) }}
+            {{ form_errors(form.prixParHeure) }}
+        </div>
+
+        <button type="submit" class="btn">
+            {% if plat is defined %}
+                <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier le personnel
+            {% else %}
+                <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer">Créer le personnel
+            {% endif %}
+        </button>
+{{ form_end(form) }}
+
+<a href="{{ path('personnel_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+
+{% endblock %}

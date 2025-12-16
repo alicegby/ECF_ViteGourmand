@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du statut{% endblock %}
+
+{% block body %}
+<h1>Détails du statut - Avis</h1>
+
+<p>{{ statutAvis.libelle }}</p>
+
+<a href="{{ path('statutavis_edit') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
+</a>
+<a href="{{ path('statutavis_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+{% endblock %}

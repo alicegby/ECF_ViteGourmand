@@ -1,0 +1,89 @@
+{# templates/admin/menu/form.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ menu.id ? 'Modifier le menu' : 'Créer un menu' }}
+{% endblock %}
+
+{% block body %}
+<h1>{{ menu.id ? 'Modifier le menu' : 'Créer un menu' }}</h1>
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="flash-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+<div>
+    {{ form_label(form.titreMenu) }}
+    {{ form_widget(form.titreMenu) }}
+    {{ form_errors(form.titreMenu) }}
+</div>
+
+<div>
+    {{ form_label(form.stock) }}
+    {{ form_widget(form.stock) }}
+    {{ form_errors(form.stock) }}
+</div>
+
+<div>
+    {{ form_label(form.nbPersMin) }}
+    {{ form_widget(form.nbPersMin) }}
+    {{ form_errors(form.nbPersMin) }}
+</div>
+
+<div>
+    {{ form_label(form.prixParPersonne) }}
+    {{ form_widget(form.prixParPersonne) }}
+    {{ form_errors(form.prixParPersonne) }}
+</div>
+
+<div>
+    {{ form_label(form.description) }}
+    {{ form_widget(form.description) }}
+    {{ form_errors(form.description) }}
+</div>
+
+<div>
+    {{ form_label(form.theme) }}
+    {{ form_widget(form.theme) }}
+    {{ form_errors(form.theme) }}
+</div>
+
+<div>
+    {{ form_label(form.regime) }}
+    {{ form_widget(form.regime) }}
+    {{ form_errors(form.regime) }}
+</div>
+
+<div>
+    {{ form_label(form.conditions) }}
+    {{ form_widget(form.conditions) }}
+    {{ form_errors(form.conditions) }}
+</div>
+
+<h3>Images</h3>
+<div data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}">
+    {{ form_widget(form.images) }}
+    {{ form_errors(form.images) }}
+</div>
+
+<button type="submit" class="btn">
+    {% if menu.id %}
+        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier"> Modifier le menu
+    {% else %}
+        <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer"> Créer le menu
+    {% endif %}
+</button>
+
+<a href="{{ path('menu_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour"> Retour à la liste
+</a>
+
+{{ form_end(form) }}
+{% endblock %}

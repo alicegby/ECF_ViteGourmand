@@ -1,0 +1,21 @@
+{# templates/admin/boissons/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du personnel{% endblock %}
+
+{% block body %}
+<h1>{{ personnel.titrePersonnel }}</h1>
+
+<p>Catégorie : {{ personnel.category ? personnel.category.nom : '-' }}</p>
+<p>Description : {{ personnel.description }}</p>
+<p>Stock : {{ personnel.stock }}</p>
+<p>Prix par heure : {{ personnel.prixParHeure }}</p>
+
+<a href="{{ path('personnel_edit') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
+</a>
+<a href="{{ path('personnel_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+
+{% endblock %}

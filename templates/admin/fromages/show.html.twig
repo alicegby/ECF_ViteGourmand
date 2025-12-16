@@ -1,0 +1,27 @@
+{# templates/admin/fromages/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du fromage{% endblock %}
+
+{% block body %}
+<h1>{{ boisson.titreFromage }}</h1>
+
+<p>Catégorie : {{ fromage.category ? fromage.category.nom : '-' }}</p>
+<p>Description : {{ fromage.description }}</p>
+<p>Stock : {{ fromage.stock }}</p>
+<p>Minimum de commande : {{ fromage.minCommande }}</p>
+<p>Prix par fromage : {{ fromage.prixParFromage }}</p>
+
+{% if fromage.image %}
+<h2>Image</h2>
+    <img src="{{ asset(fromage.image) }}" alt="{{ fromage.altTexte }}">
+{% endif %}
+
+<a href="{{ path('fromages_edit') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
+</a>
+<a href="{{ path('fromages_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l’employé{% endblock %}
+
+{% block body %}
+<h1>Détails de l’employé</h1>
+
+
+<p>Nom : {{ employe.nom }}</p>
+<p>Prénom : {{ employe.prenom }}</p>
+<p>Email : {{ employe.email }}</p>
+<p>Téléphone : {{ employe.telephone ?: 'Non renseigné' }}</p>
+<p>Rôle : {{ employe.role.libelle }}</p>
+<p>Actif :</strong> {{ employe.actif ? 'Oui' : 'Non' }}</p>
+
+<a href="{{ path('employe_edit') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
+</a>
+<a href="{{ path('employe_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+{% endblock %}

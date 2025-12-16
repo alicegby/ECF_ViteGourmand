@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du statut{% endblock %}
+
+{% block body %}
+<h1>Détails du statut - Commande</h1>
+
+<p>{{ statutCommande.libelle }}</p>
+
+<a href="{{ path('statutcommande_edit') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
+</a>
+<a href="{{ path('statutcommande_list') }}">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+{% endblock %} 

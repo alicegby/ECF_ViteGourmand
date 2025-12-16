@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail de l’horaire{% endblock %}
+
+{% block body %}
+<h1>Détail de l’horaire</h1>
+
+<p>Jour : {{ horaire.jour }}</p>
+<p>Heure d’ouverture : {{ horaire.heureOuverture|date('H:i') }}</p>
+<p>Heure de fermeture : {{ horaire.heureFermeture|date('H:i') }}</p>
+
+<a href="{{ path('horaire_edit') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
+</a>
+<a href="{{ path('horaire_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">
+    Retour à la liste
+</a>
+{% endblock %}

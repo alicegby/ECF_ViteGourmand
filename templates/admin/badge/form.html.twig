@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ badge is defined ? 'Modifier le badge' : 'Nouveau badge' }}
+{% endblock %}
+
+{% block body %}
+<h1>{{ badge is defined ? 'Modifier le badge' : 'Créer un badge' }}</h1>
+
+<form method="post">
+    <div>
+        <label>Nom</label>
+        <input type="text" name="nom" required
+               value="{{ badge.nom ?? '' }}">
+    </div>
+
+    <div>
+        <label>Description</label>
+        <input type="text" name="description" required
+               value="{{ badge.description ?? '' }}">
+    </div>
+
+    <div>
+        <label>Icône (chemin)</label>
+        <input type="text" name="icone" required
+               placeholder="Visuels/Badges/icone.png"
+               value="{{ badge.icone ?? '' }}">
+    </div>
+
+    <div>
+        <label>Condition d'obtention</label>
+        <textarea name="conditionObtention" required>{{ badge.conditionObtention ?? '' }}</textarea>
+    </div>
+
+    <div>
+        <label>
+            <input type="checkbox" name="actif"
+                   {% if badge is defined and badge.actif %}checked{% endif %}>
+            Badge actif
+        </label>
+    </div>
+
+    <button type="submit" class="btn">
+        {% if badge is defined %}
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+            Modifier
+        {% else %}
+            <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer">
+            Créer
+        {% endif %}
+    </button>
+</form>
+
+<a href="{{ path('badge_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">
+    Retour à la liste
+</a>
+{% endblock %}

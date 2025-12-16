@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'avis{% endblock %}
+
+{% block body %}
+<h1>Détails de l'avis</h1>
+
+<p>ID : {{ avis.id }}</p>
+<p>Commande : {{ avis.commande.numeroCommande }}</p>
+<p>Statut : {{ avis.statut.libelle }}</p>
+<p>Validé par : {{ avis.validePar ? avis.validePar.nom ~ ' ' ~ avis.validePar.prenom : '—' }}</p>
+<p>Date de création : {{ avis.dateCreation ? avis.dateCreation|date('d/m/Y H:i') : '—' }}</p>
+<p>Date de validation : {{ avis.dateValidation ? avis.dateValidation|date('d/m/Y H:i') : '—' }}</p>
+
+
+<a href="{{ path('avis_list') }}" class="btn ">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+{% endblock %}

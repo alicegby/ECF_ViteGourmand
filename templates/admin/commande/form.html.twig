@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la commande{% endblock %}
+
+{% block body %}
+<h1>Modifier la commande</h1>
+
+{{ form_start(form) }}
+    {{ form_row(form.statutCommande) }}
+    {{ form_row(form.pretMateriel) }}
+    {{ form_row(form.restitutionMateriel) }}
+    {{ form_row(form.pretPersonnel) }}
+
+    <button type="submit" class="btn">
+        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+    </button>
+{{ form_end(form) }}
+
+<a href="{{ path('commande_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'association{% endblock %}
+
+{% block body %}
+<h1>Détails de l'association Menu-Plat</h1>
+
+<p>Menu : {{ menuPlat.menu.nom }}</p>
+<p>Plat : {{ menuPlat.plat.titrePlat }}</p>
+<p>Ordre : {{ menuPlat.ordre }}</p>
+
+<a href="{{ path('menuplat_edit') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
+</a>
+<a href="{{ path('menuplat_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+{% endblock %}

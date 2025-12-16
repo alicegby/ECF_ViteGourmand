@@ -1,0 +1,28 @@
+{# templates/admin/boissons/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la boisson{% endblock %}
+
+{% block body %}
+<h1>{{ boisson.titreBoisson }}</h1>
+
+<p>Catégorie : {{ boisson.category ? boisson.category.nom : '-' }}</p>
+<p>Description : {{ boisson.description }}</p>
+<p>Stock : {{ boisson.stock }}</p>
+<p>Quantité par personne : {{ boisson.qteParPers }}</p>
+<p>Minimum de commande : {{ boisson.minCommande }}</p>
+<p>Prix par bouteille : {{ bouteille.prixParBouteille }}</p>
+
+{% if boisson.image %}
+<h2>Image</h2>
+    <img src="{{ asset(boisson.image) }}" alt="{{ boisson.altTexte }}">
+{% endif %}
+
+<a href="{{ path('boissons_edit') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
+</a>
+<a href="{{ path('boissons_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+
+{% endblock %}

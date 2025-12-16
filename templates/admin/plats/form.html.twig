@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ plat is defined ? 'Modifier le plat' : 'Créer un plat' }}
+{% endblock %}
+
+{% block body %}
+<h1>{{ plat is defined ? 'Modifier le plat' : 'Créer un plat' }}</h1>
+
+{# Flash messages #}
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="flash-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+    <div>
+        {{ form_label(form.titrePlat) }}
+        {{ form_widget(form.titrePlat) }}
+        {{ form_errors(form.titrePlat) }}
+    </div>
+
+    <div>
+        {{ form_label(form.category) }}
+        {{ form_widget(form.category) }}
+        {{ form_errors(form.category) }}
+    </div>
+
+    <div>
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description) }}
+        {{ form_errors(form.description) }}
+    </div>
+
+    <div>
+        {{ form_label(form.stock) }}
+        {{ form_widget(form.stock) }}
+        {{ form_errors(form.stock) }}
+    </div>
+
+    <div>
+        {{ form_label(form.image) }}
+        {{ form_widget(form.image) }}
+        {{ form_errors(form.image) }}
+    </div>
+
+    <div>
+        {{ form_label(form.altText) }}
+        {{ form_widget(form.altText) }}
+        {{ form_errors(form.altText) }}
+    </div>
+
+    <div>
+        {{ form_label(form.allergenes) }}
+        {{ form_widget(form.allergenes) }}
+        {{ form_errors(form.allergenes) }}
+    </div>
+
+    <button type="submit" class="btn">
+        {% if plat is defined %}
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier le plat
+        {% else %}
+            <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer">Créer le plat
+        {% endif %}
+    </button>
+
+{{ form_end(form) }}
+
+<a href="{{ path('plats_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{# templates/admin/boissons/list.html.twig #}
+{% block title %}Liste des boissons{% endblock %}
+
+{% block body %}
+<h1>Liste des boissons</h1>
+
+<a href="{{ path('boissons_new') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouvelle boisson
+</a>
+
+<form method="get" action="{{ path ('boissons_list') }}" class="filter-form">
+
+    <label for="category">Catégorie : </label>
+    <select name="category" id="category">
+        <option value="">Toutes</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
+                {{ category.nom }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="keyword">Mot-clé : </label>
+    <input type="text" name="keyword" id="keyword" value="{{ keyword|default('') }}" placeholder="Nom de la boisson">
+
+    <button type="submit" class="btn">
+        <img src="{{ asset('Visuels/Icônes/Search_Beige.png') }}" alt="Filtrer">Filtrer
+    </button>
+
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nom de la boisson</th>
+            <th>Catégorie</th>
+            <th>Description</th>
+            <th>Stock</th>
+            <th>Quantité par personne</th>
+            <th>Minimum de commande</th>
+            <th>Prix par bouteille</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for boisson in boissons %}
+        <tr>
+            <td>{{ boisson.titreBoisson }}</td>
+            <td>{{ boisson.category ? boisson.category.nom : '-' }}</td>
+            <td>{{ boisson.description }}</td>
+            <td>{{ boisson.stock }}</td>
+            <td>{{ boisson.qteParPersonne }}</td>
+            <td>{{ boisson.minCommande }}</td>
+            <td>{{ boisson.prixParBouteille }}</td>
+            <td>
+                {% if boisson.image %}
+                    <img src="{{ asset(boisson.image) }}" alt="{{ boisson.altTexte }}">
+                {% else %}
+                        - 
+                {% endif %}
+            </td>
+            <td class="actions">
+                <a href="{{ path('boissons_show', {'id': boisson.id}) }}" class="btn">
+                    <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
+                </a>
+                <a href="{{ path('boissons_edit', {'id': boisson.id}) }}" class="btn">
+                    <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
+                </a>
+                <form action="{{ path('boissons_delete', {'id': boisson.id}) }}" method="post" onsubmit="return confirm('Supprimer cette boisson ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ boisson.id) }}">
+                    <button type="submit" class="btn">
+                        <img src="{{ asset('Visuel/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+                    </button>
+                </form>
+            </td>
+        </tr>
+    {% else %}
+    <tr>
+        <td>Aucune boisson trouvée.</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

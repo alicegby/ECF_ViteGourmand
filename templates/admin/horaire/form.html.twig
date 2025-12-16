@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ horaire is defined ? 'Modifier un horaire' : 'Créer un horaire' }}
+{% endblock %}
+
+{% block body %}
+<h1>
+    {{ horaire is defined ? 'Modifier un horaire' : 'Créer un horaire' }}
+</h1>
+
+{{ form_start(form) }}
+
+    <div>
+        {{ form_label(form.jour) }}
+        {{ form_widget(form.jour) }}
+        {{ form_errors(form.jour) }}
+    </div>
+
+    <div>
+        {{ form_label(form.heureOuverture) }}
+        {{ form_widget(form.heureOuverture) }}
+        {{ form_errors(form.heureOuverture) }}
+    </div>
+
+    <div>
+        {{ form_label(form.heureFermeture) }}
+        {{ form_widget(form.heureFermeture) }}
+        {{ form_errors(form.heureFermeture) }}
+    </div>
+
+    <button type="submit" class="btn">
+        {% if horaire is defined %}
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+            Modifier
+        {% else %}
+            <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer">
+            Créer
+        {% endif %}
+    </button>
+
+{{ form_end(form) }}
+
+<a href="{{ path('horaire_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">
+    Retour à la liste
+</a>
+{% endblock %}

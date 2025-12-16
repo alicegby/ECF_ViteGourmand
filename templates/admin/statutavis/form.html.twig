@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ statutAvis is defined ? 'Modifier le statut' : 'Nouveau statut' }}
+{% endblock %}
+
+{% block body %}
+<h1>{{ statutAvis is defined ? 'Modifier le statut' : 'Nouveau statut' }}</h1>
+
+{{ form_start(form) }}
+    <div>
+        {{ form_label(form.libelle) }}
+        {{ form_widget(form.libelle) }}
+        {{ form_errors(form.libelle) }}
+    </div>
+    <button type="submit" class="btn">
+        {% if statutAvis is defined %}
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier le statut
+        {% else %}
+            <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer">Créer le statut
+        {% endif %}
+    </button>
+{{ form_end(form) }}
+
+<a href="{{ path('statutavis_list') }}" class="btn">
+    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
+</a>
+
+{% endblock %}
