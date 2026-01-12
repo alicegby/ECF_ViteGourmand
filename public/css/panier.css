@@ -1,0 +1,332 @@
+/* FLASH */
+.flash {
+    padding: 12px 16px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.flash-error {
+    color: #721c24;
+}
+
+.flash-success {
+    color: #6B7B63;
+}
+
+/* TITRES */
+h1 {
+    font-family: 'Playfair Display';
+    font-size: 2rem;
+    margin: 2rem 0 3rem 0;
+    color: #5C4033;
+    text-align: center;
+}
+
+.panier-left h2,
+.panier-right h2 {
+    font-family: 'Playfair Display';
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #2F2F2F;
+}
+
+/* CONTENEUR PRINCIPAL */
+.panier-container {
+    display: flex;
+    gap: 30px; 
+    margin-top: 20px;
+}
+
+/* COLONNE GAUCHE (RÉCAPITULATIF)  */
+.panier-left {
+    flex: 2; 
+    padding: 10px;
+    border-right: 1px solid #2F2F2F;
+}
+
+/* Catégories */
+.panier-left h3 {
+    font-family: 'Playfair Display';
+    margin-bottom: 10px;
+}
+
+.panier-left ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+/* Styles par catégorie */
+.panier-left .menus,
+.panier-left .fromages,
+.panier-left .boissons,
+.panier-left .materiel,
+.panier-left .personnel {
+    background-color: #5C4033;
+    color: #F6F1EB;
+    box-shadow: 0 2px 4px #2F2F2F;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-family: 'Inter';
+    position: relative; 
+}
+
+/* Liste des items */
+.panier-left li {
+    padding: 12px;
+    color: #F6F1EB;
+    border-radius: 5px;
+    margin-bottom: 12px;
+    font-family: 'Inter';
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Badge réduction */
+.menu-discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #6B7B63;
+    color: #F6F1EB;
+    font-family: 'Inter';
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px #2F2F2F;
+}
+
+/* Liste des plats du menu */
+.plats-selected {
+    margin-top: 8px;
+    margin-left: 15px;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+/* COLONNE DROITE (INFOS LIVRAISON) */
+.panier-right {
+    flex: 1;
+    padding: 10px;
+}
+
+.panier-right div {
+    margin-bottom: 18px;
+}
+
+.panier-right label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.panier-right input {
+    width: 100%;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    font-family: 'Inter';
+}
+
+.menu-conditions {
+    background-color: #F6F1EB;
+    border: 1px solid #2F2F2F;
+    border-radius: 5px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+
+.menu-conditions h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #2F2F2F;
+    font-weight: 500;
+}
+
+.menu-conditions p {
+    font-weight: 500;
+    margin: 8px 0 5px 0;
+    color: #795548;
+}
+
+.menu-conditions ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 0 0 10px 0;
+}
+
+.menu-conditions li {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+    color: #2F2F2F;
+}
+
+.menu-conditions input[type="date"] {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 5px;
+    border: 1px solid #2F2F2F;
+    margin-top: 5px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+}
+
+.menu-conditions input[type="date"]:focus {
+    outline: none;
+    border-color: #6B7B63;
+    box-shadow: 0 0 5px #6B7B63;
+}
+
+select[name^="heureLivraison"] {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #2F2F2F;
+    border-radius: 0.5rem;
+    background-color: white;
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* flèche personnalisée */
+select[name^="heureLivraison"]::after {
+    content: "▼";
+    position: absolute;
+    right: 1rem;
+    pointer-events: none;
+}
+
+/* focus */
+select[name^="heureLivraison"]:focus {
+    border-color: #6B7B63; 
+    box-shadow: 0 0 0 2px #F6F1EB;
+    outline: none;
+}
+
+/* option */
+select[name^="heureLivraison"] option {
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+.select-container {
+    position: relative;
+    width: 100%;
+}
+
+/* BOUTONS */
+.panier-buttons {
+    margin-top: 20px;
+}
+
+button.commander {
+    padding: 15px 25px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #5C4033;
+    color: #F6F1EB;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+button.commander:hover {
+    background-color: #6B7B63;
+}
+
+.panier-reset-button {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    background-color: #F6F1EB;
+    border: none;
+    border-radius: 5px;
+    color: #5C4033;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.panier-reset-button:hover {
+    font-weight: bold;
+    color: #6B7B63;
+}
+
+/* Total général */
+.total, .total-general {
+    font-family: 'Inter';
+    font-size: 1.5rem;
+    color: #F6F1EB;
+    font-weight: bold;
+    background-color: #6B7B63;
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* PANIER VIDE */
+.empty {
+    font-size: 1.2rem;
+    font-family: 'Inter';
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+/* ERREURS */
+.error {
+    font-size: 1.2rem;
+    font-family: 'Inter';
+    text-align: left;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #721c24;
+}
+
+/* RÉDUCTION ET FRAIS */
+.reduction-mention,
+.fee-mention {
+    font-size: 0.8rem;
+    font-style: italic;
+    font-family: 'Inter';
+    text-align: left;
+    margin-top: 10px;
+}
+
+.reduction {
+    font-family: 'Inter';
+    font-size: 1.2rem;
+    text-align: left;
+    color: #6B7B63;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.fee {
+    font-size: 1.2rem;
+    font-family: 'Inter';
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .panier-container {
+        flex-direction: column;
+    }
+
+    .panier-left {
+        border-right: none;
+        margin-bottom: 20px;
+    }
+}

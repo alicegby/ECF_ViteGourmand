@@ -1,0 +1,118 @@
+.avis-page {
+    background-color: #F6F1EB;
+    padding: 2rem 1rem;
+}
+
+.avis-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 3rem;
+}
+
+.avis-header-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.avis-header-section h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #5C4033;
+}
+
+.avis-header-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: #5C4033;
+}
+
+.avis-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.avis-item {
+    background-color: #A28873;
+    color: #F6F1EB;
+    padding: 1.8rem 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px #2F2F2F;
+}
+
+.avis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.client-name {
+    font-weight: bold;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+}
+
+.client-stars img {
+    width: 20px;
+    height: 20px;
+    margin-left: 2px;
+}
+
+.client-comment {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+.no-avis {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #2F2F2F;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+/* Tablette / petit desktop */
+@media (max-width: 900px) {
+    .avis-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .avis-item {
+        padding: 1.2rem;
+    }
+
+    .client-stars img {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .avis-grid {
+        padding: 1rem;
+        grid-template-columns: 1fr;
+    }
+
+    .avis-item {
+        padding: 1rem;
+    }
+
+    .avis-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .client-stars img {
+        width: 16px;
+        height: 16px;
+    }
+}
