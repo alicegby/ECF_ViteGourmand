@@ -6,6 +6,7 @@ use App\Entity\Avis;
 use App\Form\AvisType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -50,5 +51,22 @@ class AvisController extends AbstractController {
         return $this->render('admin/avis/show.html.twig', [
             'avis' => $avis
         ]);
+    }
+
+    public function recent(): JsonResponse {
+        $avis = $this->em->getRepository(Avis::class)->findBy(
+            [],                       // aucun filtre
+            ['dateCreation' => 'DESC'], // tri par date de création décroissante
+            3                          // limite à 3 avis
+        );
+
+        $data = array_map(fn(Avis $a) => [
+            'nom_client' => $a->getCommande()?->getClient()?->getNom() ?? 'Client', 
+            'note' => $a->getNotes(),
+            'commentaire' => $a->getContenu(),
+            'dateCreation' => $a->getDateCreation()?->format('Y-m-d H:i')
+        ], $avis);
+
+        return new JsonResponse($data);
     }
 }

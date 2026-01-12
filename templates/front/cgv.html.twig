@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Conditions Générales de Vente - Vite &amp; Gourmand{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/random.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="main-layout cgv-page">
+    <section class="cgv-container">
+        <h1>Conditions Générales de Vente (CGV)</h1>
+        <p>Les présentes Conditions Générales de Vente (CGV) régissent les relations entre Vite &amp; Gourmand, entreprise familiale constituée de Julie et José, située à Bordeaux, et toute personne souhaitant commander nos prestations culinaires via notre application web ou par tout autre moyen.</p>
+
+        <h2>1. Présentation de l’entreprise</h2>
+        <p>Vite &amp; Gourmand existe depuis 25 ans et propose des prestations pour tout type d’événement : repas simples, Noël, Pâques, ou événements particuliers. Les menus sont régulièrement mis à jour et communiqués par mail à nos habitués. L’application web a été créée afin d’augmenter la visibilité de nos menus et de faciliter la commande par tous les clients.</p>
+
+        <h2>2. Objet</h2>
+        <p>Les présentes CGV définissent les conditions dans lesquelles Vite &amp; Gourmand propose ses menus et services via l’application web et tout autre canal de commande.</p>
+
+        <h2>3. Commande et validation</h2>
+        <ul>
+            <li>La commande peut se faire depuis la page menu via le site web.</li>
+            <li>Pour les visiteurs non authentifiés, la création d’un compte ou la connexion est obligatoire avant de passer commande.</li>
+            <li>Le nombre de personnes minimum et les conditions spécifiques à chaque menu sont indiquées.</li>
+            <li>Une réduction de 10 % est appliquée si le nombre de personnes dépasse de 5 le nombre minimum indiqué pour le menu.</li>
+        </ul>
+
+        <h2>4. Informations client</h2>
+        <p>Lors de la commande, le client fournit :</p>
+        <ul>
+            <li>Nom, prénom, email, numéro de téléphone</li>
+            <li>Adresse et date de prestation</li>
+            <li>Heure et lieu de livraison</li>
+        </ul>
+        <p>Si la livraison n’a pas lieu à Bordeaux, des frais supplémentaires s’appliquent : 5 € de facturation + 0,59 €/km.</p>
+
+        <h2>5. Tarifs</h2>
+        <p>Les prix des menus correspondent au nombre minimum de personnes indiqué pour chaque menu. Le détail des prix est affiché avant validation de la commande, incluant la livraison.</p>
+
+        <h2>6. Paiement</h2>
+        <p>Le paiement se fait à reception de la commande, par chèques ou virement bancaire. Aucun menu ne sera préparé sans validation de la commande.</p>
+
+        <h2>7. Modification et annulation</h2>
+        <ul>
+            <li>L’utilisateur peut modifier ou annuler une commande tant qu’elle n’a pas été validée par un employé.</li>
+            <li>Une fois la commande acceptée, seules certaines informations personnelles peuvent être modifiées.</li>
+            <li>L’employé peut annuler une commande après contact avec le client, en précisant le motif.</li>
+        </ul>
+
+        <h2>8. Livraison</h2>
+        <ul>
+            <li>L’équipe de livraison s’assure que la commande arrive à l’heure et dans les conditions optimales.</li>
+            <li>En cas de prêt de matériel, le client doit le restituer sous 10 jours ouvrés, sous peine de frais de 600 €.</li>
+        </ul>
+
+        <h2>9. Avis clients</h2>
+        <p>Les clients peuvent laisser un avis après la livraison. Seuls les avis validés par l’équipe sont affichés sur la page d’accueil.</p>
+
+        <h2>10. Espace utilisateur</h2>
+        <p>Chaque utilisateur dispose d’un espace personnel où il peut :</p>
+        <ul>
+            <li>Visualiser ses commandes passées et leur statut</li>
+            <li>Modifier ses informations personnelles</li>
+            <li>Donner un avis après réception de la commande</li>
+        </ul>
+
+        <h2>11. Espace employé et administrateur</h2>
+        <p>L’employé peut :</p>
+        <ul>
+            <li>Modifier/supprimer les menus, plats et horaires</li>
+            <li>Gérer l’état des commandes et le suivi des livraisons</li>
+            <li>Valider ou refuser les avis</li>
+        </ul>
+        <p>L’administrateur peut :</p>
+        <ul>
+            <li>Créer des comptes employés</li>
+            <li>Rendre un compte employé inutilisable</li>
+            <li>Visualiser les statistiques et chiffre d’affaires par menu</li>
+        </ul>
+
+        <h2>12. Responsabilité</h2>
+        <p>Vite &amp; Gourmand s’engage à fournir des prestations de qualité. En cas de force majeure, l’entreprise ne pourra être tenue responsable des retards ou modifications de dernière minute.</p>
+
+        <h2>13. Propriété intellectuelle</h2>
+        <p>Tout le contenu de l’application (textes, images, menus) est la propriété de Vite &amp; Gourmand et ne peut être reproduit sans autorisation.</p>
+
+        <h2>14. Données personnelles</h2>
+        <p>Les informations recueillies lors de la création d’un compte ou d’une commande sont utilisées uniquement pour le traitement des commandes et ne sont jamais communiquées à des tiers. Conformément au RGPD, les utilisateurs disposent d’un droit d’accès et de modification de leurs données.</p>
+
+        <h2>15. Acceptation des CGV</h2>
+        <p>La validation de toute commande implique l’acceptation pleine et entière des présentes Conditions Générales de Vente.</p>
+
+        <p class="cgv-footer">Pour toute question, vous pouvez contacter Vite &amp; Gourmand via la page contact de l’application
+            <a href="{{ path('contact') }}">ici</a>.
+        </p>
+
+        <h5>Dernière mise à jour : 12 Janvier 2026</h5>
+        
+    </section>
+</main>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}

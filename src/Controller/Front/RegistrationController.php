@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Front;
 
 use App\Entity\Utilisateur;
 use App\Form\RegistrationFormType;
@@ -15,7 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class RegistrationController extends AbstractController
 {
     public function register(
-        Request $request,
+        Request $request, 
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $em,
         MailerInterface $mailer

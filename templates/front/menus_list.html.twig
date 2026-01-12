@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Menus - Vite &amp; Gourmand{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/menulist.css') }}">
+{% endblock %}
+
+{% block content %}
+<h1>Nos Menus</h1>
+
+<div class="search-bar">
+    <input type="text" name="keyword" id="keyword" placeholder="Mot-clé" value="{{ keyword|default('') }}">
+    
+    <button type="submit" class="search-btn">
+        <img src="{{ asset('Visuels/Icônes/Search_Beige.png') }}" alt="Rechercher">
+        Rechercher
+    </button>
+
+    <button type="button" class="filter-toggle">
+        <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtres">
+    </button>
+</div>
+
+<!-- Overlay et panneau filtre -->
+<div class="filter-overlay"></div>
+
+<div class="filter-panel">
+    <button class="close-panel">
+        <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
+    </button>
+    <h3>Filtres</h3>
+    <div class="filter-group">
+        <label for="price-range">Prix par personne</label>
+        <input 
+            type="range"
+            id="price-range"
+            min="0"
+            max="100"
+            value="20"
+        >
+        <span class="range-value"><span id="price-value">20</span> €</span>
+    </div>
+    
+    <div class="filter-group">
+        <label for="persons-range">Nombre minimum de personnes</label>
+        <input
+            type="range"
+            id="persons-range"
+            min="1"
+            max="50"
+            value="10"
+        >
+        <span class="range-value"><span id="persons-value">10</span> pers.</span>
+    </div>
+        
+        
+    <div class="filter-section">
+            <h4>Thèmes</h4>
+            <div class="filter-options-list" id="themes-list">
+                {% for theme in themes %}
+                    <div class="filter-option" data-id="{{ theme.id }}">{{ theme.libelle }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Régimes -->
+        <div class="filter-section">
+            <h4>Régimes</h4>
+            <div class="filter-options-list" id="regimes-list">
+                {% for regime in regimes %}
+                    <div class="filter-option" data-id="{{ regime.id }}">{{ regime.libelle }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+    <button type="button" class="apply-filters">Appliquer</button>
+    <button type="button" class="reset-filters">Réinitialiser les filtres</button>
+</div>
+
+<div class="filter-tags"></div>
+
+<div class="menus-container">
+    {% for menu in menus %}
+    <div class="menu-box" 
+         data-theme="{{ menu.theme ? menu.theme.id : '' }}" 
+         data-regime="{{ menu.regime ? menu.regime.id : '' }}"
+         data-price="{{ menu.prixParPersonne }}"
+         data-persons="{{ menu.nbPersMin }}"
+         data-keyword="{{ menu.nom|lower }}">
+
+        <div class="menu-gallery">
+            {% if menu.images|length > 0 %}
+            <div class="gallery-container">
+                <div class="gallery-wrapper">
+                    {% for image in menu.images %}
+                    <div class="gallery-slide">
+                        <img src="{{ asset(image.url) }}" alt="{{ menu.nom }}">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if menu.images|length > 1 %}
+                {% endif %}
+            </div>
+            {% else %}
+                <p>Aucune image disponible</p>
+            {% endif %}
+        </div>
+
+        <h2>{{ menu.nom }}</h2>
+        <p>{{ menu.description }}</p>
+
+        <div class="menu-info">
+            <div class="theme">{{ menu.theme ? menu.theme.libelle : '-' }}</div>
+            <div class="regime">{{ menu.regime ? menu.regime.libelle : '-' }}</div>
+        </div>
+
+        <div class="menu-stats">
+            <div>Pers. min : {{ menu.nbPersMin }}</div>
+            <div>Stock : {{ menu.stock }}</div>
+            <div>Prix : {{ menu.prixParPersonne }} €</div>
+        </div>
+
+        <div class="menu-conditions">
+            {% if menu.conditions|length > 0 %}
+                {% for condition in menu.conditions %}
+                    <div>- {{ condition.libelle }}</div>
+                {% endfor %}
+            {% else %}
+                -
+            {% endif %}
+        </div>
+
+        <div class="menu-actions">
+            <a href="{{ path('menu_detail', {'id': menu.id}) }}" 
+                 class="view-menu"
+                 target="_blank"
+                 rel="noopener noreferrer">
+                <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir" class="btn-icon"> 
+                Voir
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/menulist.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}

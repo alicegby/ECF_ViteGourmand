@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Vite &amp; Gourmand{% endblock %}</title>
-        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         {% block stylesheets %}{% endblock %}
     </head>
 
@@ -22,16 +22,25 @@
                 <nav class="menu">
                     <h2 class="menu-links"><a href="{{ path('homepage') }}">ACCUEIL</a></h2>
                     <h2 class="menu-links"><a href="{{ path('menus_list') }}">MENUS</a></h2>
-                    <h2 class="menu_links"><a href="{{ path('contact') }}">CONTACT</a></h2>
+                    <h2 class="menu-links"><a href="{{ path('contact') }}">CONTACT</a></h2>
                 </nav>
 
                 <div class="icons">
-                    <a href="{{ path('panier') }}">
-                        <img src="{{ asset('Visuels/Icônes/Panier.png')}}" alt="Panier - Vite &amp; Gourmand" class="header-icon">
-                    </a>
-                    <a href="{{ path('login') }}">
-                        <img src="{{ asset('Visuels/Icônes/Compte.png') }}" alt="Compte - Vite &amp; Gourmand" class="header-icon">
-                    </a>
+                    <div class="icon-wrapper">
+                        <a href="{{ path('panier') }}">
+                            <img src="{{ asset('Visuels/Icônes/Panier.png')}}" alt="Panier - Vite &amp; Gourmand" class="header-icon">
+                            <span class="cart-badge"></span> 
+                        </a>
+                    </div>
+                    {% if app.user %}
+                        <a href="{{ path('dashboard_user') }}">
+                            <img src="{{ asset('Visuels/Icônes/Compte.png') }}" alt="Compte - Vite &amp; Gourmand" class="header-icon">
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_login', {'from_home': 1}) }}">
+                            <img src="{{ asset('Visuels/Icônes/Compte.png') }}" alt="Compte - Vite &amp; Gourmand" class="header-icon">
+                        </a>
+                    {% endif %}
                 </div>
                 <div class="burger">
                     <div class="bar"></div>
@@ -41,7 +50,9 @@
             </div>
 
             <nav class="mobile-menu">
-                <button class="close-btn">&times;</button>
+                <button class="close-btn">
+                    <img src="{{ asset('Visuels/Icônes/Croix_Beige.png') }}" alt="Fermer">
+                </button>
                 <img src="{{ asset('Visuels/Logo.png') }}" alt="Logo - Vite &amp; Gourmand" class="mobile-menu-image">
                 <a href="{{ path('homepage') }}">ACCUEIL</a>
                 <a href="{{ path('menus_list') }}">COMMANDER</a>
@@ -65,11 +76,16 @@
                     <address>
                         Vite &amp; Gourmand <br>
                         12, rue de l'Océan - 33000 Bordeaux <br><br>
-                        <strong>Horaires : <br></strong>
-                        {% for hours, days in openings_hours %}
-                            {% set open, close = hours|split('-') %}
-                            {{ days|join(', ') }} : {{ open|slice(0,5) }} - {{ close|slice(0,5) }}<br>
-                        {% endfor %}
+                        <strong>Horaires :</strong> <br>
+                        {% set openings = get_openings_hours() %}
+                        {% if openings is not empty %}
+                            {% for pair in openings %}
+                                {% set hours_array = pair[0]|split('-') %}
+                                {{ pair[1]|join(', ') }} : {{ hours_array[0] }} - {{ hours_array[1] }}<br>
+                            {% endfor %}
+                        {% else %}
+                            Horaires non disponibles
+                        {% endif %}
                     </address>
                 </div>
 
@@ -83,21 +99,25 @@
                     <nav class="footer-nav">
                         <a href="{{ path('cgv') }}">Conditions Générales de Vente</a>
                         <a href="{{ path('privacy') }}">Politique de Confidentialité</a>
-                        <a href="{{ path('faq') }}">Questions &amp; Réponses</a>
-                        <a href="{{ path('reviews') }}">Avis</a>
-                        <a href="{{ path('contact') }}">Contact</a>
+                        <a href="{{ path('faq') }}">Foire à Questions (FAQ)</a>
+                        <a href="{{ path('reviews') }}">Avis de nos clients</a>
+                        <a href="{{ path('contact') }}">Nous contacter</a>
                     </nav>
-                </div>
-
-                <div class="footer-bottom">
-                    <p>© Vite &amp; Gourmand - 2026 - Tous droits réservés</p>
                 </div>
 
             </div>
 
+            <div class="footer-line"></div>
+
+            <div class="footer-bottom">
+                <p>© Vite &amp; Gourmand - 2026 - Tous droits réservés</p>
+            </div>
         </footer>
 
-        <script src="{{ asset('js/main.js') }}"></script>
+        {% block javascripts %}
+            <script src="{{ asset('js/main.js') }}"></script>
+            <script src="{{ asset('js/panier.js') }}"></script>
+        {% endblock %}
 
     </body>
 </html>

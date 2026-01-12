@@ -11,8 +11,9 @@ use App\Entity\Condition;
 use App\Entity\Employe;
 use App\Entity\MenuPlat;
 use App\Entity\ImageMenu;
+use App\Repository\MenuRepository;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: MenuRepository::class)]
 class Menu {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type:"integer")]
     private ?int $id = null;
@@ -38,7 +39,7 @@ private ?int $nbPersMin = null;
     #[ORM\Column(type:"string", length:300)]
     private ?string $description = null;
 
-    #[ORM\ManyToMany(targetEntity:Condition::class, inversedBy:"menus")]
+    #[ORM\ManyToMany(targetEntity:Condition::class, inversedBy:"menus", fetch:"EAGER")]
     #[ORM\JoinTable(name:"menu_condition")]
     private Collection $conditions;
 
@@ -51,7 +52,7 @@ private ?int $nbPersMin = null;
     #[ORM\OneToMany(mappedBy:"menu", targetEntity:MenuPlat::class, cascade:["persist", "remove"])]
     private Collection $menuPlats;
 
-    #[ORM\OneToMany(mappedBy:"menu", targetEntity:ImageMenu::class, cascade:["persist", "remove"])]
+    #[ORM\OneToMany(mappedBy:"menu", targetEntity:ImageMenu::class, cascade:["persist", "remove"], fetch:"EAGER")]
     private Collection $images;
 
     public function __construct()
@@ -71,7 +72,7 @@ private ?int $nbPersMin = null;
     public function getPrixParPersonne(): ?string { return $this->prixParPersonne; }
     public function getDescription(): ?string { return $this->description; }
     public function getModifiePar(): ?Employe { return $this->modifiePar; }
-    public function getDateModif(): ?Employe { return $this->dateModif; }
+    public function getDateModif(): ?\DateTimeInterface { return $this->dateModif; }
     public function getMenuPlats(): Collection { return $this->menuPlats; }
     public function getImages(): Collection { return $this->images; }
     public function getConditions(): Collection { return $this->conditions; }
@@ -85,7 +86,7 @@ private ?int $nbPersMin = null;
     public function setPrixParPersonne(string $prix): self { $this->prixParPersonne = $prix; return $this; }
     public function setDescription(?string $description): self { $this->description = $description; return $this; }
     public function setModifiePar(?Employe $employe): self { $this->modifiePar = $employe; return $this; }
-    public function setDateModif(?\DateTimeInterface $dateModif): self { $this->dateModif = $dateModif; return $this; }
+    public function setDateModif(?Employe $dateModif): self { $this->dateModif = $dateModif; return $this; }
 
     // ----- Relation management MenuPlat -----
     public function addMenuPlat(MenuPlat $mp): self {

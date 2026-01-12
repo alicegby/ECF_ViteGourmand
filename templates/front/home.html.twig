@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Vite &amp; Gourmand{% endblock %} 
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="main-layout">
+
+    <section class="main-left-galerie">
+        <div class="galerie-container">
+            <div class="slide">
+                <img src="{{ asset('Visuels/Food/Plats/Velouté de potimarron aux éclats de châtaignes.png') }}" alt="Velouté de potimarron - Vite &amp; Gourmand">
+            </div>
+            <div class="slide">
+                <img src="{{ asset('Visuels/Food/Plats/Saumon rôti aux agrumes et épices de Noël.png') }}" alt="Saumon rôti de Noël - Vite &amp; Gourmand">
+            </div>
+            <div class="slide">
+                <img src="{{ asset('Visuels/Food/Plats/Tartelette aux légumes printaniers et fromage frais.png') }}" alt="Tartelette aux légumes - Vite &amp; Gourmand">
+            </div>
+            <div class="slide">
+                <img src="{{ asset('Visuels/Food/Plats/Magret de canard aux fruits rouges et miel.png') }}" alt="Magret de canard - Vite &amp; Gourmand">
+            </div>
+            <div class="slide">
+                <img src="{{ asset('Visuels/Food/Plats/Billes de truite au cœur gelé de concombre et citron.png') }}" alt="Billes de truite - Vite &amp; Gourmand">
+            </div>
+            <div class="slide">
+                <img src="{{ asset('Visuels/Food/Plats/Filet de volaille, sauce cidre-crème et salicorne.png') }}" alt="Filet de volaille sauce cidre-crème - Vite &amp; Gourmand">
+            </div>
+            <div class="slide">
+                <img src="{{ asset('Visuels/Food/Plats/Carpaccio de bœuf, roquette et parmesan.png') }}" alt="Carpaccio de boeuf - Vite &amp; Gourmand">
+            </div>
+            <div class="slide">
+                <img src="{{ asset('Visuels/Food/Plats/Ceviche de cabillaud, citron vert et coriandre.png') }}" alt="Ceviche de cabillaud - Vite &amp; Gourmand">
+            </div>
+            <div class="slide">
+                <img src="{{ asset('Visuels/Food/Plats/Pavé de lotte, légumes glacés et sauce légère.png') }}" alt="Pavé de lotte et légumes glacés - Vite &amp; Gourmand">
+            </div>
+            <div class="slide">
+                <img src="{{ asset('Visuels/Food/Plats/Velouté de champignons et lait de coco.png') }}" alt="Velouté de champignons - Vite &amp; Gourmand">
+            </div>
+            <div class="slide">
+                <img src="{{ asset('Visuels/Food/Plats/Risotto aux petits légumes et parmesan.png') }}" alt="Risotto - Vite &amp; Gourmand">
+            </div>
+            <div class="slide">
+                <img src="{{ asset('Visuels/Food/Plats/Côte de bœuf grillée, légumes rôtis.png') }}" alt="Côte de boeuf - Vite &amp; Gourmand">
+            </div>
+        </div>
+    </section>
+
+    <section class="main-left-boutons">
+        <div class="bouton-main">
+            <a href="{{ path('menus_list') }}">COMMANDE<img src="{{ asset('Visuels/Icônes/Flèche_Beige.png')}}"></a>
+            <a href="{{ path('contact') }}">NOUS CONTACTER<img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}"></a>
+            <a href="#" download="">TÉLÉCHARGER LES MENUS<img src="{{ asset('Visuels/Icônes/Dowload_Beige.png') }}"></a>
+        </div>
+    </section>
+
+    <section class="main-middle">
+        <h2>VITE &amp; GOURMAND</h2>
+        <p>
+            Depuis plus de 25 ans, Vite &amp; Gourmand cultive l’art d’une cuisine sincère, savoureuse et généreuse. Fondée en 2000 à Bordeaux, notre entreprise familiale s’est donnée pour mission d’allier plaisir du goût et efficacité du service, tout en mettant l’humain et la qualité au centre de chaque assiette. <br><br>
+            Chaque jour, nous accompagnons nos clients dans leur quotidien comme dans leurs moments d’exception, que ce soit pour un déjeuner d’affaires, un dîner en famille, ou des événements spéciaux tels que mariages, Noël ou célébrations privées. Nous travaillons main dans la main avec des producteurs locaux et privilégions des ingrédients de saison, choisis avec soin pour leur fraîcheur, leur authenticité et leur provenance régionale. Derrière chaque plat se cache la passion d’une équipe engagée, un savoir-faire transmis de génération en génération, et une exigence constante pour le beau et le bon. <br>
+            Notre priorité est de rendre chaque expérience culinaire fluide, chaleureuse et pleine de saveurs, que ce soit pour le quotidien ou pour des instants festifs. Chaque détail compte, chaque service est pensé pour que nos clients se sentent pris en charge, avec la même attention portée à l’ordinaire qu’aux moments exceptionnels. <br>
+            Nous proposons des solutions sur mesure pour chaque projet, adaptant nos menus, nos prestations et notre logistique selon les envies, le budget et le type d’événement. Notre équipe est à l’écoute et anticipe les besoins pour que chaque repas, du plus simple au plus sophistiqué, soit parfaitement orchestré et laisse un souvenir inoubliable. <br>
+            Pour aller encore plus loin, Vite &amp; Gourmand peut également fournir tout le matériel nécessaire ainsi que le personnel qualifié pour la préparation et le service de vos événements. Que ce soit pour des réceptions, des banquets ou des moments festifs, nous mettons à disposition des équipes expérimentées et des équipements adaptés pour garantir un service complet et sans souci pour nos clients. <br><br>
+            Vite &amp; Gourmand, c’est l’esprit du Sud-Ouest incarné : générosité, simplicité, amour du produit et goût du travail bien fait. Une cuisine authentique, conviviale et raffinée, qui fait rimer tradition avec modernité, pour que chaque visite ou événement devienne un moment gourmand inoubliable.
+        </p>
+    </section>
+
+    <section class="main-right-equipe">
+        <div class="equipe">
+            <h2>L'ÉQUIPE</h2>
+            <p>
+            Derrière Vite &amp; Gourmand, il y a José et Julie, mari et femme, un couple uni par la passion de la cuisine et le plaisir de partager des moments gourmands.<br>
+            Ensemble, ils dirigent Vite &amp; Gourmand avec complicité, rigueur et créativité. <br><br>
+            José, précis et attentif aux détails, veille à ce que chaque plat reflète la qualité et les saveurs de saison. <br>
+            Julie, créative et sensible à l’expérience client, s’assure que chaque service soit chaleureux, élégant et mémorable. <br><br>
+            Aux côtés de José et Julie, toute l’équipe partage cette passion et cette exigence, faisant de Vite &amp; Gourmand un lieu où gourmandise rime avec professionnalisme et convivialité. Chaque plat raconte leur histoire : authenticité, fraîcheur et amour du goût, servis avec attention et générosité. <br><br>
+            </p>
+            <img src="{{ asset('Visuels/Julie et José.png') }}" alt="Les fondateurs : Julie &amp; José">
+        </div>
+    </section>
+
+    <section class="main-right-notes">
+        <div class="notes">
+            <h2>ILS NOUS ONT FAIT CONFIANCE !</h2>
+            <h3>Pourquoi pas vous ?</h3>
+            <a href="{{ path('reviews') }}" class="notes-btn">Voir plus <img src="{{ asset('Visuels/Icônes/Flèche_LightBrown.png') }}"></a>
+            <div class="avis-container">
+                {% for avis in avis_list %}
+                    <div class="avis-box">
+                        <h4>{{ avis.nom_client }}</h4> 
+                        <div class="note">
+                            {% for i in 1..avis.note %}
+                                <img src="{{ asset('Visuels/Icônes/PlainStar_LightBrown.png') }}" alt="★">
+                            {% endfor %}
+                            {% for i in 1..(5 - avis.note) %}
+                                <img src="{{ asset('Visuels/Icônes/EmptyStar_LightBrown.png') }}" alt="☆">
+                            {% endfor %}
+                        </div>
+                        <p>{{ avis.commentaire }}</p>
+                    </div>
+                {% else %}
+                    <p>Aucun avis pour le moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/home.js') }}"></script>
+{% endblock %}

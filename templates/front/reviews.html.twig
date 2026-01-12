@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Avis clients - Vite &amp; Gourmand{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/avis.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="avis-page">
+        <div class="avis-container">
+
+            <!-- Section titres -->
+            <div class="avis-header-section">
+                <h1>Ils nous ont fait confiance !</h1>
+                <h2>Avis de nos clients</h2>
+                {% if avis_list is empty %}
+                    <p class="no-avis">Aucun avis pour le moment.</p>
+                {% endif %}
+            </div>
+
+            <!-- Section grille avis -->
+            <div class="avis-grid">
+                {% for a in avis_list %}
+                <div class="avis-item">
+                    <div class="avis-header">
+                        <span class="client-name">
+                            {{ a.prenom }} {{ a.nom|slice(0,1) ~ '.' }}
+                        </span>
+                        <span class="client-stars" aria-label="{{ a.note }}/5 étoiles">
+                            {% for i in 1..5 %}
+                                {% if i <= a.note %}
+                                    <img src="{{ asset('Visuels/Icônes/PlainStar_Beige.png') }}" alt="Étoile remplie">
+                                {% else %}
+                                    <img src="{{ asset('Visuels/Icônes/EmptyStar_Beige.png') }}" alt="Étoile vide">
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                    <p class="client-comment">{{ a.commentaire }}</p>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}

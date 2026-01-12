@@ -1,9 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inscription{% endblock %}
+{% block title %}Inscription - Vite &amp; Gourmand{% endblock %}
 
-{% block body %}
-<div id="register-container">
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+<div id="login-container">
     <h2>Créer un compte</h2>
 
     {# Messages flash #}
@@ -17,6 +21,18 @@
     {{ form_start(registrationForm) }}
 
     <div class="form-group">
+        {{ form_label(registrationForm.nom) }}
+        {{ form_widget(registrationForm.nom, {'attr': {'required': 'required'}}) }}
+        {{ form_errors(registrationForm.nom) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(registrationForm.prenom) }}
+        {{ form_widget(registrationForm.prenom, {'attr': {'required': 'required'}}) }}
+        {{ form_errors(registrationForm.prenom) }}
+    </div>
+
+    <div class="form-group">
         {{ form_label(registrationForm.email) }}
         {{ form_widget(registrationForm.email, {'attr': {'required': 'required'}}) }}
         {{ form_errors(registrationForm.email) }}
@@ -28,6 +44,30 @@
         {{ form_errors(registrationForm.plainPassword) }}
     </div>
 
+    <div class="form-group">
+        {{ form_label(registrationForm.telephone) }}
+        {{ form_widget(registrationForm.telephone, {'attr': {'required': 'required'}}) }}
+        {{ form_errors(registrationForm.telephone) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(registrationForm.adressePostale) }}
+        {{ form_widget(registrationForm.adressePostale, {'attr': {'required': 'required'}}) }}
+        {{ form_errors(registrationForm.adressePostale) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(registrationForm.codePostal) }}
+        {{ form_widget(registrationForm.codePostal, {'attr': {'required': 'required'}}) }}
+        {{ form_errors(registrationForm.codePostal) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(registrationForm.ville) }}
+        {{ form_widget(registrationForm.ville, {'attr': {'required': 'required'}}) }}
+        {{ form_errors(registrationForm.ville) }}
+    </div>
+
     <button type="submit">S’inscrire</button>
 
     {{ form_end(registrationForm) }}
@@ -36,4 +76,8 @@
         Déjà un compte ? <a href="{{ path('app_login') }}">Connectez-vous</a>
     </p>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/main.js') }}"></script>
 {% endblock %}

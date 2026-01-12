@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Notre Personnel - Vite &amp; Gourmand{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('css/options.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Header avec titre et bouton filtre -->
+<div class="options-header">
+    <h2 class="options-title">Notre Personnel</h2>
+    <button class="options-filter-toggle">
+        <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
+    </button>
+</div>
+
+<!-- Proposition -->
+<p class="options-proposition">
+    Nous vous proposons nos équipes professionnelles pour accompagner vos repas, et faciliter l'exécution de ceux-ci.
+</p>
+
+<!-- Overlay & panel filtre latéral -->
+<div class="options-filter-overlay"></div>
+<div class="options-filter-panel">
+    <button class="options-close-panel">
+        <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
+    </button>
+    <h3>Filtres</h3>
+
+    <div class="options-filter-section">
+        <h4>Catégorie</h4>
+        <div id="categories-list">
+            {% for category in categories %}
+                <div class="options-filter-option" data-id="{{ category.id }}">
+                    {{ category.libelle }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <button class="options-apply-filters">Appliquer</button>
+    <button class="options-reset-filters">Réinitialiser les filtres</button>
+</div>
+
+<!-- Étiquettes actives -->
+<div class="options-filter-tags"></div>
+
+<!-- Liste du personnel (tout mélangé) -->
+<div class="options-selection">
+    {% for category in categories %}
+        {% for personnel in category.personnel %}
+            <div class="options-card"
+                 data-personnel-id="{{ personnel.id }}"
+                 data-personnel-category-id="{{ category.id }}"
+                 data-stock="{{ personnel.stock }}">
+                <h4>{{ personnel.titrePersonnel }}</h4>
+                <p>{{ personnel.description }}</p>
+                <p class="option-category">{{ category.libelle }}</p>
+                <p>Personnel disponnible : {{ personnel.stock }}</p>
+                <p>{{ personnel.prixHeure}} € / unité</p>
+                
+                <button type="button" class="options-select-btn">Sélectionner</button>
+
+                <!-- Contrôles quantité -->
+                <div class="options-quantity-controls" style="display: none;">
+                    <button type="button" class="decrease-btn">-</button>
+                    <input type="number"
+                           class="quantity-input"
+                           value="1"
+                           max="{{ personnel.stock }}">
+                    <button type="button" class="increase-btn">+</button>
+                    <button type="button" class="options-validate-btn">
+                        <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}" alt="Valider">
+                        Valider
+                    </button>
+                    <div class="options-stock-error"></div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+
+<!-- Bouton Suivant général -->
+<div class="options-detail-actions">
+    <button type="button" class="next-option-btn">
+        <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" alt="Suivant">
+        Suivant
+    </button>
+</div>
+
+<!-- Stock minimal par boisson -->
+<div id="options-stock" data-min="1"></div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('js/personnel.js') }}"></script>
+<script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}

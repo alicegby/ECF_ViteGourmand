@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Dashboard{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/dashboarduser.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+
+    <!-- Nom / prénom -->
+    {% if app.user %}
+        <h1 class="user-name">{{ app.user.prenom }} {{ app.user.nom }}</h1>
+    {% endif %}
+
+    <!-- Badge débloqué -->
+    {% if badge %}
+        <div class="user-badge">
+            <h3>Badge débloqué !</h3>
+            <div class="badge-card">
+                <img src="{{ asset('uploads/badges/' ~ badge.badge.image) }}" alt="{{ badge.badge.nom }}">
+                <p>{{ badge.badge.nom }}</p>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Commande en cours -->
+    {% set commandeEncours = commandes
+        |filter(c => c.statutCommande is not null)
+        |filter(c => c.statutCommande.nom != 'Terminée')
+        |first
+    %}
+    {% if commandeEncours %}
+        <div class="current-order">
+            <h2>Commande en cours : {{ commandeEncours.numeroCommande }}</h2>
+            {% set etats = ['Commandé','Accepté','En préparation','En cours de livraison','Livré','En attente de retour de matériel','Terminée'] %}
+            <div class="order-status">
+                {% for etat in etats %}
+                    {% set achieved = etat == commandeEncours.statutCommande.nom %}
+                    <div class="status-step {{ achieved ? 'achieved' : '' }}">
+                        {{ etat }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Deux colonnes -->
+    <div class="dashboard-columns">
+
+        <!-- Colonne 1 : Infos clients -->
+        <div class="column user-info">
+            <div class="info-header">
+                <h3>Mes informations</h3>
+                <img src="{{ asset('Visuels/Icônes/Edit_DarkBrown.png') }}" alt="Modifier mes informations" class="edit-icon" id="edit-user-btn">
+            </div>
+
+            <!-- Affichage normal -->
+            <div id="user-info-display">
+                <p><strong>Email :</strong> {{ app.user.email }}</p>
+                <p><strong>Téléphone :</strong> {{ app.user.telephone }}</p>
+                <p><strong>Adresse :</strong> {{ app.user.adressePostale }}, {{ app.user.codePostal }} {{ app.user.ville }}</p>
+            </div>
+
+            <!-- Formulaire inline caché -->
+            <div id="user-info-form" style="display: none;">
+                {{ form_start(userForm, {'attr': {'id': 'inline-user-form'}}) }}
+                    {{ form_widget(userForm) }}
+                {{ form_end(userForm) }}
+            </div>
+        </div>
+
+        <!-- Colonne 2 : Commandes passées -->
+        <div class="column user-orders">
+            <h3>Mes commandes</h3>
+            {% if commandes is empty %}
+                <p>Vous n'avez passé aucune commande.</p>
+            {% else %}
+                <ul class="orders-list">
+                    {% for c in commandes %}
+                        <li class="order-item">
+                            <strong>Commande {{ c.numeroCommande }}</strong> - {{ c.statutCommande ? c.statutCommande.nom : 'Statut inconnu' }}
+                            <br>
+                            Livraison : {{ c.dateLivraison|date('d/m/Y') }} à {{ c.heureLivraison|date('H:i') }}
+                            <br>
+                            Prix total : {{ c.prixTotal }} €
+                            {% if c.statutCommande and c.statutCommande.nom != 'Terminée' %}
+                                <a href="{{ path('commande_show', {'id': c.id}) }}" class="order-link">Voir le suivi</a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Bouton déconnexion -->
+    <div class="logout-container">
+        <a href="{{ path('app_logout') }}" class="logout-button"
+           onclick="return confirm('Voulez-vous vraiment vous déconnecter ?');">
+           Se déconnecter
+        </a>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/dashboarduser.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de confidentialité - Vite &amp; Gourmand{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/random.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+<div class="cgv-page">
+  <div class="cgv-container">
+    <h1>Politique de confidentialité</h1>
+
+    <p>Chez Vite &amp; Gourmand, nous attachons une grande importance à la protection de vos données personnelles. Cette politique de confidentialité vous explique quelles informations nous collectons, comment nous les utilisons et vos droits concernant ces données.</p>
+
+    <h2>1. Données collectées</h2>
+    <p>Nous pouvons collecter les informations suivantes lorsque vous utilisez notre application :</p>
+    <ul>
+      <li>Vos informations d’inscription et de compte (nom, prénom, email, mot de passe).</li>
+      <li>Vos préférences et historiques culinaires pour améliorer l’expérience de l’application.</li>
+      <li>Les informations techniques liées à votre appareil et à votre navigation sur l’application.</li>
+    </ul>
+
+    <h2>2. Utilisation des données</h2>
+    <p>Vos données sont utilisées uniquement pour :</p>
+    <ul>
+      <li>Fournir et personnaliser les services de l’application.</li>
+      <li>Vous contacter pour des notifications importantes ou des mises à jour.</li>
+      <li>Améliorer nos contenus, nos recettes et votre expérience utilisateur.</li>
+    </ul>
+
+    <h2>3. Partage des données</h2>
+    <p>Nous ne vendons ni ne louons vos données personnelles à des tiers. Vos informations peuvent seulement être partagées avec des prestataires techniques qui nous assistent dans le fonctionnement de l’application, sous réserve de la confidentialité.</p>
+
+    <h2>4. Sécurité</h2>
+    <p>Nous mettons en place des mesures de sécurité techniques et organisationnelles pour protéger vos données contre toute perte, accès non autorisé ou divulgation.</p>
+
+    <h2>5. Vos droits</h2>
+    <p>Vous disposez des droits suivants :</p>
+    <ul>
+      <li>Accéder, corriger ou supprimer vos données personnelles.</li>
+      <li>Vous opposer ou limiter le traitement de vos données.</li>
+      <li>Retirer votre consentement à tout moment.</li>
+    </ul>
+    <p>Pour exercer vos droits, vous pouvez nous contacter via la page <a href="{{ path('contact') }}">contact</a> de l’application.</p>
+
+    <h2>6. Modifications de la politique</h2>
+    <p>Nous pouvons mettre à jour cette politique de confidentialité de temps en temps. La version la plus récente sera toujours disponible dans l’application.</p>
+
+    <p class="cgv-footer">
+    Pour toute question, vous pouvez contacter Vite &amp; Gourmand via la page contact de l’application&nbsp;
+    <a href="{{ path('contact') }}"> ici</a>.
+    </p>
+    <h5>Dernière mise à jour : 12 Janvier 2026</h5>
+  </div>
+</div>
+</main>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}

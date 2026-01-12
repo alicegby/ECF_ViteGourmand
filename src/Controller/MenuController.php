@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use DateTime;
 
 class MenuController extends AbstractController
 {
@@ -34,7 +35,7 @@ class MenuController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $menu->setModifiePar($this->getUser());
-            $menu->setDateModif(new \DateTime());
+            $menu->setDateModif(new DateTime());
             $this->em->persist($menu);
             $this->em->flush();
 
@@ -56,7 +57,7 @@ class MenuController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $menu->setModifiePar($this->getUser());
-            $menu->setDateModif(new \DateTime());
+            $menu->setDateModif(new DateTime());
             $this->em->flush();
 
             $this->addFlash('success', 'Menu modifié avec succès !');

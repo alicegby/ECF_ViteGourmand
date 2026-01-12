@@ -17,13 +17,13 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', TextType::class, ['label' => 'Nom', 'required' => true])
-            ->add('prenom', TextType::class, ['label' => 'Prénom', 'required' => true])
-            ->add('email', EmailType::class, ['label' => 'Email', 'required' => true])
-            ->add('telephone', TextType::class, ['label' => 'Téléphone', 'required' => true])
-            ->add('adressePostale', TextType::class, ['label' => 'Adresse postale', 'required' => true])
-            ->add('codePostal', TextType::class, ['label' => 'Code postal', 'required' => true])
-            ->add('ville', TextType::class, ['label' => 'Ville', 'required' => true])
+            ->add('nom', TextType::class, ['label' => 'Nom*', 'required' => true])
+            ->add('prenom', TextType::class, ['label' => 'Prénom*', 'required' => true])
+            ->add('email', EmailType::class, ['label' => 'Email*', 'required' => true])
+            ->add('telephone', TextType::class, ['label' => 'Téléphone*', 'required' => true])
+            ->add('adressePostale', TextType::class, ['label' => 'Adresse postale*', 'required' => true])
+            ->add('codePostal', TextType::class, ['label' => 'Code postal*', 'required' => true])
+            ->add('ville', TextType::class, ['label' => 'Ville*', 'required' => true])
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
                 'label' => 'Mot de passe',

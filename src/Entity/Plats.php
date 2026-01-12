@@ -25,9 +25,6 @@ class Plats
     #[ORM\Column(type:"string", length:300)]
     private ?string $description = null;
 
-    #[ORM\Column(type:"integer")]
-    private int $stock = 0;
-
     #[ORM\Column(type:"string", length:250, nullable:true)]
     private ?string $image = null;
 
@@ -59,7 +56,6 @@ class Plats
     public function getTitrePlat(): ?string { return $this->titrePlat; }
     public function getCategory(): ?CategoryFood { return $this->category; }
     public function getDescription(): ?string { return $this->description; }
-    public function getStock(): int { return $this->stock; }
     public function getImage(): ?string { return $this->image; }
     public function getAltTexte(): ?string { return $this->altTexte; }
     public function getModifiePar(): ?Employe { return $this->modifiePar; }
@@ -70,7 +66,6 @@ class Plats
     public function setTitrePlat(string $titrePlat): self { $this->titrePlat = $titrePlat; return $this; }
     public function setCategory(?CategoryFood $category): self { $this->category = $category; return $this; }
     public function setDescription(string $description): self { $this->description = $description; return $this; }
-    public function setStock(int $stock): self { $this->stock = $stock; return $this; }
     public function setImage(?string $image): self { $this->image = $image; return $this; }
     public function setAltTexte(?string $altTexte): self { $this->altTexte = $altTexte; return $this; }
     public function setModifiePar(?Employe $employe): self { $this->modifiePar = $employe; return $this; }

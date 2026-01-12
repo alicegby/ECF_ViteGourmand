@@ -22,15 +22,13 @@ class MenuRepository extends ServiceEntityRepository
 
     public function findByFilters(array $criteria): array {
         $qb = $this->createQueryBuilder('m')
-            ->leftJoin('m.theme', 't')
-            ->addSelect('t')
-            ->leftJoin('m.regime', 'r')
-            ->addSelect('r')
-            ->leftJoin('m.conditions', 'c')
-            ->addSelect('c');
+            ->leftJoin('m.theme', 't')->addSelect('t')
+            ->leftJoin('m.regime', 'r')->addSelect('r')
+            ->leftJoin('m.conditions', 'c')->addSelect('c')
+            ->leftJoin('m.images', 'img')->addSelect('img');
         
         if (!empty($criteria['theme'])) {
-            $qb->andWhere('r.id = :theme')->setParameter('theme', $criteria['theme']);
+            $qb->andWhere('t.id = :theme')->setParameter('theme', $criteria['theme']);
         }
         if (!empty($criteria['regime'])) {
             $qb->andWhere('r.id = :regime')->setParameter('regime', $criteria['regime']);

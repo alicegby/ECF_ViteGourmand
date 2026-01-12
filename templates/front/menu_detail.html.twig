@@ -1,0 +1,220 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ menu.nom }} - Vite &amp; Gourmand{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('css/plats.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="menu-title">
+    <h2>Menu {{ menu.nom }}</h2>
+</div>
+
+<div class="menu-info-boxes">
+    <div class="info-box theme">{{ menu.theme ? menu.theme.libelle : '-' }}</div>
+    <div class="info-box regime">{{ menu.regime ? menu.regime.libelle : '-' }}</div>
+</div>
+
+<div class="menu-stats-boxes">
+    <div class="stat-box">Pers. min : {{ menu.nbPersMin }}</div>
+    <div class="stat-box">Stock : {{ menu.stock }}</div>
+    <div class="stat-box">Prix : {{ menu.prixParPersonne }} €</div>
+</div>
+
+<div class="menu-conditions">
+    {% if menu.conditions|length > 0 %}
+        {% for condition in menu.conditions %}
+            <div class="condition">{{ condition.libelle }}</div>
+        {% endfor %}
+    {% else %}
+        <div class="condition">-</div>
+    {% endif %}
+</div>
+
+<div class="menu-selection-container">
+
+    {% set entrees = menu.menuPlats|filter(mp => mp.plat.category.libelle == 'Entrée') %}
+    {% set plats = menu.menuPlats|filter(mp => mp.plat.category.libelle == 'Plat') %}
+    {% set desserts = menu.menuPlats|filter(mp => mp.plat.category.libelle == 'Dessert') %}
+
+    <div class="selection-column">
+        <div class="column-box">
+        <h3>Entrées</h3>
+        {% for mp in entrees %}
+        {% set plat = mp.plat %}
+        <div class="plat-card" data-plat-id="{{ plat.id }}">
+            <div class="plat-card-content">
+                <img src="{{ asset(plat.image) }}" alt="{{ plat.altTexte ?: plat.titrePlat }}">
+                <h4>{{ plat.titrePlat }}</h4>
+                <p>{{ plat.description }}</p>
+                <div class="plat-stats">
+                    <span class="plat-allergenes">
+                        <span class="label">Allergènes :</span>
+                        {% if plat.allergenes|length > 0 %}
+                            {% set allergeneIcons = {
+                                'Arachide' : 'arachide.png',
+                                'Céleri' : 'celeri.png',
+                                'Crustacé' : 'crustaces.png',
+                                'Oeuf' : 'oeuf.png',
+                                'Fruit à coque' : 'fruits_a_coque.png',
+                                'Céréales (Gluten)' : 'gluten.png',
+                                'Légumineuse' : 'legumineuses.png',
+                                'Lupin' : 'lupin.png',
+                                'Lait' : 'lait.png',
+                                'Moutarde' : 'moutarde.png',
+                                'Poisson' : 'poisson.png',
+                                'Soja' : 'soja.png'
+                            } %}
+                            <div class="allergenes-icons">
+                                {% for allergene in plat.allergenes %}
+                                    {% set iconFile = allergeneIcons[allergene.libelle] ?? 'default.png' %}
+                                    <span class="allergene-icon" title="{{ allergene.libelle }}">
+                                        <img src="{{ asset('Visuels/Allergènes/' ~ iconFile) }}" alt="{{ allergene.libelle }}">
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <span>Aucun</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+                <button type="button" class="select-plat-btn">Sélectionner</button>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+
+    <div class="selection-column">
+        <div class="column-box">
+        <h3>Plats</h3>
+        {% for mp in plats %}
+        {% set plat = mp.plat %}
+        <div class="plat-card" data-plat-id="{{ plat.id }}">
+            <div class="plat-card-content">
+                <img src="{{ asset(plat.image) }}" alt="{{ plat.altTexte ?: plat.titrePlat }}">
+                <h4>{{ plat.titrePlat }}</h4>
+                <p>{{ plat.description }}</p>
+                <div class="plat-stats">
+                    <span class="plat-allergenes">
+                        <span class="label">Allergènes :</span>
+                        {% if plat.allergenes|length > 0 %}
+                            {% set allergeneIcons = {
+                                'Arachide' : 'arachide.png',
+                                'Céleri' : 'celeri.png',
+                                'Crustacé' : 'crustaces.png',
+                                'Oeuf' : 'oeuf.png',
+                                'Fruit à coque' : 'fruits_a_coque.png',
+                                'Céréales (Gluten)' : 'gluten.png',
+                                'Légumineuse' : 'legumineuses.png',
+                                'Lupin' : 'lupin.png',
+                                'Lait' : 'lait.png',
+                                'Moutarde' : 'moutarde.png',
+                                'Poisson' : 'poisson.png',
+                                'Soja' : 'soja.png'
+                            } %}
+                            <div class="allergenes-icons">
+                                {% for allergene in plat.allergenes %}
+                                    {% set iconFile = allergeneIcons[allergene.libelle] ?? 'default.png' %}
+                                    <span class="allergene-icon" title="{{ allergene.libelle }}">
+                                        <img src="{{ asset('Visuels/Allergènes/' ~ iconFile) }}" alt="{{ allergene.libelle }}">
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <span>Aucun</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+                <button type="button" class="select-plat-btn">Sélectionner</button>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+
+    <div class="selection-column">
+        <div class="column-box">
+        <h3>Desserts</h3>
+        {% for mp in desserts %}
+        {% set plat = mp.plat %}
+        <div class="plat-card" data-plat-id="{{ plat.id }}">
+            <div class="plat-card-content">
+                <img src="{{ asset(plat.image) }}" alt="{{ plat.altTexte ?: plat.titrePlat }}">
+                <h4>{{ plat.titrePlat }}</h4>
+                <p>{{ plat.description }}</p>
+                <div class="plat-stats">
+                    <span class="plat-allergenes">
+                        <span class="label">Allergènes :</span>
+                        {% if plat.allergenes|length > 0 %} 
+                            {% set allergeneIcons = {
+                                'Arachide' : 'arachide.png',
+                                'Céleri' : 'celeri.png',
+                                'Crustacé' : 'crustaces.png',
+                                'Oeuf' : 'oeuf.png',
+                                'Fruit à coque' : 'fruits_a_coque.png',
+                                'Céréales (Gluten)' : 'gluten.png',
+                                'Légumineuse' : 'legumineuses.png',
+                                'Lupin' : 'lupin.png',
+                                'Lait' : 'lait.png',
+                                'Moutarde' : 'moutarde.png',
+                                'Poisson' : 'poisson.png',
+                                'Soja' : 'soja.png'
+                            } %}
+                            <div class="allergenes-icons">
+                                {% for allergene in plat.allergenes %}
+                                    {% set iconFile = allergeneIcons[allergene.libelle] ?? 'default.png' %}
+                                    <span class="allergene-icon" title="{{ allergene.libelle }}">
+                                        <img src="{{ asset('Visuels/Allergènes/' ~ iconFile) }}" alt="{{ allergene.libelle }}">
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <span>Aucun</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <button type="button" class="select-plat-btn">Sélectionner</button>
+        </div>
+        {% endfor %} 
+        </div>
+    </div>
+
+</div>
+
+<div class="menu-detail-actions">
+    <button type="button" class="next-menu-btn">
+        <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" alt="Suivant">
+        Suivant
+    </button>
+
+    <div class="quantity-controls">
+        <button type="button" class="decrease-btn">-</button>
+        <input type="number" 
+                    class="quantity-input" 
+                    value="{{ menu.nbPersMin }}" 
+                    min="{{ menu.nbPersMin }}"
+                    max="{{ menuStock}}"> 
+        <button type="button" class="increase-btn">+</button>
+        <button type="button" class="validate-menu-btn">
+            <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}" alt="Valider">
+            Valider
+        </button>
+    </div> 
+    <div class="stock-error"></div>
+</div>
+<div id="menu-stock" 
+    data-stock="{{ menuStock }}"
+    data-min-persons="{{ menu.nbPersMin }}"
+    data-menu-id="{{ menu.id }}">
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/plats.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}

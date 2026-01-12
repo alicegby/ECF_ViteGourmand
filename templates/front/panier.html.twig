@@ -1,0 +1,200 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre Panier - Vite & Gourmand{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('css/panier.css') }}">
+{% endblock %}
+
+{% block content %}
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="flash flash-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<h1>Votre Panier</h1>
+
+{% set hasItems =
+    menuData|length > 0
+    or fromagesData|length > 0
+    or boissonsData|length > 0
+    or materielData|length > 0
+    or personnelData|length > 0
+%}
+
+{% if hasItems %}
+<div class="panier-container">
+
+    <div class="panier-left">
+        <h2>Récapitulatif de votre commande</h2>
+
+        {# ===== MENUS ===== #}
+        {% if menuData is not empty %}
+        <div class="menus">
+            {% if reductionMenus > 0 %}
+                <div class="menu-discount-badge">-10%</div>
+            {% endif %}
+
+            <h3>Menus</h3>
+            <ul>
+                {% for data in menuData %}
+                    <li>
+                        {{ data.menu.nom }} — {{ data.quantity }} personne(s)
+                        <span class="menu-subtotal">{{ data.subtotal|number_format(2, ',', ' ') }} €</span>
+                        <ul class="plats-selected">
+                            {% for plat in data.plats %}
+                                <li>{{ plat.category.libelle }} : {{ plat.titrePlat }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {# ===== OPTIONS ===== #}
+        {% for section, items in {
+            'fromages': fromagesData,
+            'boissons': boissonsData,
+            'materiel': materielData,
+            'personnel': personnelData
+        } %}
+            {% if items is not empty %}
+                <div class="{{ section }}">
+                    <h3>{{ section|capitalize }}</h3>
+                    <ul>
+                        {% for data in items %}
+                            {% set itemTitle = '' %}
+                            {% if section == 'fromages' %}
+                                {% set itemTitle = data.item.titreFromage %}
+                            {% elseif section == 'boissons' %}
+                                {% set itemTitle = data.item.titreBoisson %}
+                            {% elseif section == 'materiel' %}
+                                {% set itemTitle = data.item.titreMateriel %}
+                            {% elseif section == 'personnel' %}
+                                {% set itemTitle = data.item.titrePersonnel %}
+                            {% endif %}
+
+                            <li>
+                                {{ itemTitle }} — {{ data.qty }} unité(s)
+                                <span class="option-subtotal">{{ data.subtotal|number_format(2, ',', ' ') }} €</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        {# ===== REDUCTION ===== #}
+        {% if reductionMenus > 0 %}
+            <p class="reduction-mention">
+                Vous bénéficiez d'une réduction de -10% car vous avez commandé au minimum 5 menus de plus que la quantité minimale requise !
+            </p>
+            <p class="reduction">
+                Réduction menus (10%) :
+                -{{ reductionMenus|number_format(2, ',', ' ') }} €
+            </p>
+        {% endif %}
+
+        {# ===== LIVRAISON ===== #}
+        {% if deliveryMessage is defined and deliveryMessage %}
+            <p class="error delivery-error">{{ deliveryMessage }}</p>
+        {% else %}
+            {% if deliveryFee is defined %}
+                <p class="fee delivery-fee">
+                    Frais de livraison :
+                    {{ deliveryFee|number_format(2, ',', ' ') }} €
+                </p>
+            {% endif %}
+        {% endif %}
+
+        {# ===== TOTAL ===== #}
+        <p class="total total-general">
+            Total :
+            {{ totalGeneral|number_format(2, ',', ' ') }} €
+        </p>
+    </div>
+
+    <div class="panier-right">
+        <h2>Informations de livraison</h2>
+
+        <form method="POST" action="{{ path('commande_validation') }}">
+            <div>
+                <label>Nom</label>
+                <input type="text" name="nom" value="{{ app.user.nom }}" required>
+            </div>
+
+            <div>
+                <label>Prénom</label>
+                <input type="text" name="prenom" value="{{ app.user.prenom }}" required>
+            </div>
+
+            <div>
+                <label>Email</label>
+                <input type="email" name="email" value="{{ app.user.email }}" required>
+            </div>
+
+            <div>
+                <label>Téléphone</label>
+                <input type="tel" name="telephone" value="{{ app.user.telephone }}" required>
+            </div>
+
+            <div>
+                <label>Adresse</label>
+                <input type="text" name="adresse" value="{{ app.user.adressePostale }}" required>
+            </div>
+
+            <div>
+                <label>Code Postal</label>
+                <input type="text" name="codePostal" value="{{ app.user.codePostal }}" required>
+            </div>
+
+            <div>
+                <label>Ville</label>
+                <input type="text" name="ville" value="{{ app.user.ville }}" required>
+            </div>
+
+            {# ===== DATE ET HEURE PAR MENU ===== #}
+            <div class="menu-livraison">
+                <label for="dateLivraison">
+                    Date de livraison
+                </label>
+                <input type="date"
+                    id="dateLivraison"
+                    name="dateLivraison"
+                    value="{{ earliestDate|date('Y-m-d') }}"
+                    min="{{ earliestDate|date('Y-m-d') }}"
+                    required
+                >
+
+                <label for="heureLivraison">
+                    Heure de livraison
+                </label>
+                <select id="heureLivraison" name="heureLivraison" required>
+                    {% for hour in 10..18 %}
+                        <option value="{{ '%02d:00'|format(hour) }}">{{ '%02d:00'|format(hour) }}</option>
+                        <option value="{{ '%02d:30'|format(hour) }}">{{ '%02d:30'|format(hour) }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="panier-buttons">
+                <button type="submit" class="commander">Commander</button>
+            </div>
+        </form>
+
+        <form method="POST" action="{{ path('panier_reset') }}" class="panier-reset-form">
+            <button type="submit" class="panier-reset-button">
+                Réinitialiser le panier
+            </button>
+        </form>
+    </div>
+
+</div>
+{% else %}
+    <p class="empty">Votre panier est vide.</p>
+{% endif %}
+{% endblock %}

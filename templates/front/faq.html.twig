@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FAQ - Vite &amp; Gourmand{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/random.css') }}">
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="faq-page">
+        <div class="faq-container">
+            <h1>Foire Aux Questions (FAQ)</h1>
+
+            <div class="faq-item">
+                <h2>Quelles sont les conditions de commande ?</h2>
+                <p>Les conditions de commande sont propres à chaque menu. Avant de commander, il est conseillé de les consulter.</p>
+            </div>
+
+            <div class="faq-item">
+                <h2>Les repas arrivent-ils chauds ou faut-il les réchauffer ?</h2>
+                <p>Les repas doivent être réchauffés. Au besoin, nous louons du matériel de cuisine.</p>
+            </div>
+
+            <div class="faq-item">
+                <h2>D’où proviennent vos ingrédients ?</h2>
+                <p>Nous privilégions les producteurs locaux et de saison pour tous nos ingrédients. Chaque produit est sélectionné avec soin pour sa qualité et sa fraîcheur.</p>
+            </div>
+
+            <div class="faq-item">
+                <h2>Puis-je modifier ou annuler ma commande ?</h2>
+                <p>Les commandes peuvent être modifiées ou annulées tant que votre commande n'est pas passée en statut "accepté".</p>
+            </div>
+
+            <div class="faq-item">
+                <h2>Vos repas sont-ils faits maison ?</h2>
+                <p>Oui, tous nos repas sont préparés à la main avec des ingrédients frais et locaux, dans le respect des recettes et de la qualité.</p>
+            </div>
+
+            <div class="faq-item">
+                <h2>Dans quelles villes livrez-vous ?</h2>
+                <p>Nous livrons dans toute l'agglomération de Bordeaux et Bordeaux, entre 10h et 18h, tous les jours. Nous appliquons une facturation de 5€ (majoré de 59 centimes par kilomètre parcouru). <br>
+                    Liste des villes (hors Bordeaux) où nous livrons : <br>
+                    Ambarès-et-Lagrave, Ambès, Artigues‑près‑Bordeaux, Bassens, Bègles, Blanquefort, Bouliac, Bruges, Carbon-Blanc, Cenon, Eysines, Floirac, Gradignan, Le Bouscat, Le Haillan, Le Taillan-Médoc, Lormont, Martignas-sur-Jalle, Mérignac, Parempuyre, Pessac, Saint-Aubin-de-Médoc, Saint-Louis-de-Montferrand, Saint-Médard-en-Jalles, Saint-Vincent-de-Paul, Talence, Villenave-d'Ornon.
+                </p>
+            </div>
+
+            <!-- Bloc footer FAQ -->
+            <div class="faq-footer">
+                <p>
+                    Pour toute question, vous pouvez contacter Vite &amp; Gourmand via la page 
+                    <a href="{{ path('contact') }}">ici</a>.
+                </p>
+                <h5>Dernière mise à jour : 12 Janvier 2026</h5>
+            </div>
+
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}
