@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Laisser un avis{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/dashboarduser.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="avis-form-container">
+    <h1>Laisser un avis pour la commande #{{ commande.numeroCommande }}</h1>
+
+    <p><strong>Menu :</strong> {{ commande.menu ? commande.menu.nom : 'Aucun menu' }}</p>
+    <p><strong>Date de livraison :</strong> {{ commande.dateLivraison ? commande.dateLivraison|date('d/m/Y') : 'Date inconnue' }}</p>
+
+    {{ form_start(form, {'attr': {'class': 'form-avis'}}) }}
+        <div class="form-group">
+            {{ form_label(form.notes) }}
+           <div class="stars-wrapper">
+                {% for i in 5..1 %}
+                    <input type="radio" id="star{{ i }}" name="{{ form.notes.vars.full_name }}" value="{{ i }}" {% if form.notes.vars.value == i %}checked{% endif %}/>
+                    <label for="star{{ i }}" title="{{ i }} étoiles"></label>
+                {% endfor %}
+            </div>
+            {{ form_errors(form.notes) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.contenu) }}
+            {{ form_widget(form.contenu, {'attr': {'rows': 5, 'class': 'textarea-avis'}}) }}
+            {{ form_errors(form.contenu) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary'}}) }}
+        </div>
+    {{ form_end(form) }}
+
+    <a href="{{ path('dashboard_user') }}" class="btn btn-secondary">Retour au dashboard</a>
+</div>
+
+{% endblock %}

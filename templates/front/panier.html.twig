@@ -158,17 +158,39 @@
             </div>
 
             {# ===== DATE ET HEURE PAR MENU ===== #}
-            <div class="menu-livraison">
-                <label for="dateLivraison">
-                    Date de livraison
-                </label>
-                <input type="date"
-                    id="dateLivraison"
-                    name="dateLivraison"
-                    value="{{ earliestDate|date('Y-m-d') }}"
-                    min="{{ earliestDate|date('Y-m-d') }}"
-                    required
-                >
+            <div class="menu-conditions">
+                <h3>Conditions du menu</h3>
+
+                {% for menuId, cond in menuConditions %}
+                    {% if cond.messagesCommande is not empty %}
+                        <ul>
+                            {% for msg in cond.messagesCommande %}
+                                <li>{{ msg }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    {% if cond.messagesAnnulation is not empty %}
+                        <ul>
+                            {% for msg in cond.messagesAnnulation %}
+                                <li>{{ msg }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endfor %}
+            
+                <div class="menu-livraison">
+                    <label for="dateLivraison">
+                        Date de livraison
+                    </label>
+                    <input type="date"
+                        id="dateLivraison"
+                        name="dateLivraison"
+                        value="{{ earliestDate|date('Y-m-d') }}"
+                        min="{{ earliestDate|date('Y-m-d') }}"
+                        required
+                    >
+            </div>
 
                 <label for="heureLivraison">
                     Heure de livraison

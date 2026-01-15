@@ -1,22 +1,35 @@
-{% extends 'base.html.twig' %}
+<div class="commande-edit-card">
 
-{% block title %}Modifier la commande{% endblock %}
+    <h2>Modifier la commande</h2>
 
-{% block body %}
-<h1>Modifier la commande</h1>
+    <div class="commande-actions">
+        <button type="button" class="ajax-btn btn-back-edit" data-url="{{ path('commande_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}"> Retour à la liste
+        </button>
+    </div>
 
-{{ form_start(form) }}
-    {{ form_row(form.statutCommande) }}
-    {{ form_row(form.pretMateriel) }}
-    {{ form_row(form.restitutionMateriel) }}
-    {{ form_row(form.pretPersonnel) }}
+    {{ form_start(form, { 
+        attr: { class: 'commande-edit-form' },
+        action: path('commande_edit', { id: commande.id }) 
+    }) }}
 
-    <button type="submit" class="btn">
-        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
-    </button>
-{{ form_end(form) }}
+        <div class="commande-edit-grid">
+            {{ form_row(form.statutCommande) }}
+            {{ form_row(form.pretMateriel) }}
+            {{ form_row(form.restitutionMateriel) }}
+            {{ form_row(form.pretPersonnel) }}
 
-<a href="{{ path('commande_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
-{% endblock %}
+            {{ form_row(form.modeContact) }}
+            {{ form_row(form.motifAnnulation, { 'attr': {'class': 'motif-annulation'} }) }}
+        </div>
+
+        <div class="commande-actions">
+            <button type="submit" class="btn-edit-primary">
+                <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}"> Enregistrer
+            </button>
+        </div>
+
+    {{ form_end(form) }}
+</div>
+
+<script src="{{ asset('js/commandeedit.js') }}"></script>

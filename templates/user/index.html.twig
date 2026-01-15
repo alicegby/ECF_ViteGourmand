@@ -1,6 +1,8 @@
+{# templates/user/index.html.twig #}
+
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon Dashboard{% endblock %}
+{% block title %}Mon Dashboard - Vite &amp; Gourmand{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/dashboarduser.css') }}">
@@ -9,104 +11,293 @@
 {% block content %}
 <div class="dashboard-container">
 
-    <!-- Nom / prénom -->
-    {% if app.user %}
-        <h1 class="user-name">{{ app.user.prenom }} {{ app.user.nom }}</h1>
-    {% endif %}
+    {# Bienvenue #}
+    <h1 class="user-name">Bienvenue, {{ user.prenom }} !</h1>
 
-    <!-- Badge débloqué -->
-    {% if badge %}
-        <div class="user-badge">
-            <h3>Badge débloqué !</h3>
+    {# Badges #}
+    <div class="badge user-badge">
+        {% if badge %}
             <div class="badge-card">
-                <img src="{{ asset('uploads/badges/' ~ badge.badge.image) }}" alt="{{ badge.badge.nom }}">
-                <p>{{ badge.badge.nom }}</p>
+                <img src="{{ asset(badge.badge.icone) }}" 
+                        alt="{{ badge.badge.nom }}" 
+                        title="{{ badge.badge.description }}">
             </div>
-        </div>
-    {% endif %}
+        {% else %}
+            <p>Aucun badge débloqué pour le moment.</p>
+        {% endif %}
+    </div>
 
-    <!-- Commande en cours -->
-    {% set commandeEncours = commandes
-        |filter(c => c.statutCommande is not null)
-        |filter(c => c.statutCommande.nom != 'Terminée')
-        |first
-    %}
-    {% if commandeEncours %}
-        <div class="current-order">
-            <h2>Commande en cours : {{ commandeEncours.numeroCommande }}</h2>
-            {% set etats = ['Commandé','Accepté','En préparation','En cours de livraison','Livré','En attente de retour de matériel','Terminée'] %}
-            <div class="order-status">
-                {% for etat in etats %}
-                    {% set achieved = etat == commandeEncours.statutCommande.nom %}
-                    <div class="status-step {{ achieved ? 'achieved' : '' }}">
-                        {{ etat }}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
-
-    <!-- Deux colonnes -->
-    <div class="dashboard-columns">
-
-        <!-- Colonne 1 : Infos clients -->
-        <div class="column user-info">
-            <div class="info-header">
-                <h3>Mes informations</h3>
-                <img src="{{ asset('Visuels/Icônes/Edit_DarkBrown.png') }}" alt="Modifier mes informations" class="edit-icon" id="edit-user-btn">
-            </div>
-
-            <!-- Affichage normal -->
-            <div id="user-info-display">
-                <p><strong>Email :</strong> {{ app.user.email }}</p>
-                <p><strong>Téléphone :</strong> {{ app.user.telephone }}</p>
-                <p><strong>Adresse :</strong> {{ app.user.adressePostale }}, {{ app.user.codePostal }} {{ app.user.ville }}</p>
-            </div>
-
-            <!-- Formulaire inline caché -->
-            <div id="user-info-form" style="display: none;">
-                {{ form_start(userForm, {'attr': {'id': 'inline-user-form'}}) }}
-                    {{ form_widget(userForm) }}
-                {{ form_end(userForm) }}
-            </div>
+    {# Infos personnelles avec bouton modification #}
+    <div class="user-info-central">
+        <div class="info-header">
+            <h2>Mes informations</h2>
+            <button type="button" class="edit-icon" id="edit-user-btn">
+                <img src="{{ asset('Visuels/Icônes/Edit_DarkBrown.png')}}">
+            </button>
         </div>
 
-        <!-- Colonne 2 : Commandes passées -->
-        <div class="column user-orders">
-            <h3>Mes commandes</h3>
-            {% if commandes is empty %}
-                <p>Vous n'avez passé aucune commande.</p>
-            {% else %}
-                <ul class="orders-list">
-                    {% for c in commandes %}
-                        <li class="order-item">
-                            <strong>Commande {{ c.numeroCommande }}</strong> - {{ c.statutCommande ? c.statutCommande.nom : 'Statut inconnu' }}
-                            <br>
-                            Livraison : {{ c.dateLivraison|date('d/m/Y') }} à {{ c.heureLivraison|date('H:i') }}
-                            <br>
-                            Prix total : {{ c.prixTotal }} €
-                            {% if c.statutCommande and c.statutCommande.nom != 'Terminée' %}
-                                <a href="{{ path('commande_show', {'id': c.id}) }}" class="order-link">Voir le suivi</a>
+        <button type="button" id="close-user-form" class="edit-icon close-icon" style="display:none;">
+            <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
+        </button>
+
+        <div id="user-info-display">
+            <p>{{ user.prenom }} {{ user.nom }}</p>
+            <p>{{ user.email }}</p>
+            <p><strong>Téléphone :</strong> {{ user.telephone }}</p>
+            <p><strong>Adresse :</strong> {{ user.adressePostale }} - {{ user.codePostal }} {{ user.ville }}</p>
+        </div>
+
+        <div id="user-info-form" class="hide">
+            {{ form_start(userForm) }}
+                {{ form_row(userForm.nom) }}
+                {{ form_row(userForm.prenom) }}
+                {{ form_row(userForm.email) }}
+                {{ form_row(userForm.telephone) }}
+                {{ form_row(userForm.adressePostale) }}
+                {{ form_row(userForm.codePostal) }}
+                {{ form_row(userForm.ville) }}
+                {{ form_row(userForm.submit, {'label' : 'Sauvegarder'}) }}
+            {{ form_end(userForm) }}
+        </div>
+    </div>
+
+    {# Commandes gamifiées (si existantes) #}
+    {% if commandesGamifiees %}
+    <div class="commande-gamifiee">
+        <h2 class="gamification-title">Votre commande</h2>
+        {% for c in commandesGamifiees %}
+            <div class="gamified-order">
+                <p><strong>Commande #{{ c.numeroCommande }}</strong></p>
+                <div class="menu-detail-gamifie">
+                    <p><strong>Menu :</strong> {{ c.menu ? c.menu.nom : 'Aucun menu' }}</p>
+
+                      {% if c.commandePlats is not empty %}
+                      <div class="detail-plats-game">
+                        <p><strong>Plats :</strong></p>
+                        <ul class="plats-list-game">
+                            {% for item in c.commandePlats %}
+                                <li class="plat-item">{{ item.plat.category.libelle }} : {{ item.plat.titrePlat }}</li>
+                            {% endfor %}
+                         </ul>
+                         </div>
+                        {% endif %}
+
+                        {% if c.commandeFromages is not empty or c.commandeBoissons is not empty or c.commandeMateriels is not empty or c.commandePersonnels is not empty %}
+                            <div class="detail-options-game">
+                                 <p><strong>Options :</strong></p>
+                                <ul class="options-list">
+                                    {% if c.commandeFromages is not empty %}
+                                        {% for item in c.commandeFromages %}
+                                            <li class="option-item fromage-game">Fromage : {{ item.fromage.category.libelle }} - {{ item.fromage.titreFromage }} (x{{ item.quantite }})</li>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                    {% if c.commandeBoissons is not empty %}
+                                        {% for item in c.commandeBoissons %}
+                                            <li class="option-item boisson-game">Boisson : {{ item.boisson.category.libelle }} - {{ item.boisson.titreBoisson }} (x{{ item.quantite }})</li>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                    {% if c.commandeMateriels is not empty %}
+                                        {% for item in c.commandeMateriels %}
+                                            <li class="option-item materiel-game">Matériel : {{ item.materiel.titreMateriel }} (x{{ item.quantite }})</li>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                    {% if c.commandePersonnels is not empty %}
+                                        {% for item in c.commandePersonnels %}
+                                            <li class="option-item personnel-game">Personnel : {{ item.personnel.titrePersonnel }} ({{ item.heures }}h)</li>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                    <p><strong>Date de livraison :</strong> {{ c.dateLivraison ? c.dateLivraison|date('d/m/Y') : 'Date inconnue' }}</p>
+                    <p><strong>Heure de livraison :</strong> {{ c.heureLivraison ? c.heureLivraison|date('H:i') : 'Heure inconnue' }}</p>
+                </div>
+                <div class="tracker-arrows">
+                    {% set steps = ['En préparation', 'En livraison', 'Livrée', 'En attente du retour', 'Terminée'] %}
+                    
+                    {% for i, step in steps %}
+                        {% set stepClass = '' %}
+                        {% set currentIndex = 0 %}
+                        
+                        {# Trouver l’index de l’étape actuelle #}
+                        {% for j, s in steps %}
+                            {% if s == c.statutCommande.libelle %}
+                                {% set currentIndex = j %}
                             {% endif %}
+                        {% endfor %}
+                        
+                        {% if i < currentIndex %}
+                            {% set stepClass = 'completed' %}
+                        {% elseif i == currentIndex %}
+                            {% set stepClass = 'current' %}
+                        {% endif %}
+                        
+                        <div class="tracker-arrow {{ stepClass }}">
+                            {{ step }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {# Commandes en cours / terminées #}
+    <div class="dashboard-columns">
+        <div class="column">
+            <h2>Commandes en cours</h2>
+            {% if commandesEnCours %}
+                <ul>
+                    {% for c in commandesEnCours %}
+                        <li class="commande-item">
+                            <div class="commande-header" onclick="this.nextElementSibling.classList.toggle('show'); this.querySelector('.arrow').classList.toggle('rotate')">
+                                Commande #{{ c.numeroCommande }} - {{ c.statutCommande.libelle }}
+                                <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png')}}" alt="Déplier" class="arrow">
+                            </div>
+                            <div class="commande-details">
+                                <p><strong>Menu :</strong> {{ c.menu ? c.menu.nom : 'Aucun menu' }}</p>
+                                
+                                {% if c.commandePlats is not empty %}
+                                    <div class="detail-plats">
+                                        <p><strong>Plats :</strong></p>
+                                        <ul class="plats-list">
+                                            {% for item in c.commandePlats %}
+                                                <li class="plat-item">{{ item.plat.category.libelle }} : {{ item.plat.titrePlat }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+
+                                {% if c.commandeFromages is not empty or c.commandeBoissons is not empty or c.commandeMateriels is not empty or c.commandePersonnels is not empty %}
+                                    <div class="detail-options">
+                                        <p><strong>Options :</strong></p>
+                                        <ul class="options-list">
+                                            {% if c.commandeFromages is not empty %}
+                                                {% for item in c.commandeFromages %}
+                                                    <li class="option-item fromage">Fromage: {{ item.fromage.category.libelle }} - {{ item.fromage.titreFromage }} (x{{ item.quantite }})</li>
+                                                {% endfor %}
+                                            {% endif %}
+
+                                            {% if c.commandeBoissons is not empty %}
+                                                {% for item in c.commandeBoissons %}
+                                                    <li class="option-item boisson">Boisson: {{ item.boisson.category.libelle }} - {{ item.boisson.titreBoisson }} (x{{ item.quantite }})</li>
+                                                {% endfor %}
+                                            {% endif %}
+
+                                            {% if c.commandeMateriels is not empty %}
+                                                {% for item in c.commandeMateriels %}
+                                                    <li class="option-item materiel">Matériel: {{ item.materiel.titreMateriel }} (x{{ item.quantite }})</li>
+                                                {% endfor %}
+                                            {% endif %}
+
+                                            {% if c.commandePersonnels is not empty %}
+                                                {% for item in c.commandePersonnels %}
+                                                    <li class="option-item personnel">Personnel: {{ item.personnel.titrePersonnel }} ({{ item.heures }}h)</li>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+
+                                <p><strong>Date de livraison :</strong> {{ c.dateLivraison ? c.dateLivraison|date('d/m/Y') : 'Date inconnue' }}</p>
+                                <p><strong>Heure de livraison :</strong> {{ c.heureLivraison ? c.heureLivraison|date('H:i') : 'Heure inconnue' }}</p>
+                                <p><strong>Statut :</strong> {{ c.statutCommande ? c.statutCommande.libelle : 'Inconnu' }}</p>
+                            </div>
                         </li>
                     {% endfor %}
                 </ul>
+            {% else %}
+                <p>Aucune commande en cours.</p>
+            {% endif %}
+        </div>
+
+        <div class="column">
+            <h2>Commandes terminées</h2>
+            {% if commandesTerminees %}
+                <ul>
+                    {% for c in commandesTerminees %}
+                        <li class="commande-item">
+                            <div class="commande-header" onclick="this.nextElementSibling.classList.toggle('show'); this.querySelector('.arrow').classList.toggle('rotate')">
+                                Commande #{{ c.numeroCommande }} - {{ c.statutCommande.libelle }}
+                                <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png')}}" alt="Déplier" class="arrow">
+                            </div>
+                            <div class="commande-details">
+                                <p><strong>Menu :</strong> {{ c.menu ? c.menu.nom : 'Aucun menu' }}</p>
+
+                                {% if c.commandePlats is not empty %}
+                                    <div class="detail-plats">
+                                        <p><strong>Plats :</strong></p>
+                                        <ul class="plats-list">
+                                            {% for item in c.commandePlats %}
+                                                <li class="plat-item">{{ item.plat.category.libelle }} : {{ item.plat.titrePlat }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+
+                                {% if c.commandeFromages is not empty or c.commandeBoissons is not empty or c.commandeMateriels is not empty or c.commandePersonnels is not empty %}
+                                    <div class="detail-options">
+                                        <p><strong>Options :</strong></p>
+                                        <ul class="options-list">
+                                            {% if c.commandeFromages is not empty %}
+                                                {% for item in c.commandeFromages %}
+                                                    <li class="option-item fromage">Fromage : {{ item.fromage.category.libelle }} - {{ item.fromage.titreFromage }} (x{{ item.quantite }})</li>
+                                                {% endfor %}
+                                            {% endif %}
+
+                                            {% if c.commandeBoissons is not empty %}
+                                                {% for item in c.commandeBoissons %}
+                                                    <li class="option-item boisson">Boisson : {{ item.boisson.category.libelle }} - {{ item.boisson.titreBoisson }} (x{{ item.quantite }})</li>
+                                                {% endfor %}
+                                            {% endif %}
+
+                                            {% if c.commandeMateriels is not empty %}
+                                                {% for item in c.commandeMateriels %}
+                                                    <li class="option-item materiel">Matériel : {{ item.materiel.titreMateriel }} (x{{ item.quantite }})</li>
+                                                {% endfor %}
+                                            {% endif %}
+
+                                            {% if c.commandePersonnels is not empty %}
+                                                {% for item in c.commandePersonnels %}
+                                                    <li class="option-item personnel">Personnel : {{ item.personnel.titrePersonnel }} ({{ item.heures }}h)</li>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+
+                                <p><strong>Date de livraison :</strong> {{ c.dateLivraison ? c.dateLivraison|date('d/m/Y') : 'Date inconnue' }}</p>
+                                <p><strong>Heure de livraison :</strong> {{ c.heureLivraison ? c.heureLivraison|date('H:i') : 'Heure inconnue' }}</p>
+                                <p><strong>Statut :</strong> {{ c.statutCommande ? c.statutCommande.libelle : 'Inconnu' }}</p>
+
+                                {% if not c.avis|length %}
+                                    <a href="{{ path('avis_user_new', {'commandeId': c.id}) }}" class="btn-avis">Laisser un avis</a>
+                                {% else %}
+                                    <em>Vous avez déjà laissé un avis pour cette commande.</em>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Aucune commande terminée.</p>
             {% endif %}
         </div>
     </div>
 
-    <!-- Bouton déconnexion -->
+    {# Déconnexion #}
     <div class="logout-container">
-        <a href="{{ path('app_logout') }}" class="logout-button"
-           onclick="return confirm('Voulez-vous vraiment vous déconnecter ?');">
-           Se déconnecter
-        </a>
+        <a href="{{ path('app_logout') }}" class="logout-button">Déconnexion</a>
     </div>
 
 </div>
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/dashboarduser.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
 {% endblock %}

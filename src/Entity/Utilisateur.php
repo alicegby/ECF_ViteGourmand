@@ -80,7 +80,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPassword(): string { return (string)$this->motDePasse; }
     public function eraseCredentials(): void {}
 
-    // UtilisateurBadge management
+    // Gestion des badges
+    public function getUtilisateurBadge(): Collection
+    {
+        return $this->utilisateurBadge;
+    }
+
     public function addUtilisateurBadge(UtilisateurBadge $ub): self {
         if (!$this->utilisateurBadge->contains($ub)) {
             $this->utilisateurBadge->add($ub);
@@ -96,5 +101,16 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
         return $this;
+    }
+
+    public function hasBadge(?Badge $badge): bool
+    {
+        if (!$badge) return false;
+        foreach ($this->utilisateurBadge as $ub) {
+            if ($ub->getBadge()?->getId() === $badge->getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

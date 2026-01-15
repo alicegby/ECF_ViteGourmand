@@ -1,23 +1,99 @@
-{% extends 'base.html.twig' %}
+<div class="commande-card">
 
-{% block title %}Détails de la commande{% endblock %}
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('commande_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+        </button>
+    </div>
 
-{% block body %}
-<h1>Détails de la commande</h1>
+    <h2>Détails de la commande</h2>
 
-<p>ID : {{ commande.id }}</p>
-<p>Client : {{ commande.client.nom }}</p>
-<p>Date commande : {{ commande.dateCommande|date('d/m/Y H:i') }}</p>
-<p>Date livraison : {{ commande.dateLivraison|date('d/m/Y') }} à {{ commande.heureLivraison|date('H:i') }}</p>
-<p>Menu : {{ commande.menu.nom }}</p>
-<p>Nb personnes : {{ commande.nbPersonne }}</p>
-<p>Prix total : {{ commande.prixTotal }} €</p>
-<p>Statut : {{ commande.statutCommande.libelle }}</p>
-<p>Matériel prêt : {{ commande.pretMateriel ? 'Oui' : 'Non' }}</p>
-<p>Matériel restitué : {{ commande.restitutionMateriel ? 'Oui' : 'Non' }}</p>
-<p>Personnel prêt : {{ commande.pretPersonnel ? 'Oui' : 'Non' }}</p>
+    <!-- Bloc infos générales -->
+    <div class="commande-block commande-info">
+        <div><strong>Numéro de commande :</strong> {{ commande.numeroCommande }}</div>
+        <div><strong>Client :</strong> {{ commande.client.prenom }} {{ commande.client.nom }}</div>
+        <div><strong>Adresse :</strong> {{ commande.adresseLivraison }} - {{ commande.codePostalLivraison }} {{ commande.villeLivraison }}</div>
+        <div><strong>Date commande :</strong> {{ commande.dateCommande|date('d/m/Y - H:i') }}</div>
+        <div><strong>Date livraison :</strong> {{ commande.dateLivraison|date('d/m/Y') }} – {{ commande.heureLivraison|date('H:i') }}</div>
+        <div><strong>Menu :</strong> {{ commande.menu.nom }}</div>
+        <div><strong>Quantité :</strong> {{ commande.nbPersonne }} menus</div>
+        <div>
+            <strong>Statut :</strong>
+            <span class="statut {{ commande.statutCommande.libelle|lower|replace({' ': '-'}) }}">
+                {{ commande.statutCommande.libelle }}
+            </span>
+        </div>
+    </div>
 
-<a href="{{ path('commande_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
-{% endblock %}
+    <!-- Bloc plats commandés -->
+    {% if commande.commandePlats is not empty %}
+    <div class="commande-block commande-plats">
+        <h3>Plats commandés</h3>
+        <ul>
+            {% for item in commande.commandePlats %}
+            <li>{{ item.plat.category.libelle }} : {{ item.plat.titrePlat }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Bloc options (2x2) -->
+    <div class="commande-block commande-options">
+        {% if commande.commandeFromages is not empty %}
+        <div class="option-item">
+            <strong>Fromages :</strong>
+            <ul>
+                {% for item in commande.commandeFromages %}
+                <li>{{ item.fromage.category.libelle }} : {{ item.fromage.titreFromage }} ({{ item.quantite }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if commande.commandeBoissons is not empty %}
+        <div class="option-item">
+            <strong>Boissons :</strong>
+            <ul>
+                {% for item in commande.commandeBoissons %}
+                <li>{{ item.boisson.category.libelle }} : {{ item.boisson.titreBoisson }} ({{ item.quantite }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if commande.commandeMateriels is not empty %}
+        <div class="option-item">
+            <strong>Matériel :</strong>
+            <ul>
+                {% for item in commande.commandeMateriels %}
+                <li>{{ item.materiel.titreMateriel }} ({{ item.quantite }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if commande.commandePersonnels is not empty %}
+        <div class="option-item">
+            <strong>Personnel :</strong>
+            <ul>
+                {% for item in commande.commandePersonnels %}
+                <li>{{ item.personnel.titrePersonnel }} ({{ item.heures }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Prix total -->
+    <div class="commande-block prix-total">
+        <strong>Prix total :</strong> {{ commande.prixTotal }} €
+    </div>
+
+    <!-- Matériel et personnel loué/restitué -->
+    <div class="commande-block commande-status">
+        <div><strong>Matériel loué :</strong> {{ commande.pretMateriel ? 'Oui' : 'Non' }}</div>
+        <div><strong>Matériel restitué :</strong> {{ commande.restitutionMateriel ? 'Oui' : 'Non' }}</div>
+        <div><strong>Personnel loué :</strong> {{ commande.pretPersonnel ? 'Oui' : 'Non' }}</div>
+    </div>
+
+</div>

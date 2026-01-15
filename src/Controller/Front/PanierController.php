@@ -378,20 +378,32 @@ class PanierController extends AbstractController
 
         // ===== Calcul du prix des menus =====
         $prixMenus = 0;
+        $menusNoms = [];
         foreach ($menuAddToCart as $item) {
             $menu = $menuRepo->find($item['menuId']);
             if (!$menu) continue;
+
+            $menusNoms[] = $menu->getNom();
             $prixMenus += $menu->getPrixParPersonne() * $item['quantity'];
         }
+        $commande->setMenu($menu);
         $commande->setPrixMenu($prixMenus);
 
-        // ===== Calcul du montant des options =====
+        // ===== Calcul du montant des options ==== //
         $montantOptions = 0;
 
         foreach ($fromagesSelections as $sel) {
             $fromage = $fromageRepo->find($sel['id']);
             if ($fromage) {
                 $montantOptions += $fromage->getPrixParFromage() * $sel['qty'];
+
+                $commandeFromage = new \App\Entity\CommandeFromage();
+                $commandeFromage->setCommande($commande); // lien avec la commande
+                $commandeFromage->setFromage($fromage);
+                $commandeFromage->setQuantite($sel['qty']);
+                $commandeFromage->setPrixUnitaire($fromage->getPrixParFromage());
+
+                $entityManager->persist($commandeFromage);
             }
         }
 
@@ -399,6 +411,14 @@ class PanierController extends AbstractController
             $boisson = $boissonRepo->find($sel['id']);
             if ($boisson) {
                 $montantOptions += $boisson->getPrixParBouteille() * $sel['qty'];
+
+                $commandeBoisson = new \App\Entity\CommandeBoisson();
+                $commandeBoisson->setCommande($commande);
+                $commandeBoisson->setBoisson($boisson);
+                $commandeBoisson->setQuantite($sel['qty']);
+                $commandeBoisson->setPrixUnitaire($boisson->getPrixParBouteille());
+
+                $entityManager->persist($commandeBoisson);
             }
         }
 
@@ -406,6 +426,14 @@ class PanierController extends AbstractController
             $materiel = $materielRepo->find($sel['id']);
             if ($materiel) {
                 $montantOptions += $materiel->getPrixPiece() * $sel['qty'];
+
+                $commandeMateriel = new \App\Entity\CommandeMateriel();
+                $commandeMateriel->setCommande($commande);
+                $commandeMateriel->setMateriel($materiel);
+                $commandeMateriel->setQuantite($sel['qty']);
+                $commandeMateriel->setPrixUnitaire($materiel->getPrixPiece());
+
+                $entityManager->persist($commandeMateriel);
             }
         }
 
@@ -413,6 +441,14 @@ class PanierController extends AbstractController
             $pers = $personnelRepo->find($sel['id']);
             if ($pers) {
                 $montantOptions += $pers->getPrixHeure() * $sel['qty'];
+
+                $commandePersonnel = new \App\Entity\CommandePersonnel();
+                $commandePersonnel->setCommande($commande);
+                $commandePersonnel->setPersonnel($pers);
+                $commandePersonnel->setHeures($sel['qty']); // correspond au nombre d'heures
+                $commandePersonnel->setPrixUnitaire($pers->getPrixHeure());
+
+                $entityManager->persist($commandePersonnel);
             }
         }
 
@@ -447,7 +483,7 @@ class PanierController extends AbstractController
         // ===== Statut commande =====
         $statutEnAttente = $entityManager
             ->getRepository(\App\Entity\StatutCommande::class)
-            ->findOneBy(['nom' => 'En attente']);
+            ->findOneBy(['libelle' => 'En attente']);
 
         if (!$statutEnAttente) {
             throw new \RuntimeException('Le statut "En attente" est introuvable en base !');
@@ -457,6 +493,21 @@ class PanierController extends AbstractController
 
         // ===== Enregistrement de la commande =====
         $entityManager->persist($commande);
+
+        foreach ($menuAddToCart as $item) {
+            foreach ($item['plats'] as $platId) {
+                $plat = $platRepo->find($platId);
+                if (!$plat) continue;
+
+                $commandePlat = new \App\Entity\CommandePlat();
+                $commandePlat->setCommande($commande);
+                $commandePlat->setPlat($plat);
+                $commandePlat->setCategoryPlat($plat->getCategory()); // si tu as un lien CategoryPlat dans Plat
+
+                $entityManager->persist($commandePlat);
+            }
+        }
+
         $entityManager->flush();
 
         // ===== Reset panier =====

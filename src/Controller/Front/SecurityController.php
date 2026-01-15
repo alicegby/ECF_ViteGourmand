@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller\Front;
-
+ 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\RequestStack;

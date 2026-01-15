@@ -15,9 +15,11 @@ use App\Entity\CommandeFromage;
 use App\Entity\CommandePersonnel;
 use App\Entity\CommandeMateriel;
 use App\Entity\CommandeReduction;
+use App\Entity\Avis;
 
 #[ORM\Entity]
-class Commande {
+class Commande
+{
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type:"integer")]
     private ?int $id = null;
 
@@ -109,6 +111,12 @@ class Commande {
     #[ORM\OneToMany(mappedBy:"commande", targetEntity:CommandeReduction::class)]
     private Collection $commandeReductions;
 
+    #[ORM\OneToMany(mappedBy:"commande", targetEntity:Avis::class)]
+    private Collection $avis;
+
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    private ?string $modeContact = null; // email, téléphone, etc.
+
     public function __construct()
     {
         $this->commandePlats = new ArrayCollection();
@@ -117,9 +125,10 @@ class Commande {
         $this->commandePersonnels = new ArrayCollection();
         $this->commandeMateriels = new ArrayCollection();
         $this->commandeReductions = new ArrayCollection();
+        $this->avis = new ArrayCollection();
     }
 
-    // Getters
+    // -------------------- Getters --------------------
     public function getId(): ?int { return $this->id; }
     public function getNumeroCommande(): ?string { return $this->numeroCommande; }
     public function getClient(): ?Utilisateur { return $this->client; }
@@ -144,8 +153,16 @@ class Commande {
     public function getVilleLivraison(): ?string { return $this->villeLivraison; }
     public function getFraisLivraison(): ?string { return $this->fraisLivraison; }
     public function getDistanceKm(): ?string { return $this->distanceKm; }
+    public function getCommandePlats(): Collection { return $this->commandePlats; }
+    public function getCommandeBoissons(): Collection { return $this->commandeBoissons; }
+    public function getCommandeFromages(): Collection { return $this->commandeFromages; }
+    public function getCommandePersonnels(): Collection { return $this->commandePersonnels; }
+    public function getCommandeMateriels(): Collection { return $this->commandeMateriels; }
+    public function getCommandeReductions(): Collection { return $this->commandeReductions; }
+    public function getAvis(): Collection { return $this->avis; }
+    public function getModeContact(): ?string { return $this->modeContact; }
 
-    // Setters
+    // -------------------- Setters --------------------
     public function setNumeroCommande(string $numeroCommande): self { $this->numeroCommande = $numeroCommande; return $this; }
     public function setClient(?Utilisateur $client): self { $this->client = $client; return $this; }
     public function setMenu(?Menu $menu): self { $this->menu = $menu; return $this; }
@@ -169,29 +186,69 @@ class Commande {
     public function setVilleLivraison(?string $villeLivraison): self { $this->villeLivraison = $villeLivraison; return $this; }
     public function setFraisLivraison(?string $fraisLivraison): self { $this->fraisLivraison = $fraisLivraison; return $this; }
     public function setDistanceKm(?string $distanceKm): self { $this->distanceKm = $distanceKm; return $this; }
+    public function setModeContact(?string $modeContact): self { $this->modeContact = $modeContact; return $this; }
 
-    // Methods to manage collections
-    public function getCommandePlats(): Collection { return $this->commandePlats; }
-    public function addCommandePlat(CommandePlat $commandePlat): self { if (!$this->commandePlats->contains($commandePlat)) { $this->commandePlats->add($commandePlat); } return $this; }
-    public function removeCommandePlat(CommandePlat $commandePlat): self { $this->commandePlats->removeElement($commandePlat); return $this; }
+    // -------------------- Relations Avis --------------------
+    public function addAvis(Avis $avis): self
+    {
+        if (!$this->avis->contains($avis)) {
+            $this->avis->add($avis);
+            $avis->setCommande($this);
+        }
+        return $this;
+    }
 
-    public function getCommandeBoissons(): Collection { return $this->commandeBoissons; }
-    public function addCommandeBoisson(CommandeBoisson $commandeBoisson): self { if (!$this->commandeBoissons->contains($commandeBoisson)) { $this->commandeBoissons->add($commandeBoisson); } return $this; }
-    public function removeCommandeBoisson(CommandeBoisson $commandeBoisson): self { $this->commandeBoissons->removeElement($commandeBoisson); return $this; }
+    public function removeAvis(Avis $avis): self
+    {
+        if ($this->avis->removeElement($avis)) {
+            if ($avis->getCommande() === $this) {
+                $avis->setCommande(null);
+            }
+        }
+        return $this;
+    }
 
-    public function getCommandeFromages(): Collection { return $this->commandeFromages; }
-    public function addCommandeFromage(CommandeFromage $commandeFromage): self { if (!$this->commandeFromages->contains($commandeFromage)) { $this->commandeFromages->add($commandeFromage); } return $this; }
-    public function removeCommandeFromage(CommandeFromage $commandeFromage): self { $this->commandeFromages->removeElement($commandeFromage); return $this; }
+    // -------------------- Méthodes métiers --------------------
+    public function isTerminee(): bool
+    {
+        if (!$this->statutCommande) {
+            return false;
+        }
 
-    public function getCommandePersonnels(): Collection { return $this->commandePersonnels; }
-    public function addCommandePersonnel(CommandePersonnel $commandePersonnel): self { if (!$this->commandePersonnels->contains($commandePersonnel)) { $this->commandePersonnels->add($commandePersonnel); } return $this; }
-    public function removeCommandePersonnel(CommandePersonnel $commandePersonnel): self { $this->commandePersonnels->removeElement($commandePersonnel); return $this; }
+        return in_array(
+            $this->statutCommande->getLibelle(),
+            ['Livrée', 'Annulée'],
+            true
+        );
+    }
 
-    public function getCommandeMateriels(): Collection { return $this->commandeMateriels; }
-    public function addCommandeMateriel(CommandeMateriel $commandeMateriel): self { if (!$this->commandeMateriels->contains($commandeMateriel)) { $this->commandeMateriels->add($commandeMateriel); } return $this; }
-    public function removeCommandeMateriel(CommandeMateriel $commandeMateriel): self { $this->commandeMateriels->removeElement($commandeMateriel); return $this; }
+    public function isGamifiable(): bool
+    {
+        if (!$this->statutCommande) return false;
 
-    public function getCommandeReductions(): Collection { return $this->commandeReductions; }
-    public function addCommandeReduction(CommandeReduction $commandeReduction): self { if (!$this->commandeReductions->contains($commandeReduction)) { $this->commandeReductions->add($commandeReduction); } return $this; }
-    public function removeCommandeReduction(CommandeReduction $commandeReduction): self { $this->commandeReductions->removeElement($commandeReduction); return $this; }
+        return in_array($this->statutCommande->getLibelle(), [
+            'En préparation',
+            'En cours de livraison',
+            'Livrée',
+            'En attente de retour de matériel',
+        ], true);
+    }
+
+    public function isEnCours(): bool
+    {
+        if (!$this->statutCommande) {
+            return false;
+        }
+
+        return !in_array(
+            $this->statutCommande->getLibelle(),
+            ['Livrée', 'Annulée'],
+            true
+        );
+    }
+
+    public function isAccepted(): bool
+    {
+        return $this->statutCommande?->getLibelle() === 'Acceptée';
+    }
 }

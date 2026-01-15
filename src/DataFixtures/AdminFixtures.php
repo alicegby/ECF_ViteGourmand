@@ -47,7 +47,7 @@ class AdminFixtures extends Fixture implements FixtureGroupInterface, DependentF
                   ->setRole($roleAdmin);
 
             $hashedPwd = $this->hasher->hashPassword($admin, $data['password']);
-            $admin->setMotDePasse($hashedPwd);
+            $admin->setPassword($hashedPwd);
 
             $manager->persist($admin);
             $this->addReference("admin_$i", $admin);
@@ -55,7 +55,7 @@ class AdminFixtures extends Fixture implements FixtureGroupInterface, DependentF
 
         $manager->flush();
     }
-
+ 
     public static function getGroups(): array
     {
         return ['admin'];

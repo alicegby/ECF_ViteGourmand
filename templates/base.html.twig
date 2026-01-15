@@ -32,15 +32,26 @@
                             <span class="cart-badge"></span> 
                         </a>
                     </div>
-                    {% if app.user %}
-                        <a href="{{ path('dashboard_user') }}">
-                            <img src="{{ asset('Visuels/Icônes/Compte.png') }}" alt="Compte - Vite &amp; Gourmand" class="header-icon">
-                        </a>
-                    {% else %}
-                        <a href="{{ path('app_login', {'from_home': 1}) }}">
-                            <img src="{{ asset('Visuels/Icônes/Compte.png') }}" alt="Compte - Vite &amp; Gourmand" class="header-icon">
-                        </a>
-                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('admin_dashboard') }}">
+                                <img src="{{ asset('Visuels/Icônes/Compte.png') }}" class="header-icon">
+                            </a>
+
+                        {% elseif is_granted('ROLE_EMPLOYE') %}
+                            <a href="{{ path('employe_dashboard') }}">
+                                <img src="{{ asset('Visuels/Icônes/Compte.png') }}" class="header-icon">
+                            </a>
+
+                        {% elseif is_granted('ROLE_USER') %}
+                            <a href="{{ path('dashboard_user') }}">
+                                <img src="{{ asset('Visuels/Icônes/Compte.png') }}" class="header-icon">
+                            </a>
+
+                        {% else %}
+                            <a href="{{ path('app_login', {'from_home': 1}) }}">
+                                <img src="{{ asset('Visuels/Icônes/Compte.png') }}" class="header-icon">
+                            </a>
+                        {% endif %}
                 </div>
                 <div class="burger">
                     <div class="bar"></div>
@@ -56,7 +67,7 @@
                 <img src="{{ asset('Visuels/Logo.png') }}" alt="Logo - Vite &amp; Gourmand" class="mobile-menu-image">
                 <a href="{{ path('homepage') }}">ACCUEIL</a>
                 <a href="{{ path('menus_list') }}">COMMANDER</a>
-                <a href="{{ path('login') }}">CONNEXION</a>
+                <a href="{{ path('app_login') }}">CONNEXION</a>
                 <a href="{{ path('contact') }}">CONTACT</a>
             </nav>
         </header>

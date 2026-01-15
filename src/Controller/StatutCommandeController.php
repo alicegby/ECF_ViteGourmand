@@ -16,7 +16,7 @@ class StatutCommandeController extends AbstractController {
     public function __construct(EntityManagerInterface $em) {
         $this->em =$em;
     }
-
+ 
     #[IsGranted('ROLE_EMPLOYE')]
     public function list(): Response {
         $statutsCommande = $this->em->getRepository(StatutCommande::class)->findAll();

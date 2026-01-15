@@ -9,6 +9,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class CommandeType extends AbstractType
 {
@@ -19,19 +21,29 @@ class CommandeType extends AbstractType
                 'class' => StatutCommande::class,
                 'choice_label' => 'libelle',
                 'label' => 'Statut de la commande',
-                'placeholder' => 'Sélectionnez un statut'
+                'placeholder' => 'Sélectionnez un statut',
             ])
             ->add('pretMateriel', CheckboxType::class, [
                 'label' => 'Matériel loué',
-                'required' => false
+                'required' => false,
             ])
             ->add('restitutionMateriel', CheckboxType::class, [
                 'label' => 'Matériel restitué',
-                'required' => false
+                'required' => false,
             ])
             ->add('pretPersonnel', CheckboxType::class, [
                 'label' => 'Personnel loué',
-                'required' => false
+                'required' => false,
+            ])
+            ->add('modeContact', ChoiceType::class, [
+                'choices' => ['Email' => 'email', 'Téléphone' => 'telephone'],
+                'label' => 'Mode de contact',
+                'placeholder' => 'Sélectionnez un mode',
+                'required' => false,
+            ])
+            ->add('motifAnnulation', TextareaType::class, [
+                'label' => 'Motif d’annulation',
+                'required' => false,
             ]);
     }
 

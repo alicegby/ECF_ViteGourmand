@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Avis;
+use App\Entity\Commande;
+use App\Entity\StatutAvis;
 use App\Form\AvisType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +19,60 @@ class AvisController extends AbstractController {
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
+    }
+
+    #[IsGranted('ROLE_USER')]
+    public function new(Request $request, int $commandeId): Response
+    {
+        $user = $this->getUser();
+
+        // On récupère la commande
+        $commande = $this->em->getRepository(Commande::class)->find($commandeId);
+        if (!$commande || $commande->getClient()?->getId() !== $user->getId()) {
+            throw $this->createNotFoundException("Commande introuvable ou non autorisée.");
+        }
+
+        // Vérifier si un avis existe déjà pour cette commande
+        if (count($commande->getAvis()) > 0) {
+            $this->addFlash('warning', 'Vous avez déjà laissé un avis pour cette commande.');
+            return $this->redirectToRoute('dashboard_user');
+        }
+
+        $avis = new Avis();
+        $avis->setCommande($commande);
+        $avis->setDateCreation(new \DateTime());
+
+        // On définit le statut initial (ex: "En attente")
+        $statutInitial = $this->em->getRepository(StatutAvis::class)->findOneBy(['libelle' => 'En attente']);
+        $avis->setStatut($statutInitial);
+
+        $form = $this->createFormBuilder($avis)
+            ->add('notes', \Symfony\Component\Form\Extension\Core\Type\IntegerType::class, [
+                'label' => 'Note (1 à 5)',
+                'attr' => ['min' => 1, 'max' => 5]
+            ])
+            ->add('contenu', \Symfony\Component\Form\Extension\Core\Type\TextareaType::class, [
+                'label' => 'Votre avis'
+            ])
+            ->add('submit', \Symfony\Component\Form\Extension\Core\Type\SubmitType::class, [
+                'label' => 'Enregistrer'
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($avis);
+            $this->em->flush();
+
+            $this->addFlash('success', 'Merci pour votre avis !');
+            return $this->redirectToRoute('dashboard_user');
+        }
+
+        return $this->render('user/avis.html.twig', [
+            'form' => $form->createView(),
+            'commande' => $commande
+        ]);
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

@@ -99,15 +99,6 @@ class HomeController extends AbstractController {
         ]);
     }
 
-    public function panier(): Response {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        return $this->render('front/panier.html.twig');
-    }
-
-    public function login(): Response {
-        return $this->render('front/login.html.twig');
-    }
-
     public function cgv(): Response {
         return $this->render('front/cgv.html.twig');
     }

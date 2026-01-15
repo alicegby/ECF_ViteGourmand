@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Utilisateur;
 use App\Entity\UtilisateurBadge;
 use App\Entity\Commande;
+use App\Entity\Badge;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface; 
 use Symfony\Component\Form\Extension\Core\Type\TextType; 
@@ -31,12 +32,90 @@ class DashboardUserController extends AbstractController
         /** @var Utilisateur $user */
         $user = $this->getUser();
 
-        // Badge et commandes
+        // Récupération des badges
+        $badgeRepo = $this->em->getRepository(Badge::class);
+        $badgePremiereCommande = $badgeRepo->findOneBy(['nom' => 'Première Commande']);
+        $badgeGourmandConfirme = $badgeRepo->findOneBy(['nom' => 'Gourmand Confirmé']);
+        $badgeClientVIP = $badgeRepo->findOneBy(['nom' => 'Client VIP']);
+        $badgeExplorateursSaveurs = $badgeRepo->findOneBy(['nom' => 'Explorateurs des saveurs']);
+        $badgeCritique = $badgeRepo->findOneBy(['nom' => 'Critique']);
+
+        // Récupération de toutes les commandes de l'utilisateur
+        $commandes = $this->em->getRepository(Commande::class)
+                            ->findBy(['client' => $user]);
+
+        $totalCommandes = 0;
+        $avisAcceptees = 0;
+
+        foreach ($commandes as $commande) {
+            if (!$commande->isAccepted()) continue;
+
+            $totalCommandes++;
+
+            // Attribution des badges
+            if ($totalCommandes === 1 && !$user->hasBadge($badgePremiereCommande)) {
+                $this->addBadgeIfMissing($user, $badgePremiereCommande);
+            }
+            if ($totalCommandes >= 5 && !$user->hasBadge($badgeGourmandConfirme)) {
+                $this->addBadgeIfMissing($user, $badgeGourmandConfirme);
+            }
+            if ($totalCommandes >= 10 && !$user->hasBadge($badgeClientVIP)) {
+                $this->addBadgeIfMissing($user, $badgeClientVIP);
+            }
+            // Badge "Explorateurs des saveurs"
+            foreach ($commande->getMenu() as $menu) {
+                $platsCommandes = [];
+                foreach ($menu->getPlats() as $plat) {
+                    $platsCommandes[$plat->getId()] = true;
+                }
+                if (count($platsCommandes) >= 2) {
+                    $this->addBadgeIfMissing($user, $badgeExplorateursSaveurs);
+                }
+            }
+
+            // Badge "Critique"
+            foreach ($commande->getAvis() as $avis) {
+                if ($avis->isAccepted()) $avisAcceptees++;
+            }
+        }
+
+        if ($avisAcceptees >= 5) $this->addBadgeIfMissing($user, $badgeCritique);
+
+        // Sauvegarde toutes les nouvelles attributions
+        $this->em->flush();
+
+        // Récupération du dernier badge débloqué
         $badge = $this->em->getRepository(UtilisateurBadge::class)
                           ->findOneBy(['utilisateur' => $user], ['dateObtention' => 'DESC']);
 
-        $commandes = $this->em->getRepository(Commande::class)
-                               ->findBy(['client' => $user], ['dateCommande' => 'DESC']);
+        // Séparation des commandes gamifiées, en cours et terminées
+        $statutsGamifiables = [
+            'En préparation',
+            'En livraison',
+            'Livrée',
+            'En attente de retour du matériel'
+        ];
+
+        $commandesGamifiees = [];
+        $commandesEnCours = [];
+        $commandesTerminees = [];
+
+        foreach ($commandes as $commande) {
+            $statut = $commande->getStatutCommande()?->getLibelle();
+
+            // Commandes gamifiables
+            if (in_array($statut, $statutsGamifiables) && $statut !== 'Terminée') {
+                $commandesGamifiees[] = $commande;
+                continue; // Si gamifiée, ne pas la mettre ailleurs
+            }
+
+            // Commandes terminées
+            if ($commande->isTerminee() || in_array($statut, ['Livrée', 'Annulée', 'Terminée'])) {
+                $commandesTerminees[] = $commande;
+            } else {
+                $commandesEnCours[] = $commande;
+            }
+        }
 
         // Formulaire utilisateur pour édition inline
         $userForm = $this->createFormBuilder($user)
@@ -58,7 +137,7 @@ class DashboardUserController extends AbstractController
 
             return new JsonResponse([
                 'success' => true,
-                'user' => [
+                'user' => [ 
                     'nom' => $user->getNom(),
                     'prenom' => $user->getPrenom(),
                     'email' => $user->getEmail(),
@@ -70,11 +149,47 @@ class DashboardUserController extends AbstractController
             ]);
         }
 
+        $formAvis = [];
+        foreach ($commandesTerminees as $commande) {
+            $avisExistant = $this->em->getRepository(\App\Entity\Avis::class)->findOneBy(['commande' => $commande]);
+
+            if (!$avisExistant) {
+                $avis = new \App\Entity\Avis();
+                $avis->setCommande($commande)
+                        ->setDateCreation(new \DateTime());
+                        $statutEnAttente = $this->em->getRepository(\App\Entity\StatutAvis::class)
+                                            ->findOneBy(['libelle' => 'En attente']);
+                    $avis->setStatut($statutEnAttente);
+
+                    $formAvis[$commande->getId()] = $this->createFormBuilder($avis)
+                        ->add('notes', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
+                            'choices' => ['⭐' => 1, '⭐⭐' => 2, '⭐⭐⭐' => 3, '⭐⭐⭐⭐' => 4, '⭐⭐⭐⭐⭐' => 5],
+                            'expanded' => true,
+                            'multiple' => false,
+                        ])
+                        ->add('contenu', \Symfony\Component\Form\Extension\Core\Type\TextareaType::class, [
+                            'attr' => ['rows' => 3, 'placeholder' => 'Votre avis...']
+                        ])
+                        ->getForm();
+
+                    $formAvis[$commande->getId()]->handleRequest($request);
+                    if ($formAvis[$commande->getId()]->isSubmitted() && $formAvis[$commande->getId()]->isValid()) {
+                        $this->em->persist($avis);
+                        $this->em->flush();
+                        $this->addFlash('success', 'Merci pour votre avis !');
+                        return $this->redirectToRoute('dashboard_user');
+                    }
+            }
+        }
+
         return $this->render('user/index.html.twig', [
             'user' => $user,
             'badge' => $badge,
-            'commandes' => $commandes,
+            'commandesGamifiees' => $commandesGamifiees,
+            'commandesEnCours' => $commandesEnCours,
+            'commandesTerminees' => $commandesTerminees,
             'userForm' => $userForm->createView(), 
+            'formAvis' => $formAvis,
         ]);
     }
 
@@ -107,5 +222,23 @@ class DashboardUserController extends AbstractController
         return $this->render('user/edit.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * Ajoute un badge à l'utilisateur si il ne l'a pas déjà
+     */
+    private function addBadgeIfMissing(Utilisateur $user, ?Badge $badge): void
+    {
+        if (!$badge) return;
+
+        foreach ($user->getUtilisateurBadge() as $ub) {
+            if ($ub->getBadge()?->getId() === $badge->getId()) return;
+        }
+
+        $utilisateurBadge = new UtilisateurBadge();
+        $utilisateurBadge->setUtilisateur($user)
+                        ->setBadge($badge)
+                        ->setDateObtention(new \DateTime());
+        $this->em->persist($utilisateurBadge);
     }
 }

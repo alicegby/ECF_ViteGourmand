@@ -49,7 +49,7 @@ class EmployeFixtures extends Fixture implements FixtureGroupInterface, Dependen
                     ->setRole($roleEmploye);
 
             $hashedPwd = $this->hasher->hashPassword($employe, $data['password']);
-            $employe->setMotDePasse($hashedPwd);
+            $employe->setPassword($hashedPwd);
 
             $manager->persist($employe);
             $this->addReference("employe_" . ($i+1), $employe);

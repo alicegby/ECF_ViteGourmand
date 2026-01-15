@@ -1,37 +1,92 @@
-{% extends 'base.html.twig' %}
+{# templates/admin/commande/_list.html.twig #}
+<h1 class="commande-header">
+    Liste des commandes
+    <button class="filter-toggle" data-url="{{ path('commande_list') }}">
+        <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
+    </button>
+</h1>
 
-{% block title %}Liste des commandes{% endblock %}
+<div class="filter-panel">
+    <button class="close-panel">
+        <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
+    </button>
 
-{% block body %}
-<h1>Liste des commandes</h1>
+    <div class="filter-group">
+        <label for="statut-filter">Filtrer par statut</label>
+        <select id="statut-filter">
+            <option value="">Tous</option>
+            {% for statut in statuts %}
+                <option value="{{ statut.id }}">{{ statut.libelle }}</option>
+            {% endfor %}
+        </select>
+    </div>
 
-<table>
+    <button class="apply-filters">Appliquer</button>
+    <button class="reset-filters">Réinitialiser</button>
+
+    <div class="filter-tags"></div>
+</div>
+
+<div class="filter-overlay"></div>
+
+<table class="commande-table">
     <thead>
         <tr>
-            <th>ID</th>
+            <th>#</th>
+            <th>N° commande</th>
             <th>Client</th>
             <th>Date</th>
             <th>Statut</th>
+            <th>Prix</th>
             <th>Actions</th>
         </tr>
     </thead>
+
     <tbody>
         {% for commande in commandes %}
+            {% set statutClass = commande.statutCommande.libelle
+                |lower
+                |replace({
+                    'é':'e','è':'e','ê':'e','à':'a','ù':'u','ô':'o','î':'i',
+                    ' ':'-','’':'','\'':''
+                })
+            %}
+
+            {% if statutClass == 'en attente' %}
+                {% set statutClass = 'en-attente' %}
+            {% endif %}
+
             <tr>
                 <td>{{ commande.id }}</td>
-                <td>{{ commande.client.nom }}</td>
-                <td>{{ commande.dateCommande|date('d/m/Y H:i') }}</td>
-                <td>{{ commande.statutCommande.libelle }}</td>
+                <td>{{ commande.numeroCommande }}</td>
+                <td>{{ commande.client.prenom }} {{ commande.client.nom }}</td>
+                <td>{{ commande.dateCommande|date('d/m/Y - H:i') }}</td>
                 <td>
-                    <a href="{{ path('commande_show', {'id': commande.id}) }}" class="btn">
-                        <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
-                    </a>
-                    <a href="{{ path('commande_edit', {'id': commande.id}) }}" class="btn">
-                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
-                    </a>
+                    <span class="statut {{ statutClass }}">
+                        {{ commande.statutCommande.libelle }}
+                    </span>
                 </td>
+                <td>{{ commande.prixTotal }}€</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="ajax-btn btn-see"
+                                data-url="{{ path('commande_show', {'id': commande.id}) }}">
+                            <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}">Voir
+                        </button>
+
+                        <button class="ajax-btn btn-edit"
+                                data-url="{{ path('commande_edit', {'id': commande.id}) }}">
+                            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}">Modifier
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">Aucune commande.</td>
             </tr>
         {% endfor %}
     </tbody>
 </table>
-{% endblock %}
+
+<script src="{{ asset('js/dashboardemploye.js') }}"></script>
