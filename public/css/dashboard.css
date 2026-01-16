@@ -75,12 +75,20 @@ p {
     background: #5C4033;
 }
 
+.submenu.active {
+    display: flex;
+}
+
+.theme-btn .arrow.rotated {
+    transform: rotate(90deg);
+}
+
 .dashboard-content {
     padding: 20px;
     min-height: 400px;
     background: #F6F1EB;
 }
-
+ 
 /* Déconnexion */
 .logout-container {
     text-align: center;
@@ -105,34 +113,40 @@ p {
 
 
 /* AJAX */
+/* LIST */
 
-/* LIST Commande */
-/* FILTRES */
-.commande-header {
-    position: relative;      
-    text-align: center;        
-    margin-bottom: 20px;
-    font-size: 1.8rem;
+/* Filtres */
+/* Header */
+.avis-header, .commande-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 15px;
 }
 
-.commande-header .filter-toggle {
-    position: absolute;
-    top: 50%;                 
-    transform: translateY(-50%);
-    left: 50%;                  
-    margin-left: 180px;    
+.avis-header h1, .commande-header h1 {
+    font-family: 'Playfair Display';
+}
+
+
+.filter-toggle {
     background: none;
     border: none;
     cursor: pointer;
+    display: flex;
+    align-items: center;
 }
 
-.commande-header .filter-toggle img {
+.filter-toggle img {
     width: 25px;
     height: 25px;
 }
 
+/* Overlay */
 .filter-overlay {
-    position: fixed;
+        position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
     background: rgba(0,0,0,0.4);
@@ -140,10 +154,15 @@ p {
     display: none;
 }
 
+.filter-overlay.active {
+    display: block;
+}
+
+/* Panel */
 .filter-panel {
     position: fixed;
     top: 0;
-    right: -320px;
+    right: -320px; /* hors écran */
     width: 320px;
     max-width: 90%;
     height: 100vh;
@@ -152,25 +171,19 @@ p {
     padding: 20px 15px 70px 15px;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 15px;
     box-shadow: -2px 0 10px #2F2F2F;
     transition: right 0.3s ease;
-    z-index: 10000;
+    z-index: 101;
 }
 
 .filter-panel.active {
     right: 0;
 }
 
-.filter-overlay.active {
-    display: block;
-}
-
-.filter-overlay.hidden {
-    display: none;
-}
-
-.close-panel {
+/* Close Button */
+.filter-panel .close-panel {
     align-self: flex-end;
     background: none;
     border: none;
@@ -178,140 +191,82 @@ p {
     transition: transform 0.2s ease;
 }
 
-.close-panel:hover {
+.filter-panel .close-panel:hover {
     transform: scale(1.1);
 }
 
-.close-panel img {
+.filter-panel .close-panel img {
     width: 28px;
     height: 28px;
-    display: block;
 }
 
-.filter-group {
+/* Groupe de filtres */
+.filter-panel .filter-group {
+    width: 100%;
     margin-bottom: 24px;
     text-align: center;
 }
 
-.filter-group label {
+.filter-panel .filter-group label {
     display: block;
-    font-family: 'Inter';
     font-weight: 500;
     margin-bottom: 8px;
     color: #2F2F2F;
 }
 
-.filter-group input[type="range"] {
+.filter-panel select {
     width: 100%;
-    height: 4px;
-    appearance: none;
-    background: #A28873;
-    border-radius: 2px;
-    outline: none;
-    margin: 10px 0;
-}
-
-.filter-group input[type="range"]::-webkit-slider-thumb,
-.filter-group input[type="range"]::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    background: #5C4033;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-.range-value {
-    font-family: 'Inter';
-    font-size: 14px;
-    color: #5C4033;
-}
-
-.filter-section h4 {
-    margin-bottom: 5px;
-}
-
-.filter-options-list {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    font-family: 'Inter';
-}
-
-.filter-option {
-    padding: 5px 8px;
-    cursor: pointer;
+    padding: 8px;
     border-radius: 5px;
-    transition: 0.2s;
+    border: 1px solid #ccc;
+    text-align: center;
 }
 
-.filter-option:hover {
-    background: #A28873;
-}
-
-.filter-option.selected {
-    font-weight: bold;
-    background: #5C4033;
-    color: #F6F1EB;
-}
-
-.apply-filters {
-        margin-top: 10px;
+/* Boutons appliquer réinitialiser */
+.filter-panel .apply-filters,
+.filter-panel .apply-filters-avis,
+.filter-panel .reset-filters,
+.filter-panel .reset-filters-avis {
+    width: 80%;
+    max-width: 200px;
+    margin: 5px 0;
     padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+}
+
+.filter-panel .apply-filters,
+.filter-panel .apply-filters-avis {
     background: #5C4033;
     color: #F6F1EB;
     border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
 }
 
-.apply-filters:hover {
+.filter-panel .apply-filters:hover,
+.filter-panel .apply-filters-avis:hover {
     background: #A28873;
 }
 
-.reset-filters {
-    margin-top: 3px;
+.filter-panel .reset-filters,
+.filter-panel .reset-filters-avis {
     background: #F6F1EB;
     color: #2F2F2F;
     border: none;
-    border-radius: 5px;
     font-weight: 200;
     font-style: italic;
-    cursor: pointer;
 }
 
-.reset-filters:hover {
+.filter-panel .reset-filters:hover,
+.filter-panel .reset-filters-avis:hover {
     color: #5C4033;
     font-weight: bold;
 }
 
-.filter-tags {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 10px;
-}
 
-.filter-tag {
-    background-color: #5C4033;
-    color: #F6F1EB;
-    padding: 10px 12px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-weight: 500;
-}
-
-.filter-tag button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    color: #F6F1EB;
-}
+/* Commande */
 
 .commande-table {
     width: 100%;
@@ -321,7 +276,7 @@ p {
 }
 
 .commande-table th {
-    background-color: #5a3e36;
+    background-color: #5C4033;
     color: #F6F1EB;
     padding: 10px;
     text-align: left;
@@ -353,7 +308,7 @@ p {
 
 .btn-see,
 .btn-edit {
-    background-color: #5a3e36;
+    background-color: #5C4033;
     color: #F6F1EB;
     border: none;
     padding: 6px 12px;
@@ -426,7 +381,7 @@ p {
     margin-bottom: 20px;
 }
 .commande-actions .ajax-btn {
-    background: #5a3e36;
+    background: #5C4033;
     color: #F6F1EB;
     border: none;
     padding: 8px 15px;
@@ -513,7 +468,7 @@ p {
     max-width: 600px;
     margin: 20px auto;
     font-family: 'Inter', sans-serif;
-    color: #120f0f;
+    color: #2F2F2F;
 }
 
 .commande-edit-card h2 {
@@ -586,4 +541,104 @@ p {
 
 .btn-edit-primary img {
     width: 16px;
+}
+
+/* AVIS */
+
+.avis-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    font-family: 'Inter', sans-serif;
+}
+
+.avis-table th {
+    background-color: #5C4033;
+    color: #F6F1EB;
+    padding: 10px;
+    text-align: left;
+}
+
+.avis-table td {
+    background-color: #A28873;
+    padding: 10px;
+    vertical-align: middle;
+    color: #F6F1EB;
+}
+
+.avis-table tr td:first-child {
+    font-weight: bold;
+}
+
+.avis-table td img {
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 20px;
+    height: 20px;
+}
+
+.bloc-avis {
+    background: #F6F1EB;
+    padding: 20px 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    max-width: 900px;
+    margin: 20px auto;
+    font-family: 'Inter', sans-serif;
+    color: #2F2F2F;
+}
+
+.bloc-avis p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 5px 0;
+}
+
+.avis-form-statut {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.avis-form-statut label {
+    font-weight: 500;
+    min-width: 120px;
+}
+
+.avis-form-statut select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: white;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.avis-form-statut select:focus {
+    outline: none;
+    border-color: #6B7B63;
+}
+
+.avis-form-statut .btn {
+    padding: 6px 15px;
+    border-radius: 6px;
+    border: none;
+    background-color: #6B7B63; 
+    color: #F6F1EB;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.avis-form-statut .btn:hover {
+    background-color: #5C4033; 
+    transform: translateY(-1px);
+}
+
+.avis-form-statut .btn:active {
+    transform: translateY(0);
 }

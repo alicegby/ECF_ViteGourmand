@@ -198,6 +198,7 @@ body {
 .notes h2 {
     font-family: 'Playfair Display';
     font-size: 1.8rem;
+    margin-top: 20px;
 }
 
 .notes h3 {
@@ -205,7 +206,7 @@ body {
     font-weight: 100;
     font-size: 1rem;
     font-style: italic;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .notes-btn {
@@ -222,6 +223,7 @@ body {
     font-size: 1rem;
     font-style: italic;
     margin: 0 auto 15px auto;
+    margin-bottom: 50px;
 }
 
 .notes-btn img {
@@ -267,9 +269,13 @@ body {
     height: 15px;
 }
 
+.avis-box .note img:nth-child(n+6) {
+    display: none;
+}
+
 .avis-box p {
     font-family: 'Inter';
-    font-weight: 300;
+    font-weight: 400;
     font-size: 0.95rem;
     line-height: 1.4;
 }

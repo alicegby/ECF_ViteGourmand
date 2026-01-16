@@ -11,6 +11,7 @@ use App\Entity\Theme;
 use App\Entity\Regime;
 use App\Form\ContactType;
 use App\Repository\MenuRepository;
+use App\Repository\AvisRepository;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
@@ -18,12 +19,9 @@ use Symfony\Component\Mime\Email;
 class HomeController extends AbstractController {
 
     public function homepage(ManagerRegistry $doctrine): Response {
+        /** @var \App\Repository\AvisRepository $avisRepository */
         $avisRepository = $doctrine->getRepository(Avis::class);
-        $avis_list = $avisRepository->findBy(
-            ['statut' => 1],
-            ['dateCreation' => 'DESC'],
-            3
-        );
+        $avis_list = $avisRepository->findValidAvis(3);
 
         return $this->render('front/home.html.twig', [
             'avis_list' => $avis_list,
@@ -81,7 +79,7 @@ class HomeController extends AbstractController {
                         "Statut : {$data['statut']}\n" .
                         "Message :\n{$data['message']}"
                     );
-
+ 
                 $mailer->send($email);
 
                 $this->addFlash('success', 'Votre message a bien été envoyé !');
@@ -113,10 +111,10 @@ class HomeController extends AbstractController {
 
     public function reviews(ManagerRegistry $doctrine): Response {
         $avisRepository = $doctrine->getRepository(Avis::class);
-        $avis_list = $avisRepository->findBy(
-            ['statut' => 1],
-            ['dateCreation' => 'DESC']
-        );
+
+        // Récupère tous les avis validés, sans limite
+        /** @var \App\Repository\AvisRepository $avisRepository */
+        $avis_list = $avisRepository->findValidAvis();
 
         return $this->render('front/reviews.html.twig', [
             'avis_list' => $avis_list,

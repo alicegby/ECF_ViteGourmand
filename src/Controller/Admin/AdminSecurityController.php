@@ -16,12 +16,12 @@ class AdminSecurityController extends AbstractController
         $lastEmail = $authenticationUtils->getLastUsername();
 
         if ($this->getUser()) {
-            if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            if (in_array('ROLE_ADMIN', $this->getUser()->getRoles(), true)) {
                 return $this->redirectToRoute('admin_dashboard');
-            }
-            if (in_array('ROLE_EMPLOYE', $this->getUser()->getRoles())) {
+            } 
+            if (in_array('ROLE_EMPLOYE', $this->getUser()->getRoles(), true)) {
                 return $this->redirectToRoute('employe_dashboard');
-            }
+            } 
         }
 
         // Sinon, affichage du formulaire de login

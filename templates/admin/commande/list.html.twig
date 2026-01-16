@@ -1,19 +1,18 @@
-{# templates/admin/commande/_list.html.twig #}
 <h1 class="commande-header">
     Liste des commandes
-    <button class="filter-toggle" data-url="{{ path('commande_list') }}">
+    <button class="filter-toggle" data-type="commande" data-url="{{ path('commande_list') }}">
         <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
     </button>
 </h1>
 
-<div class="filter-panel">
+<div class="filter-panel" data-type="commande">
     <button class="close-panel">
         <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
     </button>
 
     <div class="filter-group">
         <label for="statut-filter">Filtrer par statut</label>
-        <select id="statut-filter">
+        <select id="statut-filter" name="statut">
             <option value="">Tous</option>
             {% for statut in statuts %}
                 <option value="{{ statut.id }}">{{ statut.libelle }}</option>
@@ -23,11 +22,7 @@
 
     <button class="apply-filters">Appliquer</button>
     <button class="reset-filters">Réinitialiser</button>
-
-    <div class="filter-tags"></div>
 </div>
-
-<div class="filter-overlay"></div>
 
 <table class="commande-table">
     <thead>
@@ -41,20 +36,12 @@
             <th>Actions</th>
         </tr>
     </thead>
-
     <tbody>
         {% for commande in commandes %}
             {% set statutClass = commande.statutCommande.libelle
                 |lower
-                |replace({
-                    'é':'e','è':'e','ê':'e','à':'a','ù':'u','ô':'o','î':'i',
-                    ' ':'-','’':'','\'':''
-                })
-            %}
-
-            {% if statutClass == 'en attente' %}
-                {% set statutClass = 'en-attente' %}
-            {% endif %}
+                |replace({'é':'e','è':'e','ê':'e','à':'a','ù':'u','ô':'o','î':'i',' ':'-','’':'','\'':''}) %}
+            {% if statutClass == 'en attente' %}{% set statutClass = 'en-attente' %}{% endif %}
 
             <tr>
                 <td>{{ commande.id }}</td>
@@ -89,4 +76,5 @@
     </tbody>
 </table>
 
+<div class="filter-overlay"></div>
 <script src="{{ asset('js/dashboardemploye.js') }}"></script>

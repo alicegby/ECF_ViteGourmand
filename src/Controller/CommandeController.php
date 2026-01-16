@@ -58,6 +58,10 @@ class CommandeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var \App\Entity\Employe $user */
+            $user = $this->getUser();
+            $commande->setModifiePar($user);
+            $commande->setDateModif(new \DateTime());
             $this->em->flush();
 
             if ($request->isXmlHttpRequest()) {

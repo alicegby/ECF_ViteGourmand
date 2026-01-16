@@ -1,9 +1,22 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+    // Gestion des thèmes / sous-menus
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const targetId = btn.dataset.target;
+            if (!targetId) return;
+            const submenu = document.getElementById(targetId);
+            if (!submenu) return;
+            submenu.classList.toggle('active');
+            const arrow = btn.querySelector('.arrow');
+            if (arrow) arrow.classList.toggle('rotated');
+        });
+    });
+
     const dashboardContent = document.querySelector('.dashboard-content');
 
     // -------------------------------
-    // Chargement AJAX
+    // Chargement AJAX global
     // -------------------------------
     function loadAjaxContent(url) {
         if (!url) return;
@@ -11,96 +24,105 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(resp => resp.text())
             .then(html => {
                 dashboardContent.innerHTML = html;
-                attachCommandeFilters(); // On rattache le filtre après chaque chargement
-                attachAnnulationFields(); // On rattache la logique des champs annulation
+                attachFilters();        // rattache tous les filtres après chargement
+                attachAnnulationFields(); 
             })
             .catch(err => console.error('Erreur AJAX:', err));
     }
 
-    // -------------------------------
     // Boutons AJAX
-    // -------------------------------
     document.addEventListener('click', function(e) {
         const btn = e.target.closest('.ajax-btn');
         if (!btn) return;
-
         e.preventDefault();
         const url = btn.dataset.url;
         if (!url) return;
-
         document.querySelectorAll('.ajax-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-
         loadAjaxContent(url);
     });
 
-    // -------------------------------
     // Chargement par défaut
-    // -------------------------------
     const defaultBtn = document.querySelector('.ajax-btn[data-default="true"]');
     if (defaultBtn) {
         defaultBtn.classList.add('active');
         loadAjaxContent(defaultBtn.dataset.url);
+    } 
+
+    // -------------------------------
+    // Filtre panel générique
+    // -------------------------------
+    function attachFilters() {
+        document.querySelectorAll('.filter-toggle').forEach(toggleBtn => {
+            const type = toggleBtn.dataset.type; // "commande" ou "avis"
+            const panel = document.querySelector(`.filter-panel[data-type="${type}"]`);
+            const overlay = document.querySelector('.filter-overlay') || createOverlay();
+            const table = document.querySelector(`.${type}-table`);
+            const select = panel.querySelector('select');
+            const applyBtn = panel.querySelector('.apply-filters');
+            const resetBtn = panel.querySelector('.reset-filters');
+            const closePanelBtn = panel.querySelector('.close-panel');
+
+            if (!panel || !table || !select || !applyBtn || !resetBtn || !closePanelBtn) return;
+
+            // Ouvrir panel
+            toggleBtn.addEventListener('click', e => {
+                e.stopPropagation();
+                panel.classList.add('active');
+                overlay.classList.add('active');
+            });
+
+            // Fermer panel
+            function closePanel() {
+                panel.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+            closePanelBtn.addEventListener('click', e => { e.stopPropagation(); closePanel(); });
+            overlay.addEventListener('click', e => { e.stopPropagation(); closePanel(); });
+
+            // Appliquer filtre AJAX
+            applyBtn.addEventListener('click', e => {
+                e.preventDefault();
+                loadFilteredList(type, select.value, table);
+                closePanel();
+            });
+
+            // Réinitialiser filtre AJAX
+            resetBtn.addEventListener('click', e => {
+                e.preventDefault();
+                select.value = '';
+                loadFilteredList(type, '', table);
+                closePanel();
+            });
+        });
     }
 
-    // -------------------------------
-    // Filtre commandes
-    // -------------------------------
-    function attachCommandeFilters() {
-        const filterToggle = document.querySelector('.filter-toggle');
-        const filterPanel = document.querySelector('.filter-panel');
-        const filterOverlay = document.querySelector('.filter-overlay');
-        const closePanel = document.querySelector('.close-panel');
-        const applyBtn = document.querySelector('.apply-filters');
-        const resetBtn = document.querySelector('.reset-filters');
-        const selectStatut = document.getElementById('statut-filter');
+    function createOverlay() {
+        const overlay = document.createElement('div');
+        overlay.classList.add('filter-overlay');
+        document.body.appendChild(overlay);
+        return overlay;
+    }
 
-        const tableContainer = document.querySelector('.commande-table')?.parentNode;
-        if (!filterToggle || !filterPanel || !filterOverlay || !tableContainer) return;
+    function loadFilteredList(type, statutId = '', table) {
+        const toggle = document.querySelector(`.filter-toggle[data-type="${type}"]`);
+        if (!toggle) return;
+        const url = new URL(toggle.dataset.url, window.location.origin);
+        if (statutId) url.searchParams.set(type === 'commande' ? 'statutId' : 'statut', statutId);
+        url.searchParams.set('ajax', '1');
 
-        const urlCommandeList = filterToggle.dataset.url;
-
-        // ouvrir le panneau
-        filterToggle.addEventListener('click', () => {
-            filterPanel.classList.add('active');
-            filterOverlay.classList.add('active');
-        });
-
-        // fermer le panneau
-        function closeFilterPanel() {
-            filterPanel.classList.remove('active');
-            filterOverlay.classList.remove('active');
-        }
-        closePanel?.addEventListener('click', closeFilterPanel);
-        filterOverlay?.addEventListener('click', closeFilterPanel);
-
-        // charger liste filtrée
-        function loadFilteredList(statutId = '') {
-            const url = new URL(urlCommandeList, window.location.origin);
-            if (statutId) url.searchParams.set('statutId', statutId);
-
-            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-                .then(resp => resp.text())
-                .then(html => {
-                    tableContainer.innerHTML = html;
-                    attachCommandeFilters();
-                    attachAnnulationFields(); // remettre la logique sur le nouveau contenu
-                })
-                .catch(err => console.error('Erreur AJAX :', err));
-        }
-
-        // appliquer
-        applyBtn?.addEventListener('click', () => {
-            loadFilteredList(selectStatut?.value);
-            closeFilterPanel();
-        });
-
-        // réinitialiser
-        resetBtn?.addEventListener('click', () => {
-            if (selectStatut) selectStatut.value = '';
-            loadFilteredList();
-            closeFilterPanel();
-        });
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(resp => resp.text())
+            .then(html => {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+                const newTbody = temp.querySelector(`.${type}-table tbody`);
+                if (newTbody) table.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                // Réattacher filtres si besoin
+                attachFilters();
+                if(type === 'commande') attachAnnulationFields();
+            })
+            .catch(err => console.error('Erreur AJAX :', err));
     }
 
     // -------------------------------
@@ -117,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
         function toggleAnnulationFields() {
             if (!statutSelect) return;
             const selected = statutSelect.selectedOptions[0]?.textContent.trim();
-            if (selected === 'Annulé') {
+            if (selected === 'Annulée') {
                 motifField?.classList.remove('hidden');
                 contactField?.classList.remove('hidden');
             } else {
@@ -126,11 +148,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // initial
         toggleAnnulationFields();
-
-        // au changement
         statutSelect?.addEventListener('change', toggleAnnulationFields);
     }
+
+    // Initial attach filters
+    attachFilters();
 
 });

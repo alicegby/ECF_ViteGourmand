@@ -92,16 +92,17 @@
             <div class="avis-container">
                 {% for avis in avis_list %}
                     <div class="avis-box">
-                        <h4>{{ avis.nom_client }}</h4> 
+                        <h4>{{ avis.commande.client.prenom }} {{ avis.commande.client.nom|slice(0,1) ~ '.' }}</h4> 
                         <div class="note">
-                            {% for i in 1..avis.note %}
-                                <img src="{{ asset('Visuels/Icônes/PlainStar_LightBrown.png') }}" alt="★">
-                            {% endfor %}
-                            {% for i in 1..(5 - avis.note) %}
-                                <img src="{{ asset('Visuels/Icônes/EmptyStar_LightBrown.png') }}" alt="☆">
-                            {% endfor %}
-                        </div>
-                        <p>{{ avis.commentaire }}</p>
+                                {% set note = avis.getNotes() %}
+                                {% for i in 1..note %}
+                                    <img src="{{ asset('Visuels/Icônes/PlainStar_LightBrown.png') }}" alt="★">
+                                {% endfor %}
+                                {% for i in 1..(5 - note) %}
+                                    <img src="{{ asset('Visuels/Icônes/EmptyStar_LightBrown.png') }}" alt="☆">
+                                {% endfor %}
+                            </div>
+                        <p>{{ avis.contenu }}</p>
                     </div>
                 {% else %}
                     <p>Aucun avis pour le moment.</p>

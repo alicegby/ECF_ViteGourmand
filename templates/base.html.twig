@@ -32,26 +32,20 @@
                             <span class="cart-badge"></span> 
                         </a>
                     </div>
-                    {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('admin_dashboard') }}">
-                                <img src="{{ asset('Visuels/Icônes/Compte.png') }}" class="header-icon">
-                            </a>
 
-                        {% elseif is_granted('ROLE_EMPLOYE') %}
-                            <a href="{{ path('employe_dashboard') }}">
-                                <img src="{{ asset('Visuels/Icônes/Compte.png') }}" class="header-icon">
-                            </a>
+                    {% set account_path = 
+                        is_granted('ROLE_ADMIN') ? path('admin_dashboard') :
+                        is_granted('ROLE_EMPLOYE') ? path('employe_dashboard') :
+                        is_granted('ROLE_USER') ? path('dashboard_user') :
+                        path('app_login', {'from_home': 1}) 
+                    %}
 
-                        {% elseif is_granted('ROLE_USER') %}
-                            <a href="{{ path('dashboard_user') }}">
-                                <img src="{{ asset('Visuels/Icônes/Compte.png') }}" class="header-icon">
-                            </a>
+                    <div class="icon-wrapper">
+                        <a href="{{ account_path }}">
+                            <img src="{{ asset('Visuels/Icônes/Compte.png') }}" class="header-icon" alt="Compte">
+                        </a>
+                    </div>
 
-                        {% else %}
-                            <a href="{{ path('app_login', {'from_home': 1}) }}">
-                                <img src="{{ asset('Visuels/Icônes/Compte.png') }}" class="header-icon">
-                            </a>
-                        {% endif %}
                 </div>
                 <div class="burger">
                     <div class="bar"></div>

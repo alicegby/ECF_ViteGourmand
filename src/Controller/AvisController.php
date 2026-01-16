@@ -24,15 +24,15 @@ class AvisController extends AbstractController {
     #[IsGranted('ROLE_USER')]
     public function new(Request $request, int $commandeId): Response
     {
+        /** @var \App\Entity\Utilisateur $user */
         $user = $this->getUser();
 
-        // On récupère la commande
         $commande = $this->em->getRepository(Commande::class)->find($commandeId);
         if (!$commande || $commande->getClient()?->getId() !== $user->getId()) {
             throw $this->createNotFoundException("Commande introuvable ou non autorisée.");
         }
 
-        // Vérifier si un avis existe déjà pour cette commande
+        // Vérifier si un avis existe déjà
         if (count($commande->getAvis()) > 0) {
             $this->addFlash('warning', 'Vous avez déjà laissé un avis pour cette commande.');
             return $this->redirectToRoute('dashboard_user');
@@ -42,17 +42,29 @@ class AvisController extends AbstractController {
         $avis->setCommande($commande);
         $avis->setDateCreation(new \DateTime());
 
-        // On définit le statut initial (ex: "En attente")
+        // Statut initial "En attente"
         $statutInitial = $this->em->getRepository(StatutAvis::class)->findOneBy(['libelle' => 'En attente']);
         $avis->setStatut($statutInitial);
 
+        // Formulaire
         $form = $this->createFormBuilder($avis)
-            ->add('notes', \Symfony\Component\Form\Extension\Core\Type\IntegerType::class, [
-                'label' => 'Note (1 à 5)',
-                'attr' => ['min' => 1, 'max' => 5]
+            ->add('notes', \Symfony\Component\Form\Extension\Core\Type\ChoiceType::class, [
+                'choices' => [
+                    '5 étoiles' => 5,
+                    '4 étoiles' => 4,
+                    '3 étoiles' => 3,
+                    '2 étoiles' => 2,
+                    '1 étoile'  => 1,
+                ],
+                'expanded' => true,   
+                'multiple' => false,
+                'required' => true,
+                'label' => false,
             ])
             ->add('contenu', \Symfony\Component\Form\Extension\Core\Type\TextareaType::class, [
-                'label' => 'Votre avis'
+                'required' => true,
+                'attr' => ['rows' => 5],
+                'label' => false,
             ])
             ->add('submit', \Symfony\Component\Form\Extension\Core\Type\SubmitType::class, [
                 'label' => 'Enregistrer'
@@ -65,7 +77,7 @@ class AvisController extends AbstractController {
             $this->em->persist($avis);
             $this->em->flush();
 
-            $this->addFlash('success', 'Merci pour votre avis !');
+            $this->addFlash('success', 'Merci pour votre avis ! Votre avis est en attente de validation.');
             return $this->redirectToRoute('dashboard_user');
         }
 
@@ -76,10 +88,33 @@ class AvisController extends AbstractController {
     }
 
     #[IsGranted('ROLE_EMPLOYE')]
-    public function list(): Response {
-        $avis = $this->em->getRepository(Avis::class)->findAll();
-        return $this->render('admin/avis.list.html.twig', [
+    public function list(Request $request): Response
+    {
+        $statutId = $request->query->get('statut');
+
+        $qb = $this->em->getRepository(Avis::class)->createQueryBuilder('a')
+            ->leftJoin('a.statut', 's')
+            ->addSelect('s');
+
+        if ($statutId) {
+            $qb->andWhere('s.id = :statutId')
+            ->setParameter('statutId', $statutId);
+        }
+
+        $avis = $qb->getQuery()->getResult();
+        $statuts = $this->em->getRepository(StatutAvis::class)->findAll();
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('admin/avis/list.html.twig', [
+                'avis' => $avis,
+                'ajax' => true,
+            ]);
+        }
+
+        return $this->render('admin/avis/list.html.twig', [
             'avis' => $avis,
+            'statuts' => $statuts,
+            'ajax' => false,
         ]);
     }
 
@@ -89,6 +124,10 @@ class AvisController extends AbstractController {
         $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
+            /** @var \App\Entity\Employe $user */
+            $user = $this->getUser();
+            $avis->setValidePar($user);
+            $avis->setDateValidation(new \DateTime());
             $this->em->flush();
             $this->addFlash('success', 'Avis mis à jour !');
 
@@ -102,10 +141,35 @@ class AvisController extends AbstractController {
     }
 
     #[IsGranted('ROLE_EMPLOYE')]
-    public function show(Avis $avis): Response
+    public function show(Avis $avis, Request $request): Response
     {
+        $statuts = $this->em->getRepository(StatutAvis::class)->findAll();
+
+        if ($request->isMethod('POST')) {
+            $statutId = $request->request->get('statut');
+            $statut = $this->em->getRepository(StatutAvis::class)->find($statutId);
+ 
+            if ($statut) {
+                /** @var \App\Entity\Employe $user */
+                $user = $this->getUser();
+                $avis->setStatut($statut);
+                $avis->setValidePar($user);
+
+                if ($statut->getLibelle() === 'Validé') {
+                    $avis->setDateValidation(new \DateTime());
+                } else {
+                    $avis->setDateValidation(null);
+                }
+                $this->em->flush();
+                $this->addFlash('success', 'Statut mis à jour !');
+                return $this->redirectToRoute('employe_dashboard');
+            } else {
+                $this->addFlash('error', 'Statut invalide.');
+            }
+        }
         return $this->render('admin/avis/show.html.twig', [
-            'avis' => $avis
+            'avis' => $avis,
+            'statuts' => $statuts,
         ]);
     }
 

@@ -10,7 +10,7 @@
 <main>
     <div class="avis-page">
         <div class="avis-container">
-
+ 
             <!-- Section titres -->
             <div class="avis-header-section">
                 <h1>Ils nous ont fait confiance !</h1>
@@ -26,11 +26,11 @@
                 <div class="avis-item">
                     <div class="avis-header">
                         <span class="client-name">
-                            {{ a.prenom }} {{ a.nom|slice(0,1) ~ '.' }}
+                            {{ a.commande.client.prenom }} {{ a.commande.client.nom|slice(0,1) ~ '.' }}
                         </span>
-                        <span class="client-stars" aria-label="{{ a.note }}/5 étoiles">
+                        <span class="client-stars" aria-label="{{ a.notes }}/5 étoiles">
                             {% for i in 1..5 %}
-                                {% if i <= a.note %}
+                                {% if i <= a.notes %}
                                     <img src="{{ asset('Visuels/Icônes/PlainStar_Beige.png') }}" alt="Étoile remplie">
                                 {% else %}
                                     <img src="{{ asset('Visuels/Icônes/EmptyStar_Beige.png') }}" alt="Étoile vide">
@@ -38,7 +38,7 @@
                             {% endfor %}
                         </span>
                     </div>
-                    <p class="client-comment">{{ a.commentaire }}</p>
+                    <p class="client-comment">{{ a.contenu }}</p>
                 </div>
                 {% endfor %}
             </div>

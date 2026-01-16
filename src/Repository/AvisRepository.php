@@ -12,18 +12,21 @@ class AvisRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Avis::class);
     }
+ 
+    /* Récupérer les avis validés */
 
-    /**
-     * Récupère les avis validés
-     */
-    public function findValidAvis(): array
+    public function findValidAvis(?int $limit = null): array
     {
-        return $this->createQueryBuilder('a')
+        $qb = $this->createQueryBuilder('a')
             ->join('a.statut', 's')
-            ->where('s.name = :status')
-            ->setParameter('status', 'validé') // ou le libellé exact dans ta table StatutAvis
-            ->orderBy('a.dateCreation', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->where('s.libelle = :status')
+            ->setParameter('status', 'Validé')
+            ->orderBy('a.dateCreation', 'DESC');
+
+        if ($limit !== null) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

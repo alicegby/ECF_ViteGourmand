@@ -8,8 +8,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use App\Entity\Commande;
 use App\Entity\StatutAvis;
 use App\Entity\Employe;
+use App\Repository\AvisRepository;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: AvisRepository::class)]
 #[ORM\Table(name: "avis")]
 class Avis
 {
@@ -44,7 +45,7 @@ class Avis
     // --- Getters ---
     public function getId(): ?int { return $this->id; }
     public function getCommande(): ?Commande { return $this->commande; }
-    public function getNotes(): ?int { return $this->notes; }
+    public function getNotes(): ?int { return min(5, $this->notes ?? 0); }
     public function getContenu(): ?string { return $this->contenu; }
     public function getStatut(): ?StatutAvis { return $this->statut; }
     public function getValidePar(): ?Employe { return $this->validePar; }
@@ -58,7 +59,7 @@ class Avis
         return $this;
     }
 
-    public function setNotes(int $notes): self { $this->notes = $notes; return $this; }
+    public function setNotes(int $notes): self { $this->notes = min(5, $notes); return $this; }
     public function setContenu(string $contenu): self { $this->contenu = $contenu; return $this; }
     public function setStatut(StatutAvis $statut): self { $this->statut = $statut; return $this; }
     public function setValidePar(?Employe $validePar): self { $this->validePar = $validePar; return $this; }

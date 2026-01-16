@@ -29,7 +29,7 @@ class SecurityController extends AbstractController
         if ($fromHome) {
             $session->set('_security_utilisateurs.target_path', $this->generateUrl('dashboard_user'));
         }
-
+ 
         return $this->render('security/login.html.twig', [
             'last_email' => $lastEmail,
             'error' => $error,

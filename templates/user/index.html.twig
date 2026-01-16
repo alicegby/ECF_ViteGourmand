@@ -68,12 +68,14 @@
         {% for c in commandesGamifiees %}
             <div class="gamified-order">
                 <p><strong>Commande #{{ c.numeroCommande }}</strong></p>
+            </div>
                 <div class="menu-detail-gamifie">
                     <p><strong>Menu :</strong> {{ c.menu ? c.menu.nom : 'Aucun menu' }}</p>
+                </div>
 
                       {% if c.commandePlats is not empty %}
                       <div class="detail-plats-game">
-                        <p><strong>Plats :</strong></p>
+                        <p><strong>Plats sélectionnés</strong></p>
                         <ul class="plats-list-game">
                             {% for item in c.commandePlats %}
                                 <li class="plat-item">{{ item.plat.category.libelle }} : {{ item.plat.titrePlat }}</li>
@@ -84,7 +86,7 @@
 
                         {% if c.commandeFromages is not empty or c.commandeBoissons is not empty or c.commandeMateriels is not empty or c.commandePersonnels is not empty %}
                             <div class="detail-options-game">
-                                 <p><strong>Options :</strong></p>
+                                 <p><strong>Options sélectionnées</strong></p>
                                 <ul class="options-list">
                                     {% if c.commandeFromages is not empty %}
                                         {% for item in c.commandeFromages %}
@@ -113,9 +115,11 @@
                             </div>
                         {% endif %}
 
-                    <p><strong>Date de livraison :</strong> {{ c.dateLivraison ? c.dateLivraison|date('d/m/Y') : 'Date inconnue' }}</p>
-                    <p><strong>Heure de livraison :</strong> {{ c.heureLivraison ? c.heureLivraison|date('H:i') : 'Heure inconnue' }}</p>
-                </div>
+                    <div class="gamified-order-horaire">
+                        <p><strong>Prix total :</strong> {{ c.prixTotal }}€</p>
+                        <p><strong>Date de livraison :</strong> {{ c.dateLivraison ? c.dateLivraison|date('d/m/Y') : 'Date inconnue' }}</p>
+                        <p><strong>Heure de livraison :</strong> {{ c.heureLivraison ? c.heureLivraison|date('H:i') : 'Heure inconnue' }}</p>
+                    </div>
                 <div class="tracker-arrows">
                     {% set steps = ['En préparation', 'En livraison', 'Livrée', 'En attente du retour', 'Terminée'] %}
                     
@@ -141,7 +145,6 @@
                         </div>
                     {% endfor %}
                 </div>
-            </div>
         {% endfor %}
     </div>
     {% endif %}
@@ -163,7 +166,9 @@
                                 
                                 {% if c.commandePlats is not empty %}
                                     <div class="detail-plats">
-                                        <p><strong>Plats :</strong></p>
+                                        <div class="titre-options">
+                                            <p><strong>Plats sélectionnés</strong></p>
+                                        </div>
                                         <ul class="plats-list">
                                             {% for item in c.commandePlats %}
                                                 <li class="plat-item">{{ item.plat.category.libelle }} : {{ item.plat.titrePlat }}</li>
@@ -174,7 +179,9 @@
 
                                 {% if c.commandeFromages is not empty or c.commandeBoissons is not empty or c.commandeMateriels is not empty or c.commandePersonnels is not empty %}
                                     <div class="detail-options">
-                                        <p><strong>Options :</strong></p>
+                                        <div class="titre-options">
+                                            <p><strong>Options sélectionnées</strong></p>
+                                        </div>
                                         <ul class="options-list">
                                             {% if c.commandeFromages is not empty %}
                                                 {% for item in c.commandeFromages %}
@@ -203,6 +210,7 @@
                                     </div>
                                 {% endif %}
 
+                                <p><strong>Prix total :</strong> {{ c.prixTotal }}€</p>
                                 <p><strong>Date de livraison :</strong> {{ c.dateLivraison ? c.dateLivraison|date('d/m/Y') : 'Date inconnue' }}</p>
                                 <p><strong>Heure de livraison :</strong> {{ c.heureLivraison ? c.heureLivraison|date('H:i') : 'Heure inconnue' }}</p>
                                 <p><strong>Statut :</strong> {{ c.statutCommande ? c.statutCommande.libelle : 'Inconnu' }}</p>
@@ -270,6 +278,7 @@
                                     </div>
                                 {% endif %}
 
+                                <p><strong>Prix total :</strong> {{ c.prixTotal }}€</p>
                                 <p><strong>Date de livraison :</strong> {{ c.dateLivraison ? c.dateLivraison|date('d/m/Y') : 'Date inconnue' }}</p>
                                 <p><strong>Heure de livraison :</strong> {{ c.heureLivraison ? c.heureLivraison|date('H:i') : 'Heure inconnue' }}</p>
                                 <p><strong>Statut :</strong> {{ c.statutCommande ? c.statutCommande.libelle : 'Inconnu' }}</p>
