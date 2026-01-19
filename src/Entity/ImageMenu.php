@@ -25,7 +25,7 @@ class ImageMenu
     private int $ordre = 0;
 
     #[ORM\Column(type:"boolean")]
-    private bool $estPrincipale = false;
+    private bool $estPrincipale = false; 
 
     // Getters
     public function getId(): ?int { return $this->id; }
@@ -33,7 +33,7 @@ class ImageMenu
     public function getUrl(): ?string { return $this->url; }
     public function getAltText(): ?string { return $this->altText; }
     public function getOrdre(): int { return $this->ordre; }
-    public function isPrincipale(): bool { return $this->estPrincipale; }
+    public function isEstPrincipale(): bool { return $this->estPrincipale; }
 
     // Setters
     public function setMenu(?Menu $menu): self { $this->menu = $menu; return $this; }

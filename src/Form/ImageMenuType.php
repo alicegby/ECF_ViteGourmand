@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\AbstractType; 
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -17,11 +17,11 @@ class ImageMenuType extends AbstractType
         $builder
             ->add('file', FileType::class, [
                 'mapped' => false,
-                'required' => true,
+                'required' => false,
                 'label' => 'Image'
             ])
             ->add('altText', TextType::class, [
-                'required' => true,
+                'required' => false,
                 'label' => 'Texte alternatif'
             ])
             ->add('estPrincipale', CheckboxType::class, [

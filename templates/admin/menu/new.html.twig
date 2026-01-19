@@ -1,0 +1,113 @@
+{# templates/admin/menu/new.html.twig #}
+
+<h1 class="menu-header">Créer un menu</h1>
+
+<div class="commande-actions">
+    <button class="ajax-btn btn-back" data-url="{{ path('admin_menu_list') }}">
+        <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}"> Retour à la liste
+    </button>
+</div>
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="flash-message flash-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<div class="menu-new-container">
+    {{ form_start(form, {
+        'attr': { 'class': 'ajax-menu-form' },
+        'enctype': 'multipart/form-data',
+        'action': path('admin_menu_new'),
+        'method': 'POST'
+    }) }}
+
+    <div class="form-group">
+        {{ form_label(form.nom) }}
+        {{ form_widget(form.nom, { attr: { class: 'form-input' } }) }}
+        {{ form_errors(form.nom) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.stock) }}
+        {{ form_widget(form.stock, { attr: { class: 'form-input' } }) }}
+        {{ form_errors(form.stock) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.nbPersMin) }}
+        {{ form_widget(form.nbPersMin, { attr: { class: 'form-input' } }) }}
+        {{ form_errors(form.nbPersMin) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.prixParPersonne) }}
+        {{ form_widget(form.prixParPersonne, { attr: { class: 'form-input' } }) }}
+        {{ form_errors(form.prixParPersonne) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, {
+            attr: { class: 'form-textarea form-textarea-fixed' }
+        }) }}
+        {{ form_errors(form.description) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.theme) }}
+        {{ form_widget(form.theme, { attr: { class: 'form-select' } }) }}
+        {{ form_errors(form.theme) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.regime) }}
+        {{ form_widget(form.regime, { attr: { class: 'form-select' } }) }}
+        {{ form_errors(form.regime) }}
+    </div>
+
+    {# CONDITIONS — Symfony only #}
+    <div class="form-group form-group-conditions">
+    <label class="form-label">Conditions</label>
+
+    <div class="conditions-list">
+        {% for child in form.conditions %}
+            <div class="condition-line">
+                {{ form_widget(child) }}
+                {{ form_label(child) }}
+            </div>
+        {% endfor %}
+    </div>
+    {{ form_errors(form.conditions) }}
+</div>
+
+    <h3 class="menu-form-section-title">Images</h3>
+    <div class="form-group form-group-images-new">
+        {% for imageForm in form.images %}
+            <div class="image-card">
+                <div class="image-field">
+                    {{ form_row(imageForm.file) }}
+                </div>
+
+                <div class="image-field">
+                    {{ form_row(imageForm.altText) }}
+                </div>
+
+                <div class="image-field image-checkbox">
+                    {{ form_row(imageForm.estPrincipale) }}
+                </div>
+            </div>
+        {% endfor %}
+
+        {{ form_errors(form.images) }}
+    </div>
+
+    <button type="submit" class="btn menu-btn-submit">
+        <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="">
+        Créer le menu
+    </button>
+
+    {{ form_end(form) }}
+</div>

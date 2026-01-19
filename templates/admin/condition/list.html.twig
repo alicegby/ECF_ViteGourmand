@@ -1,15 +1,13 @@
-{% extends 'base.html.twig' %}
+<h1 class="condition-header">Liste des conditions</h1>
 
-{% block title %}Liste des Conditions{% endblock %}
+<button class="ajax-btn add-menu" 
+        data-url="{{ path('condition_new') }}" 
+        data-default="false">
+    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer une condition">
+    Créer une nouvelle condition
+</button>
 
-{% block body %}
-<h1>Liste des Conditions</h1>
-
-<a href="{{ path('condition_new') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouvelle condition
-</a>
-
-<table>
+<table class="condition-table">
     <thead>
         <tr>
             <th>Nom</th>
@@ -17,25 +15,16 @@
         </tr>
     </thead>
     <tbody>
-        {% for condition in conditions %}
-            <tr>
-                <td>{{ condition.libelle }}</td>
-                <td>
-                    <a href="{{ path('condition_show', {'id': condition.id}) }}" class="btn">
-                        <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
-                    </a>
-                    <a href="{{ path('condition_edit', {'id': condition.id}) }}" class="btn">
-                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
-                    </a>
-                    <form action="{{ path('condition_delete', {'id': condition.id}) }}" method="post" onsubmit="return confirm('Supprimer cette condition ?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ condition.id) }}">
-                        <button type="submit" class="btn">
-                            <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+            {% for condition in conditions %}
+                <tr>
+                    <td>{{ condition.libelle }}</td>
+                    <td class="action-buttons">
+                        <button class="ajax-btn btn-see" data-url="{{ path('condition_show', {'id': condition.id}) }}">
+                            <img src="{{ asset('Visuels/Icônes/See_Beige.png')}}">
+                            Voir &amp; modifier
                         </button>
-                    </form>
-                </td>
-            </tr>
-        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
     </tbody>
 </table>
-{% endblock %}

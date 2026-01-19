@@ -12,7 +12,7 @@
 
     <div class="filter-group">
         <label for="statut-filter">Filtrer par statut</label>
-        <select id="statut-filter" name="statut">
+        <select id="statut-filter" name="statutId">
             <option value="">Tous</option>
             {% for statut in statuts %}
                 <option value="{{ statut.id }}">{{ statut.libelle }}</option>
@@ -20,8 +20,8 @@
         </select>
     </div>
 
-    <button class="apply-filters">Appliquer</button>
-    <button class="reset-filters">Réinitialiser</button>
+    <button type="button" class="apply-filters">Appliquer</button>
+    <button type="button" class="reset-filters">Réinitialiser les filtres</button>
 </div>
 
 <table class="commande-table">
@@ -77,4 +77,3 @@
 </table>
 
 <div class="filter-overlay"></div>
-<script src="{{ asset('js/dashboardemploye.js') }}"></script>

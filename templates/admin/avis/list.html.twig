@@ -10,10 +10,9 @@
         <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
     </button>
 
-    <form class="form-filter">
         <div class="filter-group">
-            <label for="statut-filter-avis">Filtrer par statut</label>
-            <select id="statut-filter-avis" name="statut">
+            <label for="statut-filter">Filtrer par statut</label>
+            <select id="statut-filter" name="statut">
                 <option value="">Tous</option>
                 {% for statut in statuts %}
                     <option value="{{ statut.id }}"
@@ -25,9 +24,8 @@
             </select>
         </div>
 
-        <button type="submit" class="apply-filters">Appliquer</button>
-        <button type="button" class="reset-filters">Réinitialiser</button>
-    </form>
+        <button type="button" class="apply-filters">Appliquer</button>
+        <button type="button" class="reset-filters">Réinitialiser les filtres</button>
 </div>
 
 <table class="avis-table">
@@ -42,17 +40,18 @@
         </tr>
     </thead>
     <tbody>
-        {% for avis in avis %}
+        {% if avis is not empty %}
+        {% for avisItem in avis %}
             <tr>
-                <td>{{ avis.id }}</td>
-                <td>{{ avis.commande.numeroCommande }}</td>
-                <td>{{ avis.statut.libelle }}</td>
-                <td>{{ avis.validePar ? avis.validePar.nom ~ ' ' ~ avis.validePar.prenom : '—' }}</td>
-                <td>{{ avis.dateCreation ? avis.dateCreation|date('d/m/Y H:i') : '—' }}</td>
+                <td>{{ avisItem.id }}</td>
+                <td>{{ avisItem.commande.numeroCommande }}</td>
+                <td>{{ avisItem.statut.libelle }}</td>
+                <td>{{ avisItem.validePar ? avisItem.validePar.prenom ~ ' ' ~ avisItem.validePar.nom : '—' }}</td>
+                <td>{{ avisItem.dateCreation ? avisItem.dateCreation|date('d/m/Y H:i') : '—' }}</td>
                 <td>
                     <div class="action-buttons">
                         <button class="ajax-btn btn-see"
-                                data-url="{{ path('avis_show_admin', {'id': avis.id}) }}">
+                                data-url="{{ path('avis_show_admin', {'id': avisItem.id}) }}">
                             <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}">Voir &amp; modifier
                         </button>
                     </div>
@@ -63,6 +62,6 @@
                 <td colspan="6">Aucun avis trouvé.</td>
             </tr>
         {% endfor %}
+        {% endif %}
     </tbody>
 </table>
-<script src="{{ asset('js/dashboardemploye.js') }}"></script>

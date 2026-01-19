@@ -15,9 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const dashboardContent = document.querySelector('.dashboard-content');
 
-    // -------------------------------
     // Chargement AJAX global
-    // -------------------------------
     function loadAjaxContent(url) {
         if (!url) return;
         fetch(url)
@@ -26,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 dashboardContent.innerHTML = html;
                 attachFilters();        // rattache tous les filtres après chargement
                 attachAnnulationFields(); 
+                attachMenuFormAjax();
             })
             .catch(err => console.error('Erreur AJAX:', err));
     }
@@ -53,49 +52,102 @@ document.addEventListener('DOMContentLoaded', function() {
     // Filtre panel générique
     // -------------------------------
     function attachFilters() {
-        document.querySelectorAll('.filter-toggle').forEach(toggleBtn => {
-            const type = toggleBtn.dataset.type; // "commande" ou "avis"
-            const panel = document.querySelector(`.filter-panel[data-type="${type}"]`);
-            const overlay = document.querySelector('.filter-overlay') || createOverlay();
-            const table = document.querySelector(`.${type}-table`);
-            const select = panel.querySelector('select');
-            const applyBtn = panel.querySelector('.apply-filters');
-            const resetBtn = panel.querySelector('.reset-filters');
-            const closePanelBtn = panel.querySelector('.close-panel');
+    document.querySelectorAll('.filter-toggle').forEach(toggleBtn => {
+        const type = toggleBtn.dataset.type; // commande, avis, menu etc
+        const panel = document.querySelector(`.filter-panel[data-type="${type}"]`);
+        const overlay = document.querySelector('.filter-overlay') || createOverlay();
+        const table = document.querySelector(`.${type}-table`);
 
-            if (!panel || !table || !select || !applyBtn || !resetBtn || !closePanelBtn) return;
+        if (!panel || !table) return;
 
-            // Ouvrir panel
-            toggleBtn.addEventListener('click', e => {
-                e.stopPropagation();
-                panel.classList.add('active');
-                overlay.classList.add('active');
+        const applyBtn = panel.querySelector('.apply-filters');
+        const resetBtn = panel.querySelector('.reset-filters');
+        const closePanelBtn = panel.querySelector('.close-panel');
+
+        if (!applyBtn || !resetBtn || !closePanelBtn) return;
+
+        // Ouvrir panel
+        toggleBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            panel.classList.add('active');
+            overlay.classList.add('active');
+        });
+
+        // Fermer panel
+        function closePanel() {
+            panel.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+        closePanelBtn.addEventListener('click', e => { e.stopPropagation(); closePanel(); });
+        overlay.addEventListener('click', e => { e.stopPropagation(); closePanel(); });
+
+        // Filtrage AJAX spécifique menu
+        if (type === 'menu') {
+            applyBtn.addEventListener('click', e => {
+                e.preventDefault();
+
+                const theme = panel.querySelector('select[name="theme"]').value;
+                const regime = panel.querySelector('select[name="regime"]').value;
+                const keyword = panel.querySelector('input[name="keyword"]').value;
+
+                const urlObj = new URL(toggleBtn.dataset.url, window.location.origin);
+                if (theme) urlObj.searchParams.set('theme', theme);
+                if (regime) urlObj.searchParams.set('regime', regime);
+                if (keyword) urlObj.searchParams.set('keyword', keyword);
+                urlObj.searchParams.set('ajax', '1');
+
+                fetch(urlObj, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(resp => resp.text())
+                    .then(html => {
+                        const temp = document.createElement('div');
+                        temp.innerHTML = html;
+                        const newTbody = temp.querySelector(`.${type}-table tbody`);
+                        if (newTbody) table.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                    });
+
+                closePanel();
             });
 
-            // Fermer panel
-            function closePanel() {
-                panel.classList.remove('active');
-                overlay.classList.remove('active');
-            }
-            closePanelBtn.addEventListener('click', e => { e.stopPropagation(); closePanel(); });
-            overlay.addEventListener('click', e => { e.stopPropagation(); closePanel(); });
+            resetBtn.addEventListener('click', e => {
+                e.preventDefault();
+                panel.querySelector('select[name="theme"]').value = '';
+                panel.querySelector('select[name="regime"]').value = '';
+                panel.querySelector('input[name="keyword"]').value = '';
 
-            // Appliquer filtre AJAX
+                const urlObj = new URL(toggleBtn.dataset.url, window.location.origin);
+                urlObj.searchParams.set('ajax', '1');
+
+                fetch(urlObj, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(resp => resp.text())
+                    .then(html => {
+                        const temp = document.createElement('div');
+                        temp.innerHTML = html;
+                        const newTbody = temp.querySelector(`.${type}-table tbody`);
+                        if (newTbody) table.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                    });
+
+                closePanel();
+            });
+        } else {
+            // Pour les autres panels (commande, avis), garde l'ancien code
+            const select = panel.querySelector('select');
+            if (!select) return;
+
             applyBtn.addEventListener('click', e => {
                 e.preventDefault();
                 loadFilteredList(type, select.value, table);
                 closePanel();
             });
 
-            // Réinitialiser filtre AJAX
             resetBtn.addEventListener('click', e => {
                 e.preventDefault();
                 select.value = '';
                 loadFilteredList(type, '', table);
                 closePanel();
             });
-        });
-    }
+        }
+    });
+}
 
     function createOverlay() {
         const overlay = document.createElement('div');
@@ -125,34 +177,88 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(err => console.error('Erreur AJAX :', err));
     }
 
-    // -------------------------------
-    // Champs annulation dynamiques
-    // -------------------------------
-    function attachAnnulationFields() {
-        const form = document.querySelector('form[name="commande"]');
-        if (!form) return;
+    // Formulaire Menu Ajax
+    function attachMenuFormAjax() {
+    const form = document.querySelector('.ajax-menu-form');
+    if (!form) return;
 
-        const statutSelect = form.querySelector('select[name$="[statutCommande]"]');
-        const motifField = form.querySelector('.form-group-motifAnnulation');
-        const contactField = form.querySelector('.form-group-modeContact');
+    // Évite les duplications de listeners
+    if (form.dataset.listenerAttached === 'true') return;
+    form.dataset.listenerAttached = 'true';
 
-        function toggleAnnulationFields() {
-            if (!statutSelect) return;
-            const selected = statutSelect.selectedOptions[0]?.textContent.trim();
-            if (selected === 'Annulée') {
-                motifField?.classList.remove('hidden');
-                contactField?.classList.remove('hidden');
+    console.log('Formulaire menu attaché');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('Soumission du formulaire menu...');
+
+        const action = form.getAttribute('action');
+        const method = (form.getAttribute('method') || 'POST').toUpperCase();
+
+        if (!action) {
+            console.error('Formulaire sans action !');
+            return;
+        }
+
+        // --- Construction du FormData pour gérer fichiers ---
+        const formData = new FormData(form);
+
+        // DEBUG : voir si les fichiers sont bien présents
+        for (let [key, value] of formData.entries()) {
+            if (value instanceof File && value.name) {
+                console.log(`Fichier détecté : ${key} -> ${value.name}`);
             } else {
-                motifField?.classList.add('hidden');
-                contactField?.classList.add('hidden');
+                console.log(`${key}:`, value);
             }
         }
 
-        toggleAnnulationFields();
-        statutSelect?.addEventListener('change', toggleAnnulationFields);
-    }
+        // Envoi AJAX
+        fetch(action, {
+            method: method,
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest' // IMPORTANT pour Symfony
+            }
+        })
+        .then(resp => {
+            // Vérifie que le serveur renvoie du JSON
+            const contentType = resp.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                return resp.json();
+            } else {
+                return resp.text().then(html => { throw new Error('Réponse non JSON : ' + html); });
+            }
+        })
+        .then(data => {
+            console.log('Réponse JSON reçue :', data);
+
+            if (data.success) {
+                alert('Menu créé avec succès !');
+
+                // Redirection ou rechargement liste
+                if (data.redirectUrl) {
+                    loadAjaxContent(data.redirectUrl);
+                } else {
+                    const listBtn = document.querySelector('.ajax-btn[data-url*="menu/list"]');
+                    if (listBtn) listBtn.click();
+                }
+            } else if (data.errors) {
+                console.error('Erreurs de validation :', data.errors);
+                alert('Erreur :\n' + data.errors.join('\n'));
+            } else {
+                console.error('⚠️ Réponse inattendue', data);
+                alert('Une erreur est survenue');
+            }
+        })
+        .catch(err => {
+            console.error('Erreur AJAX :', err);
+            alert('Erreur lors de l\'envoi du formulaire');
+        });
+    });
+}
 
     // Initial attach filters
     attachFilters();
+    attachMenuFormAjax();
 
 });

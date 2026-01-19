@@ -1,27 +1,52 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}{{ condition is defined ? 'Modifier la condition' : 'Nouvelle condition' }}{% endblock %}
-
-{% block body %}
-<h1>{{ condition is defined ? 'Modifier la condition' : 'Nouvelle condition' }}</h1>
-
-{{ form_start(form) }}
-    <div>
-        {{ form_label(form.libelle) }}
-        {{ form_widget(form.libelle) }}
-        {{ form_errors(form.libelle) }}
+<div class="condition-show-container">
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('condition_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+        </button>
     </div>
 
-    <button type="submit" class="btn">
-        {% if condition is defined %}
-            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
-        {% else %}
-            <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer">Créer
-        {% endif %}
-    </button>
-{{ form_end(form) }}
+    <h1>Modifier la condition</h1>
 
-<a href="{{ path('condition_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
-{% endblock %}
+    {{ form_start(form, {
+        action: path('condition_edit', { id: condition.id }),
+        attr: { 
+            enctype: 'multipart/form-data', 
+            class: 'ajax-condition-form'
+        }
+    }) }}
+
+        <div class="form-group">
+            {{ form_label(form.libelle, 'Nom de la condition') }}
+            {{ form_widget(form.libelle, {
+                attr: {
+                    class: 'form-input',
+                    autofocus: true
+                }
+            }) }}
+            {{ form_errors(form.libelle) }}
+        </div>
+
+        <div class="condition-actions">
+            <button
+                class="ajax-btn btn condition-btn-edit"
+                data-url="{{ path('condition_edit', {'id': condition.id}) }}">
+                <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+                Modifier
+            </button>
+
+            <form method="post"
+                action="{{ path('condition_delete', {'id': condition.id}) }}"
+                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette condition ?');">
+                
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ condition.id) }}">
+
+                <button class="btn condition-btn-delete" type="submit">
+                    <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
+                    Supprimer
+                </button>
+            </form>
+        </div>
+
+    {{ form_end(form) }}
+
+</div>

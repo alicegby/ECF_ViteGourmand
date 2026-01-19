@@ -52,7 +52,7 @@ private ?int $nbPersMin = null;
     #[ORM\OneToMany(mappedBy:"menu", targetEntity:MenuPlat::class, cascade:["persist", "remove"])]
     private Collection $menuPlats;
 
-    #[ORM\OneToMany(mappedBy:"menu", targetEntity:ImageMenu::class, cascade:["persist", "remove"], fetch:"EAGER")]
+    #[ORM\OneToMany(targetEntity: ImageMenu::class, mappedBy: "menu", cascade: ["persist", "remove"], orphanRemoval: true)]
     private Collection $images;
 
     public function __construct()
@@ -86,7 +86,7 @@ private ?int $nbPersMin = null;
     public function setPrixParPersonne(string $prix): self { $this->prixParPersonne = $prix; return $this; }
     public function setDescription(?string $description): self { $this->description = $description; return $this; }
     public function setModifiePar(?Employe $employe): self { $this->modifiePar = $employe; return $this; }
-    public function setDateModif(?Employe $dateModif): self { $this->dateModif = $dateModif; return $this; }
+    public function setDateModif(?\DateTimeInterface $dateModif): self { $this->dateModif = $dateModif; return $this; }
 
     // ----- Relation management MenuPlat -----
     public function addMenuPlat(MenuPlat $mp): self {

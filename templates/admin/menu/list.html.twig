@@ -1,100 +1,83 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Liste des Menus - Vite &amp; Gourmand{% endblock %}
-
-{% block content %}
-<h1>Liste des Menus</h1>
-
-<a href="{{ path('admin_menu_new') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter"> Nouveau Menu
-</a>
-
-{# Formulaire de filtres #}
-<form method="get" action="{{ path('menu_list') }}" class="filter-form">
-    <label for="theme">Thème :</label>
-    <select name="theme" id="theme">
-        <option value="">Tous</option>
-        {% for theme in themes %}
-            <option value="{{ theme.id }}" {% if selectedTheme == theme.id %}selected{% endif %}>
-                {{ theme.nom }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <label for="regime">Régime :</label>
-    <select name="regime" id="regime">
-        <option value="">Tous</option>
-        {% for regime in regimes %}
-            <option value="{{ regime.id }}" {% if selectedRegime == regime.id %}selected{% endif %}>
-                {{ regime.nom }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <label for="keyword">Mot-clé :</label>
-    <input type="text" name="keyword" id="keyword" value="{{ keyword|default('') }}" placeholder="Nom du menu">
-
-    <button type="submit" class="btn">
-        <img src="{{ asset('Visuels/Icônes/Search_Beige.png') }}" alt="Filtrer"> Filtrer
+<h1 class="menu-header">
+    Liste des menus
+    <button class="filter-toggle" data-type="menu" data-url="{{ path('admin_menu_list') }}">
+        <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
     </button>
-</form>
+</h1>
 
-<table>
+<button class="ajax-btn add-menu" 
+        data-url="{{ path('admin_menu_new') }}" 
+        data-default="false">
+    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer un menu">
+    Créer un menu
+</button>
+
+<div class="filter-panel" data-type="menu">
+    <button class="close-panel">
+        <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
+    </button>
+
+    <div class="filter-group">
+        <label for="theme-filter">Filtrer par thème</label>
+        <select id="theme-filter" name="theme">
+            <option value="">Tous</option>
+            {% for theme in themes %}
+                <option value="{{ theme.id }}" {% if app.request.query.get('theme') == theme.id %}selected{% endif %}>
+                    {{ theme.libelle }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label for="regime-filter">Filtrer par régime</label>
+        <select id="regime-filter" name="regime">
+            <option value="">Tous</option>
+            {% for regime in regimes %}
+                <option value="{{ regime.id }}" {% if app.request.query.get('regime') == regime.id %}selected{% endif %}>
+                    {{ regime.libelle }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label for="keyword-filter">Nom du menu</label>
+        <input type="text" id="keyword-filter" name="keyword" placeholder="Rechercher..." value="{{ app.request.query.get('keyword') }}">
+    </div>
+
+    <button type="button" class="apply-filters">Appliquer</button>
+    <button type="button" class="reset-filters">Réinitialiser les filtres</button>
+</div>
+
+<table class="menu-table">
     <thead>
         <tr>
-            <th>Nom du Menu</th>
+            <th>Nom</th>
+            <th>Prix</th>
             <th>Thème</th>
             <th>Régime</th>
-            <th>Nombre de personnes minimum</th>
-            <th>Stock</th>
-            <th>Prix par personne</th>
-            <th>Description</th>
-            <th>Conditions</th>
-            <th>Image Principale</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        {% for menu in menus %}
-            <tr>
-                <td>{{ menu.titreMenu }}</td>
-                <td>{{ menu.theme ? menu.theme.nom : '-' }}</td>
-                <td>{{ menu.regime ? menu.regime.nom : '-' }}</td>
-                <td>{{ menu.nbPersMin }}</td>
-                <td>{{ menu.stock }}</td>
-                <td>{{ menu.prixParPersonne }} €</td>
-                <td>{{ menu.description }}</td>
-                <td>
-                    {% if menu.conditions|length > 0 %}
-                        {{ menu.conditions|map(c => c.nom)|join(', ') }}
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-                <td>
-                    {% set mainImage = menu.images|filter(i => i.estPrincipale)|first %}
-                    {% if mainImage %}
-                        <img src="{{ asset(mainImage.url) }}" alt="{{ mainImage.altText }}">
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{{ path('menu_show', {'id': menu.id}) }}" class="btn">
-                        <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
-                    </a>
-                    <a href="{{ path('admin_menu_edit', {'id': menu.id}) }}" class="btn">
-                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
-                    </a>
-                    <form action="{{ path('admin_menu_delete', {'id': menu.id}) }}" method="post" onsubmit="return confirm('Supprimer ce menu ?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ menu.id) }}">
-                        <button type="submit" class="btn">
-                            <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+        {% if menus is not empty %}
+            {% for menu in menus %}
+                <tr>
+                    <td>{{ menu.nom }}</td>
+                    <td>{{ menu.prixParPersonne }} €</td></d>
+                    <td>{{ menu.theme.libelle }}</td>
+                    <td>{{ menu.regime.libelle }}</td>
+                    <td class="action-buttons">
+                        <button class="ajax-btn btn-see" data-url="{{ path('admin_menu_show', {'id': menu.id}) }}">
+                            <img src="{{ asset('Visuels/Icônes/See_Beige.png')}}">
+                            Voir &amp; modifier
                         </button>
-                    </form>
-                </td>
-            </tr>
-        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr><td colspan="4">Aucun menu trouvé.</td></tr>
+        {% endif %}
     </tbody>
 </table>
-{% endblock %}

@@ -39,10 +39,10 @@ class ConditionController extends AbstractController
             $this->em->persist($condition);
             $this->em->flush();
             $this->addFlash('success', 'Condition créée avec succès !');
-            return $this->redirectToRoute('condition_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
 
-        return $this->render('admin/condition/form.html.twig', [
+        return $this->render('admin/condition/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -55,8 +55,16 @@ class ConditionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
+
+            if ($request->isXmlHttpRequest()) {
+                return $this->json([
+                    'success' => true,
+                    'message' => 'Condition modifiée avec succès',
+                ]);
+            }
+
             $this->addFlash('success', 'Condition modifiée avec succès !');
-            return $this->redirectToRoute('condition_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
 
         return $this->render('admin/condition/form.html.twig', [
@@ -73,7 +81,7 @@ class ConditionController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Condition supprimée !');
         }
-        return $this->redirectToRoute('condition_list');
+        return $this->redirectToRoute('employe_dashboard');
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

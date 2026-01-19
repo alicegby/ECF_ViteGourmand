@@ -1,89 +1,103 @@
 {# templates/admin/menu/form.html.twig #}
 
-{% extends 'base.html.twig' %}
-
-{% block title %}
+<h1 class="menu-form-title">
     {{ menu.id ? 'Modifier le menu' : 'Créer un menu' }}
-{% endblock %}
+</h1>
 
-{% block body %}
-<h1>{{ menu.id ? 'Modifier le menu' : 'Créer un menu' }}</h1>
+<div class="commande-actions">
+    <button class="ajax-btn btn-back" data-url="{{ path('admin_menu_list') }}">
+        <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}"> Retour à la liste
+    </button>
+</div>
 
 {% for label, messages in app.flashes %}
     {% for message in messages %}
-        <div class="flash-{{ label }}">
+        <div class="flash-message flash-{{ label }}">
             {{ message }}
         </div>
     {% endfor %}
 {% endfor %}
 
-{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+{{ form_start(form, {
+    action: path('admin_menu_edit', { id: menu.id }),
+    attr: {
+        enctype: 'multipart/form-data',
+        class: 'menu-form'
+    }
+}) }}
 
-<div>
-    {{ form_label(form.titreMenu) }}
-    {{ form_widget(form.titreMenu) }}
-    {{ form_errors(form.titreMenu) }}
+<div class="form-group">
+    {{ form_label(form.nom) }}
+    {{ form_widget(form.nom, { attr: { class: 'form-input' } }) }}
+    {{ form_errors(form.nom) }}
 </div>
 
-<div>
+<div class="form-group">
     {{ form_label(form.stock) }}
-    {{ form_widget(form.stock) }}
+    {{ form_widget(form.stock, { attr: { class: 'form-input' } }) }}
     {{ form_errors(form.stock) }}
 </div>
 
-<div>
+<div class="form-group">
     {{ form_label(form.nbPersMin) }}
-    {{ form_widget(form.nbPersMin) }}
+    {{ form_widget(form.nbPersMin, { attr: { class: 'form-input' } }) }}
     {{ form_errors(form.nbPersMin) }}
 </div>
 
-<div>
+<div class="form-group">
     {{ form_label(form.prixParPersonne) }}
-    {{ form_widget(form.prixParPersonne) }}
+    {{ form_widget(form.prixParPersonne, { attr: { class: 'form-input' } }) }}
     {{ form_errors(form.prixParPersonne) }}
 </div>
 
-<div>
+<div class="form-group">
     {{ form_label(form.description) }}
-    {{ form_widget(form.description) }}
+    {{ form_widget(form.description, {
+        attr: { class: 'form-textarea form-textarea-fixed' }
+    }) }}
     {{ form_errors(form.description) }}
 </div>
 
-<div>
+<div class="form-group">
     {{ form_label(form.theme) }}
-    {{ form_widget(form.theme) }}
+    {{ form_widget(form.theme, { attr: { class: 'form-select' } }) }}
     {{ form_errors(form.theme) }}
 </div>
 
-<div>
+<div class="form-group">
     {{ form_label(form.regime) }}
-    {{ form_widget(form.regime) }}
+    {{ form_widget(form.regime, { attr: { class: 'form-select' } }) }}
     {{ form_errors(form.regime) }}
 </div>
 
-<div>
-    {{ form_label(form.conditions) }}
-    {{ form_widget(form.conditions) }}
+{# CONDITIONS — Symfony only #}
+<div class="form-group form-group-conditions">
+    <label class="form-label">Conditions</label>
+
+    <div class="conditions-list">
+        {% for child in form.conditions %}
+            <div class="condition-line">
+                {{ form_widget(child) }}
+                {{ form_label(child) }}
+            </div>
+        {% endfor %}
+    </div>
     {{ form_errors(form.conditions) }}
 </div>
 
-<h3>Images</h3>
-<div data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}">
-    {{ form_widget(form.images) }}
+<h3 class="menu-form-section-title">Images</h3>
+
+<div class="form-group form-group-images"
+     data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}">
+    {{ form_widget(form.images, { attr: { class: 'form-collection' } }) }}
     {{ form_errors(form.images) }}
 </div>
 
-<button type="submit" class="btn">
-    {% if menu.id %}
-        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier"> Modifier le menu
-    {% else %}
-        <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer"> Créer le menu
-    {% endif %}
-</button>
-
-<a href="{{ path('menu_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour"> Retour à la liste
-</a>
+<div class="form-actions">
+    <button type="submit" class="btn btn-submit">
+        <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}" alt="">
+        Sauvegarder
+    </button>
+</div>
 
 {{ form_end(form) }}
-{% endblock %}

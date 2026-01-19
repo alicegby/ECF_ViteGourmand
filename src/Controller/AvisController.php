@@ -104,17 +104,10 @@ class AvisController extends AbstractController {
         $avis = $qb->getQuery()->getResult();
         $statuts = $this->em->getRepository(StatutAvis::class)->findAll();
 
-        if ($request->isXmlHttpRequest()) {
-            return $this->render('admin/avis/list.html.twig', [
-                'avis' => $avis,
-                'ajax' => true,
-            ]);
-        }
-
         return $this->render('admin/avis/list.html.twig', [
             'avis' => $avis,
             'statuts' => $statuts,
-            'ajax' => false,
+            'ajax' => $request->isXmlHttpRequest(),
         ]);
     }
 
