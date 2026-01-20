@@ -1,4 +1,5 @@
-h1 {
+
+.dashboard-opening h1 {
     font-family: 'Playfair Display', serif;
     font-size: 2rem;
     color: #5C4033;
@@ -6,12 +7,30 @@ h1 {
     margin-top: 20px;
 }
 
-p {
+.dashboard-opening p  {
     font-family: 'Inter', serif;
     font-size: 1rem;
     font-style: italic;
     margin-bottom: 2rem;
     color: #2F2F2F;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.ajx-list {
+    background: #F6F1EB;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    max-width: 900px;
+    margin: 20px auto;
+    font-family: 'Inter', sans-serif;
+    color: #2F2F2F;
+}
+
+.ajx-list h1 {
+    font-family: 'Playfair Display';
+    color: #5C4033;
     text-align: center;
 }
 
@@ -111,13 +130,12 @@ p {
     background-color: #6B7B63;
 }
 
-
 /* AJAX */
 /* LIST */
 
 /* Filtres */
 /* Header */
-.avis-header, .commande-header, .menu-header {
+.avis-header, .commande-header, .menu-header, .plats-header, .menuplat-header {
     position: relative;
     display: flex;
     align-items: center;
@@ -126,7 +144,7 @@ p {
     gap: 15px;
 }
 
-.avis-header h1, .commande-header h1, .menu-header h1 {
+.avis-header h1, .commande-header h1, .menu-header h1, .plats-header h1, .menuplat-header h1 {
     font-family: 'Playfair Display';
 }
 
@@ -499,7 +517,6 @@ p {
     padding: 25px;
     border-radius: 10px;
     box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-    max-width: 600px;
     margin: 20px auto;
     font-family: 'Inter', sans-serif;
     color: #2F2F2F;
@@ -547,6 +564,7 @@ p {
     border-radius: 5px;
     border: 1px solid #ccc;
     font-size: 14px;
+    font-family: 'Inter';
 }
 
 .motif-annulation {
@@ -763,10 +781,13 @@ p {
 
 /* SHOW - Voir */
 .menu-show-container {
-    max-width: 900px;
-    margin: 0 auto;
+    background: #F6F1EB;
     padding: 20px;
-    font-family: 'Inter';
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    max-width: 900px;
+    margin: 20px auto;
+    font-family: 'Inter', sans-serif;
     color: #2F2F2F;
 }
 
@@ -797,12 +818,14 @@ p {
 
 /* Conditions */
 .menu-conditions {
-    list-style-type: disc;
+    list-style-type: none;
     padding-left: 20px;
 }
 
 .menu-condition-item {
     margin-bottom: 5px;
+    background-color: none;
+    border: none;
 }
 
 .menu-no-conditions {
@@ -843,7 +866,7 @@ p {
 
 /* Plats associés */
 .menu-plats {
-    list-style-type: disc;
+    list-style-type: none;
     padding-left: 20px;
 }
 
@@ -861,6 +884,7 @@ p {
     margin-top: 30px;
     display: flex;
     gap: 15px;
+    justify-content: center;
 }
 
 .menu-actions .btn {
@@ -1071,7 +1095,6 @@ p {
 /* NEW */
 .menu-new-container {
     background-color: #F6F1EB;
-    box-shadow: -2px 0 10px #2F2F2F;
     padding: 25px;
     border-radius: 10px;
     box-shadow: 0 2px 15px rgba(0,0,0,0.1);
@@ -1201,7 +1224,6 @@ p {
 /* SHOW */ 
 .condition-show-container {
     background-color: #F6F1EB;
-    box-shadow: -2px 0 10px #2F2F2F;
     padding: 25px;
     border-radius: 10px;
     box-shadow: 0 2px 15px rgba(0,0,0,0.1);
@@ -1244,7 +1266,488 @@ p {
     background-color: #6B7B63;
 }
 
-/* FORM - MODIFIER */ 
+/* PLATS */
+/* List */
 
+.plats-header {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #5A3E36; /* brun foncé style icônes */
+}
+
+.plats-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    font-family: 'Inter', sans-serif;
+}
+
+.plats-table th {
+    background-color: #5C4033;
+    color: #F6F1EB;
+    padding: 10px;
+    text-align: left;
+}
+
+.plats-table td {
+    background-color: #A28873;
+    padding: 10px;
+    vertical-align: middle;
+    color: #F6F1EB;
+}
+
+.plats-table tr td:first-child {
+    font-weight: bold;
+}
+
+.plats-table td img {
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 20px;
+    height: 20px;
+}
+
+.plats-table td:nth-child(4) img.image-plat {
+    width: 50px;
+    height: auto;
+    object-fit: cover;
+}
+
+.add-plat {
+    background-color: #5C4033;      
+    color: #F6F1EB;                 
+    border: none;                      
+    padding: 6px 12px;              
+    border-radius: 5px;              
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;                      
+    gap: 10px;                
+    margin: 10px auto;     
+    margin-bottom: 10px;
+    text-decoration: none;           
+    transition: background 0.3s ease;  
+}
+
+.add-plat:hover {
+    background-color: #6B7B63;        
+}
+
+.allergene-icon {
+    width: 24px;      
+    height: 24px;
+    margin-right: 4px; 
+    vertical-align: middle;
+}
+
+/* SHOW */
+.plat-show-container {
+    background-color: #F6F1EB;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    font-family: 'Inter', sans-serif;
+    color: #2F2F2F;
+}
+
+h2 {
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+    color: #5A3E36;
+    border-bottom: 2px solid #E0D7CE;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+ul li {
+    background-color: #D9CFC1;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.image-plat img {
+    justify-content: center;
+}
+
+.plat-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.plat-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 15px;
+    background-color: #5A3E36;
+    color: #F6F1EB;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.plat-actions .btn img {
+    margin-right: 8px;
+    width: 20px;
+    height: 20px;
+}
+
+.plat-actions .btn:hover {
+    background-color: #6B7B63;
+}
+
+/* FORM */
+.plat-form-container {
+    background-color: #F6F1EB;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    font-family: 'Inter', sans-serif;
+    color: #2F2F2F;
+}
+
+.plat-form-container .form-group > label {
+    display: block;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+    color: #5A3E36;
+    border-bottom: 2px solid #E0D7CE;
+    padding-bottom: 3px;
+    font-weight: 600;
+}
+
+.plat-form-container .form-group p {
+    margin: 5px 0 2px;
+    font-weight: 500;
+}
+
+.plat-form-container .form-input,
+.plat-form-container .form-textarea,
+.plat-form-container .form-select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.plat-form-container .form-textarea {
+    width: 100%;
+    min-height: 120px; 
+    resize: none; 
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px 10px; 
+    font-family: 'Inter';
+}
+
+.plat-form-container .image-plat-preview {
+    display: block;
+    margin: 0 auto 15px; /* collée en haut */
+    max-width: 200px;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.plat-form-container .form-title {
+    display: block;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+    color: #5A3E36;
+    border-bottom: 2px solid #E0D7CE;
+    padding-bottom: 3px;
+    font-weight: 600;
+}
+
+.plat-form-container .allergenes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.plat-form-container .allergene-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.plat-form-container .allergene-item input[type="checkbox"] {
+    margin: 0;
+}
+
+.plat-form-container .allergene-item label {
+    margin: 0;
+    font-weight: normal;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.plat-form-container .form-actions {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.plat-form-container .form-actions .btn-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    background-color: #5A3E36;
+    color: #F6F1EB;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.plat-form-container .form-actions .btn-submit:hover {
+    background-color: #6B7B63;
+}
 
 /* NEW */
+.plat-new-container {
+    background-color: #F6F1EB;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    font-family: 'Inter', sans-serif;
+    color: #2F2F2F;
+}
+
+.plat-new-container .form-title,
+.plat-new-container .form-group > label {
+    display: block;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+    color: #5A3E36;
+    border-bottom: 2px solid #E0D7CE;
+    padding-bottom: 3px;
+    font-weight: 600;
+}
+
+.plat-new-container .form-input,
+.plat-new-container .form-select {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+/* Textarea description */
+.plat-new-container .form-textarea {
+    width: 100%;
+    min-height: 120px;
+    resize: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+
+.plat-new-container .allergenes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.plat-new-container .allergene-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Groupes de formulaire */
+.plat-new-container .form-group {
+    margin-bottom: 15px;
+}
+
+/* MENU PLAT */
+/* LIST */
+
+.menuplat-header {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #5A3E36; /* brun foncé style icônes */
+}
+
+.menuplat-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    font-family: 'Inter', sans-serif;
+}
+
+.menuplat-table th {
+    background-color: #5C4033;
+    color: #F6F1EB;
+    padding: 10px;
+    text-align: left;
+}
+
+.menuplat-table td {
+    background-color: #A28873;
+    padding: 10px;
+    vertical-align: middle;
+    color: #F6F1EB;
+}
+
+.menuplat-table tr td:first-child {
+    font-weight: bold;
+}
+
+.menuplat-table td img {
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 20px;
+    height: 20px;
+}
+
+.add-menuplat {
+    background-color: #5C4033;      
+    color: #F6F1EB;                 
+    border: none;                      
+    padding: 6px 12px;              
+    border-radius: 5px;              
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;                      
+    gap: 10px;                
+    margin: 10px auto;     
+    margin-bottom: 10px;
+    text-decoration: none;           
+    transition: background 0.3s ease;  
+}
+
+.add-menuplat:hover {
+    background-color: #6B7B63;        
+}
+
+/* SHOW */
+.detail-mp p {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-family: 'Inter';
+    font-style: none;
+    line-height: 1;
+}
+
+.form-group {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+}
+.form-group label {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #5A3E36;
+}
+.form-group input,
+.form-group select {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border 0.2s;
+}
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #5A3E36;
+    box-shadow: 0 0 0 2px rgba(90,62,54,0.2);
+}
+
+/* CATEGORIES */ 
+/* List */
+
+.category-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    font-family: 'Inter', sans-serif;
+}
+
+.category-table th {
+    background-color: #5C4033;
+    color: #F6F1EB;
+    padding: 10px;
+    text-align: left;
+}
+
+.category-table td {
+    background-color: #A28873;
+    padding: 10px;
+    vertical-align: middle;
+    color: #F6F1EB;
+}
+
+.category-table tr td:first-child {
+    font-weight: bold;
+}
+
+.category-table td img {
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 20px;
+    height: 20px;
+}
+
+.add-category {
+    background-color: #5C4033;      
+    color: #F6F1EB;                 
+    border: none;                      
+    padding: 6px 12px;              
+    border-radius: 5px;              
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;                      
+    gap: 10px;                
+    margin: 10px auto;     
+    margin-bottom: 10px;
+    text-decoration: none;           
+    transition: background 0.3s ease;  
+}
+
+.add-category:hover {
+    background-color: #6B7B63;        
+}
+
+/* Show */
+
+
+.dashboard-container .menu-links a {
+    color: #F6F1EB;
+    text-decoration: none !important;
+    font-family: 'Inter';
+    font-size: 1.2rem;
+    font-weight: 400;
+    transition: all 0.3s ease;
+}

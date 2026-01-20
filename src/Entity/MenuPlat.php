@@ -15,7 +15,7 @@ class MenuPlat
     #[ORM\ManyToOne(targetEntity:Menu::class, inversedBy:"menuPlats")]
     #[ORM\JoinColumn(nullable:false)]
     private ?Menu $menu = null;
-
+ 
     #[ORM\ManyToOne(targetEntity:Plats::class, inversedBy:"menuPlats")]
     #[ORM\JoinColumn(nullable:false)]
     private ?Plats $plat = null;

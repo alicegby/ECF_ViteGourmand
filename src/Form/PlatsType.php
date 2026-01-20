@@ -33,27 +33,16 @@ class PlatsType extends AbstractType
                 ],
                 'label' => 'Description'
             ])
-            ->add('stock', IntegerType::class, [
-                'constraints' => [
-                    new NotBlank(message: 'Le stock est obligatoire')
-                ],
-                'label' => 'Stock disponible'
-            ])
             ->add('image', FileType::class, [
                 'label' => 'Image du plat',
                 'mapped' => false,
                 'required' => !$options['is_edit'],  // image obligatoire seulement en création
                 'constraints' => [
-                    new File([
-                        'maxSize' => '5M',
-                        'mimeTypes' => [
-                            'image/jpeg',
-                            'image/jpg',
-                            'image/png',
-                            'image/webp'
-                        ],
-                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (jpeg, jpg, png, webp).',
-                    ])
+                    new File(
+                        maxSize: '5M',
+                        mimeTypes: ['image/jpeg','image/jpg','image/png','image/webp'],
+                        mimeTypesMessage: 'Veuillez télécharger une image valide (jpeg, jpg, png, webp).'
+                    )
                 ],
             ])
             ->add('altTexte', TextType::class, [
@@ -62,13 +51,13 @@ class PlatsType extends AbstractType
             ])
             ->add('category', EntityType::class, [
                 'class' => CategoryFood::class,
-                'choice_label' => 'nom',
+                'choice_label' => 'libelle',
                 'placeholder' => 'Sélectionnez une catégorie',
                 'label' => 'Catégorie'
             ])
             ->add('allergenes', EntityType::class, [
                 'class' => Allergenes::class,
-                'choice_label' => 'nom',
+                'choice_label' => 'libelle',
                 'multiple' => true,
                 'expanded' => true,
                 'label' => 'Allergènes'

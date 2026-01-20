@@ -1,12 +1,13 @@
-<div class="commande-edit-card">
-
-    <h2>Modifier la commande</h2>
+<div class="ajx-list">
 
     <div class="commande-actions">
         <button type="button" class="ajax-btn btn-back-edit" data-url="{{ path('commande_list') }}">
             <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}"> Retour à la liste
         </button>
     </div>
+
+    <h1>Modifier la commande</h1>
+
 
     {{ form_start(form, { 
         attr: { class: 'commande-edit-form' },

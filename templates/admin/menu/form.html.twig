@@ -1,14 +1,14 @@
 {# templates/admin/menu/form.html.twig #}
-
-<h1 class="menu-form-title">
-    {{ menu.id ? 'Modifier le menu' : 'Créer un menu' }}
-</h1>
-
+<div class="ajx-list">
 <div class="commande-actions">
     <button class="ajax-btn btn-back" data-url="{{ path('admin_menu_list') }}">
         <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}"> Retour à la liste
     </button>
 </div>
+
+<h1 class="menu-form-title">
+    {{ menu.id ? 'Modifier le menu' }}
+</h1>
 
 {% for label, messages in app.flashes %}
     {% for message in messages %}
@@ -22,7 +22,7 @@
     action: path('admin_menu_edit', { id: menu.id }),
     attr: {
         enctype: 'multipart/form-data',
-        class: 'menu-form'
+        class: 'menu-form ajax-menu-form'
     }
 }) }}
 
@@ -96,8 +96,10 @@
 <div class="form-actions">
     <button type="submit" class="btn btn-submit">
         <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}" alt="">
-        Sauvegarder
+        Sauvegarder le menu
     </button>
 </div>
 
 {{ form_end(form) }}
+
+</div>

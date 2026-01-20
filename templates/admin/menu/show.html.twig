@@ -62,7 +62,9 @@
     {% endif %}
 
     <div class="menu-actions">
-        <a href="{{ path('admin_menu_edit', {'id': menu.id}) }}" class="btn menu-btn-edit">
+        <a href="{{ path('admin_menu_edit', {'id': menu.id}) }}" 
+            class="btn menu-btn-edit ajax-btn" 
+            data-url="{{ path('admin_menu_edit', {'id': menu.id}) }}">
             <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
         </a>
 

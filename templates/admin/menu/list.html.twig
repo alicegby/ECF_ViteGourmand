@@ -1,3 +1,4 @@
+<div class="ajx-list">
 <h1 class="menu-header">
     Liste des menus
     <button class="filter-toggle" data-type="menu" data-url="{{ path('admin_menu_list') }}">
@@ -42,7 +43,7 @@
     </div>
 
     <div class="filter-group">
-        <label for="keyword-filter">Nom du menu</label>
+        <label for="keyword-filter">Mot-clé</label>
         <input type="text" id="keyword-filter" name="keyword" placeholder="Rechercher..." value="{{ app.request.query.get('keyword') }}">
     </div>
 
@@ -81,3 +82,4 @@
         {% endif %}
     </tbody>
 </table>
+</div>

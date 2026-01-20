@@ -1,18 +1,35 @@
-{% extends 'base.html.twig' %}
+<div class="ajx-list">
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('menuplat_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+        </button>
+    </div>
 
-{% block title %}Détails de l'association{% endblock %}
+    <h1>Détails de l'association<br>{{ menuPlat.plat.titrePlat }} - {{ menuPlat.menu.nom }}</h1>
 
-{% block body %}
-<h1>Détails de l'association Menu-Plat</h1>
+    <div class="detail-mp">
+        <p>Menu : {{ menuPlat.menu.nom }}</p>
+        <p>Plat : {{ menuPlat.plat.titrePlat }}</p>
+        <p>Ordre : {{ menuPlat.ordre }}</p>
+    </div>
 
-<p>Menu : {{ menuPlat.menu.nom }}</p>
-<p>Plat : {{ menuPlat.plat.titrePlat }}</p>
-<p>Ordre : {{ menuPlat.ordre }}</p>
+    <div class="plat-actions">
+        <button class="btn ajax-btn" data-url="{{ path('menuplat_edit', {'id': menuPlat.id}) }}">
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+            Modifier
+        </button>
+        <form method="post"
+            action="{{ path('menuplat_delete', {'id': menuPlat.id}) }}"
+            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette association ?');"
+            style="display:inline-block;">
+            
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ menuPlat.id) }}">
 
-<a href="{{ path('menuplat_edit') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
-</a>
-<a href="{{ path('menuplat_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
-{% endblock %}
+            <button class="btn plat-btn-delete" type="submit">
+                <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
+                Supprimer
+            </button>
+        </form>
+    </div>
+
+</div>

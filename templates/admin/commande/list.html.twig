@@ -1,9 +1,10 @@
-<h1 class="commande-header">
-    Liste des commandes
-    <button class="filter-toggle" data-type="commande" data-url="{{ path('commande_list') }}">
-        <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
-    </button>
-</h1>
+<div class="ajx-list">
+    <h1 class="commande-header">
+        Liste des commandes
+        <button class="filter-toggle" data-type="commande" data-url="{{ path('commande_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
+        </button>
+    </h1>
 
 <div class="filter-panel" data-type="commande">
     <button class="close-panel">
@@ -77,3 +78,5 @@
 </table>
 
 <div class="filter-overlay"></div>
+
+</div>

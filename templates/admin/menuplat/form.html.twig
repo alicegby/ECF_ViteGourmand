@@ -1,41 +1,49 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}
-    {{ menuPlat is defined ? 'Modifier l\'association' : 'Nouvelle association' }}
-{% endblock %}
-
-{% block body %}
-<h1>{{ menuPlat is defined ? 'Modifier l\'association' : 'Nouvelle association' }}</h1>
-
-{{ form_start(form) }}
-    <div>
-        {{ form_label(form.menu) }}
-        {{ form_widget(form.menu) }}
-        {{ form_errors(form.menu) }}
+<div class="ajx-list">
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('menuplat_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}"> Retour à la liste
+        </button>
     </div>
+    <h1>{{ menuPlat is defined ? 'Modifier l\'association' : 'Nouvelle association' }}</h1>
 
-    <div>
-        {{ form_label(form.plat) }}
-        {{ form_widget(form.plat) }}
-        {{ form_errors(form.plat) }}
-    </div>
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash-message flash-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
 
-    <div>
-        {{ form_label(form.ordre) }}
-        {{ form_widget(form.ordre) }}
-        {{ form_errors(form.ordre) }}
-    </div>
+    {{ form_start(form, {
+        'attr': { 'class': 'ajax-menuplat-form' }, 
+        'enctype': 'multipart/form-data',
+        'action': path('menuplat_edit', { 'id': menuPlat.id }),
+        'method': 'POST'
+    }) }}
 
-    <button type="submit" class="btn">
-        {% if menuPlat is defined %}
-            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
-        {% else %}
-            <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer">Créer
-        {% endif %}
-    </button>
-{{ form_end(form) }}
+        <div class="form-group">
+            {{ form_label(form.menu) }}
+            {{ form_widget(form.menu) }}
+            {{ form_errors(form.menu) }}
+        </div>
 
-<a href="{{ path('menuplat_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
-{% endblock %}
+        <div class="form-group">
+            {{ form_label(form.plat) }}
+            {{ form_widget(form.plat) }}
+            {{ form_errors(form.plat) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.ordre) }}
+            {{ form_widget(form.ordre) }}
+            {{ form_errors(form.ordre) }}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-submit">
+                <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}" alt="">
+                Sauvegarder l'association
+            </button>
+        </div>
+    {{ form_end(form) }}
+</div>

@@ -1,12 +1,12 @@
 {# templates/admin/menu/new.html.twig #}
-
-<h1 class="menu-header">Créer un menu</h1>
-
+<div class="ajx-list">
 <div class="commande-actions">
     <button class="ajax-btn btn-back" data-url="{{ path('admin_menu_list') }}">
         <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}"> Retour à la liste
     </button>
 </div>
+
+<h1 class="menu-header">Créer un menu</h1>
 
 {% for label, messages in app.flashes %}
     {% for message in messages %}
@@ -110,4 +110,6 @@
     </button>
 
     {{ form_end(form) }}
+</div>
+
 </div>

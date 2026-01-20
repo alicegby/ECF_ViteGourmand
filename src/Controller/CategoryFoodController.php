@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\CategoryFood;
+use App\Entity\CategoryFood; 
 use App\Form\CategoryFoodType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,10 +41,10 @@ class CategoryFoodController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Catégorie créée !');
 
-            return $this->redirectToRoute('categoryfood_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
-
-        return $this->render('admin/categoryfood/form.html.twig', [
+ 
+        return $this->render('admin/categoryfood/new.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -59,7 +59,7 @@ class CategoryFoodController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Catégorie modifiée !');
 
-            return $this->redirectToRoute('categoryfood_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
 
         return $this->render('admin/categoryfood/form.html.twig', [
@@ -77,7 +77,7 @@ class CategoryFoodController extends AbstractController
             $this->addFlash('success', 'Catégorie supprimée !');
         }
 
-        return $this->redirectToRoute('categoryfood_list');
+        return $this->redirectToRoute('employe_dashboard');
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

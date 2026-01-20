@@ -1,29 +1,39 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}
-    {{ category is defined ? 'Modifier la catégorie' : 'Nouvelle catégorie' }}
-{% endblock %}
-
-{% block body %}
-<h1>{{ category is defined ? 'Modifier la catégorie' : 'Nouvelle catégorie' }}</h1>
-
-{{ form_start(form) }}
-    <div>
-        {{ form_label(form.libelle) }}
-        {{ form_widget(form.libelle) }}
-        {{ form_errors(form.libelle) }}
+<div class="ajx-list">
+        <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('admin_plats_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}"> Retour à la liste
+        </button>
     </div>
-    <button type="submit" class="btn">
-        {% if category is defined %}
-            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier la catégorie
-        {% else %}
-            <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer">Créer la catégorie
-        {% endif %}
-    </button>
-{{ form_end(form) }}
 
-<a href="{{ path('categoryfood_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
+    <h1>{{ category is defined ? 'Modifier la catégorie' : 'Nouvelle catégorie' }}</h1>
 
-{% endblock %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash-message flash-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {{ form_start(form, {
+        'attr': { 'class': 'ajax-categoryfood-form' }, 
+        'enctype': 'multipart/form-data',
+        'action': path('categoryfood_edit', { 'id': category.id }),
+        'method': 'POST'
+    }) }}
+
+        <div class="form-group">
+            {{ form_label(form.libelle) }}
+            {{ form_widget(form.libelle) }}
+            {{ form_errors(form.libelle) }}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-submit">
+                <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}" alt="">
+                Sauvegarder la catégorie
+            </button>
+        </div>
+
+    {{ form_end(form) }}
+</div>

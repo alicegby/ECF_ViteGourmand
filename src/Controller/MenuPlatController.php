@@ -32,10 +32,10 @@ class MenuPlatController extends AbstractController {
             $this->em->persist($menuPlat);
             $this->em->flush();
             $this->addFlash('success', 'Plat ajouté au menu !');
-            return $this->redirectToRoute('menuplat_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
-        return $this->render('admin/menuplat/form.html.twig', ['form' => $form->createView(),]);
-    }
+        return $this->render('admin/menuplat/new.html.twig', ['form' => $form->createView(),]);
+    } 
 
     #[IsGranted('ROLE_EMPLOYE')]
     public function edit(MenuPlat $menuPlat, Request $request): Response {
@@ -45,7 +45,7 @@ class MenuPlatController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Association Menu/Plat modifiée !');
-            return $this->redirectToRoute('menuplat_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
         return $this->render('admin/menuplat/form.html.twig', [
             'form' => $form->createView(),
@@ -60,15 +60,15 @@ class MenuPlatController extends AbstractController {
             $this->em->flush();
             $this->addFlash('success', 'Association supprimée !');
         }
-        return $this->redirectToRoute('menuplat_list');
+        return $this->redirectToRoute('employe_dashboard');
     }
 
     #[IsGranted('ROLE_EMPLOYE')]
     public function list(Request $request): Response
     {
-    // Récupération des filtres depuis l'URL
+    // Récupération des filtres depuis l'URL 
     $selectedMenu = $request->query->get('menu');
-    $selectedPlat = $request->query->get('plat');
+    $keyword = $request->query->get('keyword');
 
     // QueryBuilder pour récupérer les MenuPlat avec filtres
     $qb = $this->menuPlatRepository->createQueryBuilder('mp')
@@ -81,9 +81,9 @@ class MenuPlatController extends AbstractController {
            ->setParameter('menuId', $selectedMenu);
     }
 
-    if ($selectedPlat) {
-        $qb->andWhere('p.id = :platId')
-           ->setParameter('platId', $selectedPlat);
+    if ($keyword) {
+        $qb->andWhere('p.titrePlat LIKE :keyword OR m.nom LIKE :keyword')
+           ->setParameter('keyword', '%' . $keyword . '%');
     }
 
     $menuPlats = $qb->orderBy('mp.ordre', 'ASC')
@@ -92,14 +92,12 @@ class MenuPlatController extends AbstractController {
 
 
     $menus = $this->em->getRepository(Menu::class)->findAll();
-    $plats = $this->em->getRepository(Plats::class)->findAll();
 
     return $this->render('admin/menuplat/list.html.twig', [
         'menuPlats' => $menuPlats,
         'menus' => $menus,
-        'plats' => $plats,
         'selectedMenu' => $selectedMenu,
-        'selectedPlat' => $selectedPlat,
+        'keyword' => $keyword,
     ]);
     }
 

@@ -1,0 +1,33 @@
+<div class="condition-show-container">
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('condition_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">
+            Retour à la liste
+        </button>
+    </div>
+
+    <h1>Créer une condition</h1>
+
+    {{ form_start(form, {
+        action: path('condition_new'),
+        attr: { class: 'ajax-condition-form' }
+    }) }}
+
+        <div class="form-group">
+            {{ form_label(form.libelle, 'Nom de la condition') }}
+            {{ form_widget(form.libelle, {
+                attr: {
+                    class: 'form-input',
+                    placeholder: 'Ex : Sans gluten'
+                }
+            }) }}
+            {{ form_errors(form.libelle) }}
+        </div>
+
+        <button type="submit" class="btn condition-btn-edit">
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}">
+            Enregistrer
+        </button>
+
+    {{ form_end(form) }}
+</div>

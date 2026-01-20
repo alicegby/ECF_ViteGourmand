@@ -1,51 +1,59 @@
 {# templates/admin/plats/list.html.twig #}
-{% extends 'base.html.twig' %}
-
-{% block title %}Liste des plats{% endblock %}
-
-{% block body %}
-<h1>Liste des plats</h1>
-
-<a href="{{ path('admin_plats_new') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouveau plat
-</a>
-
-<form method="get" action="{{ path('plats_list') }}" class="filter-form">
-    <label for="category">Catégorie :</label>
-    <select name="category" id="category">
-        <option value="">Toutes</option>
-        {% for category in categories %}
-            <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
-                {{ category.nom }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <label for="allergene">Allergène :</label>
-    <select name="allergene" id="allergene">
-        <option value="">Tous</option>
-        {% for allergene in allergenes %}
-            <option value="{{ allergene.id }}" {% if selectedAllergene == allergene.id %}selected{% endif %}>
-                {{ allergene.nom }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <label for="keyword">Mot-clé :</label>
-    <input type="text" name="keyword" id="keyword" value="{{ keyword|default('') }}" placeholder="Nom du plat">
-
-    <button type="submit" class="btn">
-        <img src="{{ asset('Visuels/Icônes/Search_Beige.png') }}" alt="Filtrer">Filtrer
+<div class="ajx-list">
+<h1 class="plats-header">
+    Liste des plats
+    <button class="filter-toggle" data-type="plats" data-url="{{ path('admin_plats_list') }}">
+        <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
     </button>
-</form>
+</h1>
 
-<table>
+<button class="ajax-btn add-plat" 
+        data-url="{{ path('admin_plats_new') }}" 
+        data-default="false">
+    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer un plat">
+    Créer un plat
+</button>
+
+<div class="filter-panel" data-type="plats">
+    <button class="close-panel">
+        <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
+    </button>
+
+    <div class="filter-group">
+        <label for="category-filter">Filtrer par catégorie</label>
+        <select id="category-filter" name="category">
+            <option value="">Tous</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.libelle }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label for="allergene-filter">Filtrer par allergènes</label>
+        <select id="allergene-filter" name="allergene">
+            <option value="">Tous</option>
+            {% for allergene in allergenes %}
+                <option value="{{ allergene.id }}">{{ allergene.libelle }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label for="keyword-filter">Mot-clé</label>
+        <input type="text" id="keyword-filter" name="keyword" placeholder="Rechercher..." value="{{ app.request.query.get('keyword') }}">
+    </div>
+
+    <button type="button" class="apply-filters">Appliquer</button>
+    <button type="button" class="reset-filters">Réinitialiser les filtres</button>
+</div>
+
+
+<table class="plats-table">
     <thead>
         <tr>
             <th>Nom du plat</th>
             <th>Catégorie</th>
-            <th>Description</th>
-            <th>Stock</th>
             <th>Allergènes</th>
             <th>Image</th>
             <th>Actions</th>
@@ -56,13 +64,16 @@
         {% for plat in plats %}
             <tr>
                 <td>{{ plat.titrePlat }}</td>
-                <td>{{ plat.category ? plat.category.nom : '-' }}</td>
-                <td>{{ plat.description }}</td>
-                <td>{{ plat.stock }}</td>
+                <td>{{ plat.category ? plat.category.libelle : '-' }}</td>
 
                 <td>
                     {% if plat.allergenes|length > 0 %}
-                        {{ plat.allergenes|map(a => a.nom)|join(', ') }}
+                        {% for allergene in plat.allergenes %}
+                            <img src="{{ asset(allergene.icone) }}" 
+                                alt="{{ allergene.libelle }}" 
+                                class="allergene-icon" 
+                                title="{{ allergene.libelle }}">
+                        {% endfor %}
                     {% else %}
                         -
                     {% endif %}
@@ -70,28 +81,18 @@
 
                 <td>
                     {% if plat.image %}
-                        <img src="{{ asset(plat.image) }}" alt="{{ plat.altTexte }}">
+                        <img src="{{ asset(plat.image) }}" alt="{{ plat.altTexte }}" class="image-plat">
                     {% else %}
                         -
                     {% endif %}
                 </td>
 
-                <td class="actions">
-                    <a href="{{ path('plats_show', {'id': plat.id}) }}" class="btn">
-                        <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
-                    </a>
-
-                    <a href="{{ path('admin_plats_edit', {'id': plat.id}) }}" class="btn">
-                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
-                    </a>
-
-                    <form action="{{ path('admin_plats_delete', {'id': plat.id}) }}" method="post" onsubmit="return confirm('Supprimer ce plat ?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ plat.id) }}">
-                        <button type="submit" class="btn">
-                            <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+                <td class="action-buttons">
+                        <button class="ajax-btn btn-see" data-url="{{ path('admin_plats_show', {'id': plat.id}) }}">
+                            <img src="{{ asset('Visuels/Icônes/See_Beige.png')}}" class="image-plat">
+                            Voir &amp; modifier
                         </button>
-                    </form>
-                </td>
+                    </td>
             </tr>
         {% else %}
             <tr>
@@ -100,4 +101,4 @@
         {% endfor %}
     </tbody>
 </table>
-{% endblock %}
+</div>

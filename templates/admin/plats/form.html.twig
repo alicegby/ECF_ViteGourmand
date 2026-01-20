@@ -1,76 +1,87 @@
-{% extends 'base.html.twig' %}
+{# templates/admin/plats/form.html.twig #}
 
-{% block title %}
-    {{ plat is defined ? 'Modifier le plat' : 'Créer un plat' }}
-{% endblock %}
+<div class="plat-form-container">
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('admin_plats_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}"> Retour à la liste
+        </button>
+    </div>
 
-{% block body %}
-<h1>{{ plat is defined ? 'Modifier le plat' : 'Créer un plat' }}</h1>
+    <h1>{{ plat is defined ? 'Modifier le plat' }}</h1>
 
-{# Flash messages #}
-{% for label, messages in app.flashes %}
-    {% for message in messages %}
-        <div class="flash-{{ label }}">
-            {{ message }}
-        </div>
+    {# Flash messages #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash-message flash-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
     {% endfor %}
-{% endfor %}
 
-{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
-    <div>
-        {{ form_label(form.titrePlat) }}
-        {{ form_widget(form.titrePlat) }}
-        {{ form_errors(form.titrePlat) }}
-    </div>
+    {{ form_start(form, {
+        'attr': { 'class': 'ajax-plat-form' }, 
+        'enctype': 'multipart/form-data',
+        'action': path('admin_plats_edit', { 'id': plat.id }),
+        'method': 'POST'
+    }) }}
 
-    <div>
-        {{ form_label(form.category) }}
-        {{ form_widget(form.category) }}
-        {{ form_errors(form.category) }}
-    </div>
+        <div class="form-group">
+            {{ form_label(form.titrePlat) }}
+            {{ form_widget(form.titrePlat, { 'attr': {'class': 'form-input'} }) }}
+            {{ form_errors(form.titrePlat) }}
+        </div>
 
-    <div>
-        {{ form_label(form.description) }}
-        {{ form_widget(form.description) }}
-        {{ form_errors(form.description) }}
-    </div>
+        <div class="form-group">
+            {{ form_label(form.category) }}
+            {{ form_widget(form.category, { 'attr': {'class': 'form-select'} }) }}
+            {{ form_errors(form.category) }}
+        </div>
 
-    <div>
-        {{ form_label(form.stock) }}
-        {{ form_widget(form.stock) }}
-        {{ form_errors(form.stock) }}
-    </div>
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, { 'attr': {'class': 'form-textarea'} }) }}
+            {{ form_errors(form.description) }}
+        </div>
 
-    <div>
-        {{ form_label(form.image) }}
-        {{ form_widget(form.image) }}
-        {{ form_errors(form.image) }}
-    </div>
+        <div class="form-group">
+            {{ form_label(form.image) }}
+            {{ form_widget(form.image, { 'attr': {'class': 'form-input'} }) }}
+            {{ form_errors(form.image) }}
 
-    <div>
-        {{ form_label(form.altText) }}
-        {{ form_widget(form.altText) }}
-        {{ form_errors(form.altText) }}
-    </div>
+            {# Affiche l'image actuelle si elle existe (mode édition) #}
+            {% if plat is defined and plat.image %}
+                <p>Image actuelle :</p>
+                <img src="{{ asset(plat.image) }}" alt="{{ plat.altTexte }}" class="image-plat-preview">
+            {% endif %}
+        </div>
 
-    <div>
-        {{ form_label(form.allergenes) }}
-        {{ form_widget(form.allergenes) }}
-        {{ form_errors(form.allergenes) }}
-    </div>
+        <div class="form-group">
+            {{ form_label(form.altTexte) }}
+            {{ form_widget(form.altTexte, { 'attr': {'class': 'form-input'} }) }}
+            {{ form_errors(form.altTexte) }}
+        </div>
 
-    <button type="submit" class="btn">
-        {% if plat is defined %}
-            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier le plat
-        {% else %}
-            <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer">Créer le plat
-        {% endif %}
-    </button>
+        <div class="form-group">
+            <label class="form-title">Allergènes</label>
 
-{{ form_end(form) }}
+            <div class="allergenes-list">
+                {% for allergeneField in form.allergenes %}
+                    <div class="allergene-item">
+                        {{ form_widget(allergeneField) }}
+                        {{ form_label(allergeneField) }}
+                    </div>
+                {% endfor %}
+            </div>
 
-<a href="{{ path('plats_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
+            {{ form_errors(form.allergenes) }}
+        </div>
 
-{% endblock %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-submit">
+                <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}" alt="">
+                Sauvegarder le plat
+            </button>
+        </div>
+
+    {{ form_end(form) }}
+</div>

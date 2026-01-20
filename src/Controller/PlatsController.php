@@ -25,86 +25,127 @@ class PlatsController extends AbstractController
         $this->em = $em;
     }
 
-    #[IsGranted('ROLE_EMPLOYE')]
+   #[IsGranted('ROLE_EMPLOYE')]
     public function create(Request $request): Response
     {
+        // On crée un nouvel objet Plat ici, pas besoin de Symfony pour le résoudre
         $plat = new Plats();
-        $form = $this->createForm(PlatsType::class, $plat, [
-            'is_edit' => false
-        ]);
+
+        // On crée le formulaire
+        $form = $this->createForm(PlatsType::class, $plat, ['is_edit' => false]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            // --- IMAGE UPLOAD ---
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $newFilename = uniqid('plat_') . '.' . $imageFile->guessExtension();
-                try {
-                    $imageFile->move(
-                        $this->getParameter('uploads_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    $this->addFlash('error', "Erreur lors de l’upload de l’image.");
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                // Gestion de l'image si présente
+                $imageFile = $form->get('image')->getData();
+                if ($imageFile) {
+                    $newFilename = uniqid('plat_') . '.' . $imageFile->guessExtension();
+                    try {
+                        $imageFile->move($this->getParameter('uploads_directory'), $newFilename);
+                        $plat->setImage('uploads/' . $newFilename);
+                    } catch (\Exception $e) {
+                        if ($request->isXmlHttpRequest()) {
+                            return $this->json(['success' => false, 'message' => "Erreur upload image"]);
+                        }
+                        $this->addFlash('error', "Erreur upload image");
+                    }
                 }
-                $plat->setImage('uploads/' . $newFilename);
+
+                $plat->setModifiePar($this->getUser());
+                $plat->setDateModif(new \DateTime());
+
+                $this->em->persist($plat);
+                $this->em->flush();
+
+                if ($request->isXmlHttpRequest()) {
+                    return $this->json([
+                        'success' => true,
+                        'message' => 'Plat créé avec succès !',
+                        'redirectUrl' => $this->generateUrl('admin_plats_list')
+                    ]);
+                }
+
+                $this->addFlash('success', 'Plat créé avec succès !');
+                return $this->redirectToRoute('employe_dashboard');
             }
 
-            // --- METADATA ---
-            $plat->setModifiePar($this->getUser());
-            $plat->setDateModif(new \DateTime());
-
-            $this->em->persist($plat);
-            $this->em->flush();
-
-            $this->addFlash('success', 'Plat créé avec succès !');
-            return $this->redirectToRoute('plats_list');
+            // Gestion des erreurs pour AJAX
+            if ($request->isXmlHttpRequest()) {
+                $errors = [];
+                foreach ($form->all() as $child) {
+                    foreach ($child->getErrors(true) as $error) {
+                        $errors[] = $error->getMessage();
+                    }
+                }
+                return $this->json(['success' => false, 'errors' => $errors]);
+            }
         }
 
-        return $this->render('admin/plats/form.html.twig', [
-            'form' => $form->createView(),
+        // Affichage du formulaire (GET ou après erreur)
+        return $this->render('admin/plats/new.html.twig', [
             'plat' => $plat,
+            'form' => $form->createView(),
         ]);
     }
 
     #[IsGranted('ROLE_EMPLOYE')]
     public function edit(Plats $plat, Request $request): Response
     {
-        $form = $this->createForm(PlatsType::class, $plat, [
-            'is_edit' => true
-        ]);
+        $form = $this->createForm(PlatsType::class, $plat, ['is_edit' => true]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            // --- IMAGE UPLOAD SI NOUVELLE IMAGE ---
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $newFilename = uniqid('plat_') . '.' . $imageFile->guessExtension();
-                try {
-                    $imageFile->move(
-                        $this->getParameter('uploads_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    $this->addFlash('error', "Erreur lors de l’upload de l’image.");
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $imageFile = $form->get('image')->getData();
+                if ($imageFile) {
+                    $newFilename = uniqid('plat_') . '.' . $imageFile->guessExtension();
+                    try {
+                        $imageFile->move($this->getParameter('uploads_directory'), $newFilename);
+                    } catch (\Exception $e) {
+                        if ($request->isXmlHttpRequest()) {
+                            return $this->json(['success' => false, 'message' => "Erreur upload image"]);
+                        }
+                        $this->addFlash('error', "Erreur upload image");
+                    }
+                    $plat->setImage('uploads/' . $newFilename);
                 }
-                $plat->setImage('uploads/' . $newFilename);
+
+                $plat->setModifiePar($this->getUser());
+                $plat->setDateModif(new \DateTime());
+                $this->em->flush();
+
+                if ($request->isXmlHttpRequest()) {
+                    return $this->json([
+                        'success' => true,
+                        'message' => 'Plat modifié avec succès !',
+                        'redirectUrl' => $this->generateUrl('admin_plats_list')
+                    ]);
+                }
+
+                $this->addFlash('success', 'Plat modifié avec succès !');
+                return $this->redirectToRoute('employe_dashboard');
+            } else if ($request->isXmlHttpRequest()) {
+                $errors = [];
+                foreach ($form->all() as $child) {
+                    foreach ($child->getErrors(true) as $error) {
+                        $errors[] = $error->getMessage();
+                    }
+                }
+                return $this->json(['success' => false, 'errors' => $errors]);
             }
+        }
 
-            $plat->setModifiePar($this->getUser());
-            $plat->setDateModif(new \DateTime());
-
-            $this->em->flush();
-
-            $this->addFlash('success', 'Plat modifié avec succès !');
-            return $this->redirectToRoute('plats_list');
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('admin/plats/form.html.twig', [
+                'plat' => $plat,
+                'form' => $form->createView(),
+            ]);
         }
 
         return $this->render('admin/plats/form.html.twig', [
-            'form' => $form->createView(),
             'plat' => $plat,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -113,14 +154,14 @@ class PlatsController extends AbstractController
     {
         if (!$this->isCsrfTokenValid('delete' . $plat->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', 'Token CSRF invalide.');
-            return $this->redirectToRoute('plats_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
 
         $this->em->remove($plat);
         $this->em->flush();
 
         $this->addFlash('success', 'Plat supprimé !');
-        return $this->redirectToRoute('plats_list');
+        return $this->redirectToRoute('employe_dashboard');
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

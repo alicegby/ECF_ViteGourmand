@@ -1,0 +1,84 @@
+{# templates/admin/plats/new.html.twig #}
+<div class="ajx-list">
+    <div class="commande-actions">
+    <button class="ajax-btn btn-back" data-url="{{ path('admin_plats_list') }}">
+        <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">
+        Retour à la liste
+    </button>
+</div>
+
+<h1 class="menu-header">Créer un plat</h1>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash-message flash-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="plat-new-container">
+    {{ form_start(form, {
+        'attr': { 'class': 'ajax-plats-form' },
+        'enctype': 'multipart/form-data',
+        'action': path('admin_plats_new'),
+        'method': 'POST'
+    }) }}
+
+    <div class="form-group">
+        {{ form_label(form.titrePlat) }}
+        {{ form_widget(form.titrePlat, { attr: { class: 'form-input' } }) }}
+        {{ form_errors(form.titrePlat) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.category) }}
+        {{ form_widget(form.category, { attr: { class: 'form-select' } }) }}
+        {{ form_errors(form.category) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, { attr: { class: 'form-textarea' } }) }}
+        {{ form_errors(form.description) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.image) }}
+        {{ form_widget(form.image, { attr: { class: 'form-input' } }) }}
+        {{ form_errors(form.image) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.altTexte) }}
+        {{ form_widget(form.altTexte, { attr: { class: 'form-input' } }) }}
+        {{ form_errors(form.altTexte) }}
+    </div>
+
+    <div class="form-group">
+        <label class="form-title">Allergènes</label>
+
+        <div class="allergenes-list" style="display: flex; flex-direction: column; gap: 8px;">
+            {% for allergeneField in form.allergenes %}
+                <label class="allergene-item" style="display: flex; align-items: center; gap: 8px;">
+                    {{ form_widget(allergeneField) }}
+                    {{ form_label(allergeneField) }}
+                </label>
+            {% endfor %}
+        </div>
+
+        {{ form_errors(form.allergenes) }}
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-submit">
+            <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}">
+            Créer le plat
+        </button>
+    </div>
+
+    {{ form_end(form) }}
+
+</div>
+
+</div>

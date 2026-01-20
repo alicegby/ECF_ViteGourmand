@@ -1,41 +1,43 @@
-{% extends 'base.html.twig' %}
+<div class="ajx-list">
+    <h1 class="menuplat-header">
+        Liste des plats par menu
+        <button class="filter-toggle" data-type="menuplat" data-url="{{ path('menuplat_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
+        </button>
+    </h1>
 
-{% block title %}Liste des Menu-Plats{% endblock %}
-
-{% block body %}
-<h1>Liste des Menu-Plats</h1>
-
-<a href="{{ path('menuplat_new') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouvelle association
-</a>
-
-<form method="get" action="{{ path('menuplat_list') }}" class="filter-form">
-    <label for="menu">Menu :</label>
-    <select name="menu" id="menu">
-        <option value="">Tous</option>
-        {% for menu in menus %}
-            <option value="{{ menu.id }}" {% if selectedMenu == menu.id %}selected{% endif %}>
-                {{ menu.titreMenu }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <label for="plat">Plat :</label>
-    <select name="plat" id="plat">
-        <option value="">Tous</option>
-        {% for plat in plats %}
-            <option value="{{ plat.id }}" {% if selectedPlat == plat.id %}selected{% endif %}>
-                {{ plat.titrePlat }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <button type="submit" class="btn">
-        <img src="{{ asset('Visuels/Icônes/Search_Beige.png') }}" alt="Filtrer">Filtrer
+    <button class="ajax-btn add-menuplat" 
+            data-url="{{ path('menuplat_new') }}" 
+            data-default="false">
+        <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Nouvelle association">
+        Nouvelle association
     </button>
-</form>
 
-<table>
+    <div class="filter-panel" data-type="menuplat">
+    <button class="close-panel">
+        <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
+    </button>
+
+    <div class="filter-group">
+        <label for="menu-filter">Filtrer par menu</label>
+        <select id="menu-filter" name="menu">
+            <option value="">Tous</option>
+            {% for menu in menus %}
+                <option value="{{ menu.id }}">{{ menu.nom }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label for="keyword-filter">Mot-clé</label>
+        <input type="text" id="keyword-filter" name="keyword" placeholder="Rechercher..." value="{{ app.request.query.get('keyword') }}">
+    </div>
+
+    <button type="button" class="apply-filters">Appliquer</button>
+    <button type="button" class="reset-filters">Réinitialiser les filtres</button>
+</div>
+
+<table class="menuplat-table">
     <thead>
         <tr>
             <th>Menu</th>
@@ -50,22 +52,15 @@
                 <td>{{ mp.menu.nom }}</td>
                 <td>{{ mp.plat.titrePlat }}</td>
                 <td>{{ mp.ordre }}</td>
-                <td>
-                    <a href="{{ path('menuplat_show', {'id': mp.id}) }}" class="btn">
-                        <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
-                    </a>
-                    <a href="{{ path('menuplat_edit', {'id': mp.id}) }}" class="btn">
-                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
-                    </a>
-                    <form action="{{ path('menuplat_delete', {'id': mp.id}) }}" method="post" onsubmit="return confirm('Supprimer cette liaison ?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ mp.id) }}">
-                        <button type="submit" class="btn">
-                            <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
-                        </button>
-                    </form>
+
+                <td class="action-buttons">
+                    <button class="ajax-btn btn-see" data-url="{{ path('menuplat_show', {'id': mp.id}) }}">
+                        <img src="{{ asset('Visuels/Icônes/See_Beige.png')}}" class="image-plat">
+                        Voir &amp; modifier
+                    </button>
                 </td>
             </tr>
         {% endfor %}
     </tbody>
 </table>
-{% endblock %}
+</div>

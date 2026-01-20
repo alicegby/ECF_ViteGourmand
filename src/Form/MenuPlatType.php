@@ -18,7 +18,7 @@ class MenuPlatType extends AbstractType {
         ->add('menu', EntityType::class, [
             'class' => Menu::class,
             'choice_label' => 'nom',
-            'label' => 'Menu',
+            'label' => 'Menu', 
             'placeholder' => 'Sélectionnez un menu'
         ])
         ->add('plat', EntityType::class, [

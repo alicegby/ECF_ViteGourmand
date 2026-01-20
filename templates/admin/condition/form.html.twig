@@ -9,44 +9,29 @@
 
     {{ form_start(form, {
         action: path('condition_edit', { id: condition.id }),
-        attr: { 
-            enctype: 'multipart/form-data', 
-            class: 'ajax-condition-form'
-        }
+        attr: { class: 'ajax-condition-form' }
     }) }}
 
-        <div class="form-group">
-            {{ form_label(form.libelle, 'Nom de la condition') }}
-            {{ form_widget(form.libelle, {
-                attr: {
-                    class: 'form-input',
-                    autofocus: true
-                }
-            }) }}
-            {{ form_errors(form.libelle) }}
-        </div>
+    <div class="form-group">
+        {{ form_label(form.libelle) }}
+        {{ form_widget(form.libelle, { attr: { class: 'form-input' } }) }}
+        {{ form_errors(form.libelle) }}
+    </div>
 
-        <div class="condition-actions">
-            <button
-                class="ajax-btn btn condition-btn-edit"
-                data-url="{{ path('condition_edit', {'id': condition.id}) }}">
-                <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
-                Modifier
-            </button>
+    <button type="submit" class="btn condition-btn-edit">
+        <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}" alt="Enregistrer">
+        Enregistrer la modification
+    </button>
 
-            <form method="post"
-                action="{{ path('condition_delete', {'id': condition.id}) }}"
-                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette condition ?');">
-                
-                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ condition.id) }}">
+{{ form_end(form) }}
 
-                <button class="btn condition-btn-delete" type="submit">
-                    <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
-                    Supprimer
-                </button>
-            </form>
-        </div>
-
-    {{ form_end(form) }}
-
+<form method="post"
+      action="{{ path('condition_delete', {'id': condition.id}) }}"
+      onsubmit="return confirm('Êtes-vous sûr ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ condition.id) }}">
+    <button class="btn condition-btn-delete">
+        <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
+        Supprimer
+    </button>
+</form>
 </div>

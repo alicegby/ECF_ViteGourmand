@@ -1,35 +1,49 @@
 {# templates/admin/plats/show.html.twig #}
-{% extends 'base.html.twig' %}
+<div class="plat-show-container">
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('admin_plats_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+        </button>
+    </div>
 
-{% block title %}Détails du plat{% endblock %}
+    <h1 class="plat-title">{{ plat.titrePlat }}</h1>
 
-{% block body %}
-<h1>{{ plat.titrePlat }}</h1>
+    <p class="category">Catégorie : {{ plat.category ? plat.category.libelle : '-' }}</p>
+    <p class="description">Description : {{ plat.description }}</p>
 
-<p>Catégorie : {{ plat.category ? plat.category.nom : '-' }}</p>
-<p>Description : {{ plat.description }}</p>
-<p>Stock : {{ plat.stock }}</p>
+    <h2>Allergènes</h2>
+    {% if plat.allergenes|length > 0 %}
+        <ul>
+            {% for allergene in plat.allergenes %}
+                <li>{{ allergene.libelle }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun allergène</p>
+    {% endif %}
 
-<h2>Allergènes</h2>
-{% if plat.allergenes|length > 0 %}
-    <ul>
-        {% for allergene in plat.allergenes %}
-            <li>{{ allergene.nom }}</li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>Aucun allergène</p>
-{% endif %}
+    {% if plat.image %}
+        <h2>Image</h2>
+        <img src="{{ asset(plat.image) }}" alt="{{ plat.altTexte }}" class="image-plat">
+    {% endif %}
 
-{% if plat.image %}
-    <h2>Image</h2>
-    <img src="{{ asset(plat.image) }}" alt="{{ plat.altTexte }}">
-{% endif %}
+    <div class="plat-actions">
+        <button class="btn ajax-btn" data-url="{{ path('admin_plats_edit', {'id': plat.id}) }}">
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+            Modifier
+        </button>
 
-<a href="{{ path('plats_edit') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
-</a>
-<a href="{{ path('plats_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour"> Retour à la liste
-</a>
-{% endblock %}
+        <form method="post"
+            action="{{ path('admin_plats_delete', {'id': plat.id}) }}"
+            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce plat ?');"
+            style="display:inline-block;">
+            
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ plat.id) }}">
+
+            <button class="btn plat-btn-delete" type="submit">
+                <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
+                Supprimer
+            </button>
+        </form>
+    </div>
+</div>
