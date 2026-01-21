@@ -35,7 +35,7 @@ class Badge
     public function __construct()
     {
         $this->utilisateurBadges = new ArrayCollection();
-    }
+    } 
 
     // Getters
     public function getId(): ?int { return $this->id; }

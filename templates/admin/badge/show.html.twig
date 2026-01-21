@@ -1,22 +1,43 @@
-{% extends 'base.html.twig' %}
+<div class="ajx-list">
 
-{% block title %}Détail du badge{% endblock %}
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('badge_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+        </button>
+    </div>
+    <h1 class="options-title">Détails du badge</h1>
 
-{% block body %}
-<h1>Détails du badge</h1>
+    <div class="option-p">
+        <p><strong>Nom : </strong>{{ badge.nom }}</p>
+        <p><strong>Description : </strong>{{ badge.description }}</p>
+        <p><strong>Condition d'obtention :</strong><br>{{ badge.conditionObtention }}</p>
+        <p><strong>Actif : </strong>{{ badge.actif ? 'Oui' : 'Non' }}</p>
 
-<p>{{ badge.nom }}</p>
-<p>{{ badge.description }}</p>
-<p>Condition d'obtention :<br>{{ badge.conditionObtention }}</p>
-<p>Actif : {{ badge.actif ? 'Oui' : 'Non' }}</p>
+        <p>
+            <strong>Icône :</strong><br>
+            <img src="{{ asset(badge.icone) }}" alt="{{ badge.nom }}">
+        </p>
+    </div>
 
-<p>
-    <strong>Icône :</strong><br>
-    <img src="{{ asset(badge.icone) }}" alt="{{ badge.nom }}">
-</p>
+    <div class="plat-actions">
+        <button class="btn ajax-btn" data-url="{{ path('badge_edit', {'id': badge.id}) }}">
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+            Modifier
+        </button>
 
-<a href="{{ path('badge_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">
-    Retour à la liste
-</a>
-{% endblock %}
+        <form method="post"
+            action="{{ path('badge_delete', {'id': badge.id}) }}"
+            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce badge ?');"
+            style="display:inline-block;">
+            
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ badge.id) }}">
+
+            <button class="btn plat-btn-delete" type="submit">
+                <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
+                Supprimer
+            </button>
+        </form>
+    </div>
+
+
+</div>

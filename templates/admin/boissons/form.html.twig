@@ -1,78 +1,80 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}
-    {{ boisson is defined ? 'Modifier la boisson' : 'Créer une boisson' }}
-{% endblock %}
-
-{% block body %}
-<h1>{{ boisson is defined ? 'Modifier la boisson' : 'Créer une boisson' }}</h1>
-
-{% for label, messages in app.flashes %}
-    {% for message in messages %}
-        <div class="flash-{{ label }}">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endfor %}
-
-{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
-        <div>
-            {{ form_label(form.titreBoisson) }}
-            {{ form_widget(form.titreBoisson) }}
-            {{ form_errors(form.titreBoisson) }}
-        </div>
-        <div>
-            {{ form_label(form.category) }}
-            {{ form_widget(form.category) }}
-            {{ form_errors(form.category) }}
-        </div>
-        <div>
-            {{ form_label(form.description) }}
-            {{ form_widget(form.description) }}
-            {{ form_errors(form.description) }}
-        </div>
-        <div>
-            {{ form_label(form.stock) }}
-            {{ form_widget(form.stock) }}
-            {{ form_errors(form.stock) }}
-        </div>
-        <div>
-            {{ form_label(form.qteParPersonne) }}
-            {{ form_widget(form.qteParPersonne) }}
-            {{ form_errors(form.qteParPersonne) }}
-        </div>
-        <div>
-            {{ form_label(form.minCommande) }}
-            {{ form_widget(form.minCommande) }}
-            {{ form_errors(form.minCommande) }}
-        </div>
-        <div>
-            {{ form_label(form.prixParBouteille) }}
-            {{ form_widget(form.prixParBouteille) }}
-            {{ form_errors(form.prixParBouteille) }}
-        </div>
-        <div>
-            {{ form_label(form.image) }}
-            {{ form_widget(form.image) }}
-            {{ form_errors(form.image) }}
-        </div>
-        <div>
-            {{ form_label(form.altText) }}
-            {{ form_widget(form.altText) }}
-            {{ form_errors(form.altText) }}
-        </div>
-
-        <button type="submit" class="btn">
-            {% if plat is defined %}
-                <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier la boisson
-            {% else %}
-                <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer">Créer la boisson
-            {% endif %}
+<div class="ajx-list">
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('boissons_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}"> Retour à la liste
         </button>
-{{ form_end(form) }}
+    </div>
+    <h1>{{ boisson is defined ? 'Modifier la boisson' }}</h1>
 
-<a href="{{ path('boissons_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash-message flash-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
 
-{% endblock %}
+    <div class="badge-form-container">
+        {{ form_start(form, {
+            'attr': { 'class': 'ajax-boissons-form' }, 
+            'enctype': 'multipart/form-data',
+            'action': path('boissons_edit', { 'id': boisson.id }),
+            'method': 'POST'
+        }) }}
+
+                <div class="form-group">
+                    {{ form_label(form.titreBoisson) }}
+                    {{ form_widget(form.titreBoisson) }}
+                    {{ form_errors(form.titreBoisson) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.category) }}
+                    {{ form_widget(form.category) }}
+                    {{ form_errors(form.category) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.stock) }}
+                    {{ form_widget(form.stock) }}
+                    {{ form_errors(form.stock) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.qteParPers) }}
+                    {{ form_widget(form.qteParPers) }}
+                    {{ form_errors(form.qteParPers) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.minCommande) }}
+                    {{ form_widget(form.minCommande) }}
+                    {{ form_errors(form.minCommande) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.prixParBouteille) }}
+                    {{ form_widget(form.prixParBouteille) }}
+                    {{ form_errors(form.prixParBouteille) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.image) }}
+                    {{ form_widget(form.image) }}
+                    {{ form_errors(form.image) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.alt) }}
+                    {{ form_widget(form.alt) }}
+                    {{ form_errors(form.alt) }}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-submit">
+                        <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}" alt="">
+                        Sauvegarder la boisson
+                    </button>
+                </div>
+        {{ form_end(form) }}
+    </div>
+
+</div>

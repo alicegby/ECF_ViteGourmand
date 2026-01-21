@@ -135,7 +135,7 @@
 
 /* Filtres */
 /* Header */
-.avis-header, .commande-header, .menu-header, .plats-header, .menuplat-header {
+.avis-header, .commande-header, .menu-header, .plats-header, .menuplat-header, .fromages-header, .boissons-header, .materiel-header, .personnel-header {
     position: relative;
     display: flex;
     align-items: center;
@@ -144,7 +144,7 @@
     gap: 15px;
 }
 
-.avis-header h1, .commande-header h1, .menu-header h1, .plats-header h1, .menuplat-header h1 {
+.avis-header h1, .commande-header h1, .menu-header h1, .plats-header h1, .menuplat-header h1, .fromages-header h1, .boissons-header h1, .materiel-header h1, .personnel-header h1 {
     font-family: 'Playfair Display';
 }
 
@@ -1523,7 +1523,7 @@ ul li {
 }
 
 /* NEW */
-.plat-new-container {
+.plat-new-container, .fromage-new-container, .boisson-new-container, .materiel-new-container, .personnel-new-container, .badge-new-container {
     background-color: #F6F1EB;
     padding: 25px;
     border-radius: 10px;
@@ -1532,8 +1532,8 @@ ul li {
     color: #2F2F2F;
 }
 
-.plat-new-container .form-title,
-.plat-new-container .form-group > label {
+.plat-new-container .form-title, .fromage-new-container .form-title, .boisson-new-container .form-title, .materiel-new-container .form-title, .personnel-new-container .form-title, .badge-new-container .form-title
+.plat-new-container .form-group > label, .fromage-new-container .form-group > label, .fromage-new-container .form-group > label, .boisson-new-container .form-group > label, .materiel-new-container .form-group > label, .personnel-new-container .form-group > label, .badge-new-container .form-group > label {
     display: block;
     margin-top: 25px;
     margin-bottom: 10px;
@@ -1544,8 +1544,8 @@ ul li {
     font-weight: 600;
 }
 
-.plat-new-container .form-input,
-.plat-new-container .form-select {
+.plat-new-container .form-input, .fromage-new-container .form-input, .boisson-new-container .form-input, .materiel-new-container .form-input, .personnel-new-container .form-input, .badge-new-container .form-input
+.plat-new-container .form-select, .fromage-new-container .form-select, .boisson-new-container .form-select, .materiel-new-container .form-select, .personnel-new-container .form-select, .badge-new-container .form-select {
     width: 100%;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -1556,7 +1556,7 @@ ul li {
 }
 
 /* Textarea description */
-.plat-new-container .form-textarea {
+.plat-new-container .form-textarea, .fromage-new-container .form-textarea, .boisson-new-container .form-textarea, .materiel-new-container .form-textarea, .personnel-new-container .form-textarea, .badge-new-container .form-textarea {
     width: 100%;
     min-height: 120px;
     resize: none;
@@ -1589,7 +1589,7 @@ ul li {
 /* MENU PLAT */
 /* LIST */
 
-.menuplat-header {
+.menuplat-header, .fromage-header {
     font-size: 2rem;
     margin-bottom: 20px;
     color: #5A3E36; /* brun foncé style icônes */
@@ -1740,14 +1740,145 @@ ul li {
     background-color: #6B7B63;        
 }
 
-/* Show */
+/* OPTIONS */
 
+.fromages-table, .boissons-table, .materiel-table, .personnel-table, .horaire-table, .badge-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    font-family: 'Inter', sans-serif;
+}
 
-.dashboard-container .menu-links a {
+.fromages-table th, .boissons-table th, .materiel-table th, .personnel-table th, .horaire-table th, .badge-table th {
+    background-color: #5C4033;
     color: #F6F1EB;
-    text-decoration: none !important;
+    padding: 10px;
+    text-align: left;
+}
+
+.fromages-table td, .boissons-table td, .materiel-table td, .personnel-table td, .horaire-table td, .badge-table td {
+    background-color: #A28873;
+    padding: 10px;
+    vertical-align: middle;
+    color: #F6F1EB;
+}
+
+.fromages-table tr td:first-child, .boissons-table tr td:first-child, .materiel-table tr td:first-child, .personnel-table tr td:first-child, .horaire-table tr td:first-child, .badge-table tr td:first-child {
+    font-weight: bold;
+}
+
+.fromages-table td img, .boissons-table td img, .materiel-table td img, .personnel-table td img, .horaire-table td img, .badge-table td img {
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 20px;
+    height: 20px;
+}
+
+.badge-icon {
+    width: 60px;
+    height: 60px;
+    object-fit: contain; 
+}
+
+.add-fromages, .add-boissons, .add-materiel, .add-personnel, .add-badge {
+    background-color: #5C4033;      
+    color: #F6F1EB;                 
+    border: none;                      
+    padding: 6px 12px;              
+    border-radius: 5px;              
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;                      
+    gap: 10px;                
+    margin: 10px auto;     
+    margin-bottom: 10px;
+    text-decoration: none;           
+    transition: background 0.3s ease;  
+}
+
+.add-fromages:hover, .add-boissons:hover, .add-materiel:hover, .add-personnel:hover, .add-badge:hover {
+    background-color: #6B7B63;        
+}
+
+.option-p strong {
+    color: #5C4033;
+}
+
+.badge-form-container {
+    background-color: #F6F1EB;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    font-family: 'Inter', sans-serif;
+    color: #2F2F2F;
+}
+
+.badge-form-container .form-group > label {
+    display: block;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+    color: #5A3E36;
+    border-bottom: 2px solid #E0D7CE;
+    padding-bottom: 3px;
+    font-weight: 600;
+}
+
+.form-textarea {
+    resize: none;
     font-family: 'Inter';
-    font-size: 1.2rem;
-    font-weight: 400;
-    transition: all 0.3s ease;
+    padding: 10px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center; /* centre verticalement */
+    gap: 0.5em;          /* espace entre checkbox et texte */
+}
+
+.badge-form-container .form-group p {
+    margin: 5px 0 2px;
+    font-weight: 500;
+}
+
+.badge-form-container .form-input,
+.badge-form-container .form-textarea,
+.badge-form-container .form-select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.badge-form-container .form-textarea,
+.badge-form-container .form-text {
+    width: 100%;
+    min-height: 120px; 
+    resize: none; 
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px 10px; 
+    font-family: 'Inter';
+}
+
+.badge-form-container .image-plat-preview {
+    display: block;
+    margin: 0 auto 15px; /* collée en haut */
+    max-width: 200px;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.badge-form-container .form-title {
+    display: block;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+    color: #5A3E36;
+    border-bottom: 2px solid #E0D7CE;
+    padding-bottom: 3px;
+    font-weight: 600;
 }

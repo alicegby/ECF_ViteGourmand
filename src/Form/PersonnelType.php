@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -33,16 +34,14 @@ class PersonnelType extends AbstractType {
                 ],
                 'label' => 'Stock'
             ])
-            ->add('prixParHeure', IntegerType::class, [
-                'constraints' => [
-                    new NotBlank(message: 'Le prix par heure est obligatoire')
-                ],
+            ->add('prixHeure', MoneyType::class, [
+                'constraints' => [new NotBlank(message: 'Le prix par heure est obligatoire')],
                 'label' => 'Prix par heure',
-                'currency' =>'EUR'
+                'currency' => 'EUR',
             ])
             ->add('category', EntityType::class, [
                 'class' => CategoryPersonnel::class,
-                'choice_label' => 'nom',
+                'choice_label' => 'libelle',
                 'placeholder' => 'Sélectionnez une catégorie',
                 'label' => 'Catégorie'
             ]);

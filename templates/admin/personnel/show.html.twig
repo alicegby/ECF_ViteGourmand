@@ -1,21 +1,38 @@
-{# templates/admin/boissons/show.html.twig #}
-{% extends 'base.html.twig' %}
+<div class="ajx-list">
 
-{% block title %}Détails du personnel{% endblock %}
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('personnel_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+        </button>
+    </div>
 
-{% block body %}
-<h1>{{ personnel.titrePersonnel }}</h1>
+    <h1 class="options-title">{{ personnel.titrePersonnel }}</h1>
 
-<p>Catégorie : {{ personnel.category ? personnel.category.nom : '-' }}</p>
-<p>Description : {{ personnel.description }}</p>
-<p>Stock : {{ personnel.stock }}</p>
-<p>Prix par heure : {{ personnel.prixParHeure }}</p>
+    <div class="option-p">
+        <p><strong>Catégorie : </strong>{{ personnel.category ? personnel.category.libelle : '-' }}</p>
+        <p><strong>Description : </strong>{{ personnel.description }}</p>
+        <p><strong>Stock : </strong>{{ personnel.stock }}</p>
+        <p><strong>Prix par heure : </strong>{{ personnel.prixHeure }} €</p>
+    </div>
 
-<a href="{{ path('personnel_edit') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
-</a>
-<a href="{{ path('personnel_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
+    <div class="plat-actions">
+        <button class="btn ajax-btn" data-url="{{ path('personnel_edit', {'id': personnel.id}) }}">
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+            Modifier
+        </button>
 
-{% endblock %}
+        <form method="post"
+            action="{{ path('personnel_delete', {'id': personnel.id}) }}"
+            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce personnel ?');"
+            style="display:inline-block;">
+            
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ personnel.id) }}">
+
+            <button class="btn plat-btn-delete" type="submit">
+                <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
+                Supprimer
+            </button>
+        </form>
+    </div>
+
+</div>

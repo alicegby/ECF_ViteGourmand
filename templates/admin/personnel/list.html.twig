@@ -1,74 +1,73 @@
-{# templates/admin/personnel/list.html.twig #}
-{% block title %}Liste du personnel{% endblock %}
+<div class="ajx-list">
+    <h1 class="personnel-header">
+    Liste du personnel
+        <button class="filter-toggle" data-type="personnel" data-url="{{ path('personnel_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
+        </button>
+    </h1>
 
-{% block body %}
-<h1>Liste du personnel</h1>
-
-<a href="{{ path('personnel_new') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouveau personnel
-</a>
-
-<form method="get" action="{{ path ('personnel_list') }}" class="filter-form">
-
-    <label for="category">Catégorie : </label>
-    <select name="category" id="category">
-        <option value="">Toutes</option>
-        {% for category in categories %}
-            <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
-                {{ category.nom }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <label for="keyword">Mot-clé : </label>
-    <input type="text" name="keyword" id="keyword" value="{{ keyword|default('') }}" placeholder="Titre du personnel">
-
-    <button type="submit" class="btn">
-        <img src="{{ asset('Visuels/Icônes/Search_Beige.png') }}" alt="Filtrer">Filtrer
+    <button class="ajax-btn add-fromages" 
+        data-url="{{ path('personnel_new') }}" 
+        data-default="false">
+        <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Nouveau personnel">
+        Nouveau personnel
     </button>
 
-</form>
+    <div class="filter-panel" data-type="personnel">
+        <button class="close-panel">
+            <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
+        </button>
 
-<table>
-    <thead>
-        <tr>
-            <th>Titre du personnel</th>
-            <th>Catégorie</th>
-            <th>Description</th>
-            <th>Stock</th>
-            <th>Prix par heure</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
+        <div class="filter-group">
+            <label for="category-filter">Filtrer par catégorie</label>
+            <select id="category-filter" name="category">
+                <option value="">Tous</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.libelle }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <tbody>
-        {% for personnel in personnels %}
-        <tr>
-            <td>{{ personnel.titrePersonnel }}</td>
-            <td>{{ personnel.category ? personnel.category.nom : '-' }}</td>
-            <td>{{ personnel.description }}</td>
-            <td>{{ personnel.stock }}</td>
-            <td>{{ personnel.prixParHeure }}</td>
-            <td class="actions">
-                <a href="{{ path('personnel_show', {'id': personnel.id}) }}" class="btn">
-                    <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
-                </a>
-                <a href="{{ path('personnel_edit', {'id': personnel.id}) }}" class="btn">
-                    <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
-                </a>
-                <form action="{{ path('personnel_delete', {'id': personnel.id}) }}" method="post" onsubmit="return confirm('Supprimer ce personnel ?');">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ personnel.id) }}">
-                    <button type="submit" class="btn">
-                        <img src="{{ asset('Visuel/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+        <div class="filter-group">
+            <label for="keyword-filter">Mot-clé</label>
+            <input type="text" id="keyword-filter" name="keyword" placeholder="Rechercher..." value="{{ app.request.query.get('keyword') }}">
+        </div>
+
+        <button type="button" class="apply-filters">Appliquer</button>
+        <button type="button" class="reset-filters">Réinitialiser les filtres</button>
+    </div>
+
+    <table class="personnel-table">
+        <thead>
+            <tr>
+                <th>Personnel</th>
+                <th>Catégorie</th>
+                <th>Stock</th>
+                <th>Prix par heure</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for personnel in personnels %}
+            <tr>
+                <td>{{ personnel.titrePersonnel }}</td>
+                <td>{{ personnel.category ? personnel.category.libelle : '-' }}</td>
+                <td>{{ personnel.stock }}</td>
+                <td>{{ personnel.prixHeure }} €</td>
+
+                <td class="action-buttons">
+                    <button class="ajax-btn btn-see" data-url="{{ path('personnel_show', {'id': personnel.id}) }}">
+                        <img src="{{ asset('Visuels/Icônes/See_Beige.png')}}" class="image-plat">
+                        Voir &amp; modifier
                     </button>
-                </form>
-            </td>
+                </td>
+            </tr>
+        {% else %}
+        <tr>
+            <td>Aucun personnel trouvé.</td>
         </tr>
-    {% else %}
-    <tr>
-        <td>Aucun personnel trouvé.</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-{% endblock %}
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

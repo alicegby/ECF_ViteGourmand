@@ -68,7 +68,7 @@ class PlatsType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Plats::class,
-            'is_edit' => false   // option ajoutée pour contrôler l’obligation de l’image
+            'is_edit' => false  
         ]);
     }
 }

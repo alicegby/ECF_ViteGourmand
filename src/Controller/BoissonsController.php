@@ -37,7 +37,7 @@ class BoissonsController extends AbstractController {
                 $newFilename = uniqid('boisson_') . '.' . $imageFile->guessExtension();
                 try {
                     $imageFile->move(
-                        $this->getParameter('uploads_directory'),
+                        $this->getParameter('boissons_images_directory'),
                         $newFilename
                     );
                 } catch (FileException $e) {
@@ -52,9 +52,9 @@ class BoissonsController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('success', 'Boisson créée avec succès !');
-            return $this->redirectToRoute('boissons_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
-        return $this->render('admin/boissons/form.html.twig', [
+        return $this->render('admin/boissons/new.html.twig', [
             'form' => $form->createView(),
             'boisson' => $boisson,
         ]);
@@ -73,7 +73,7 @@ class BoissonsController extends AbstractController {
                 $newFilename = uniqid('boisson_') . '.' . $imageFile->guessExtension();
                 try {
                     $imageFile->move(
-                        $this->getParameter('uploads_directory'),
+                        $this->getParameter('boissons_images_directory'),
                         $newFilename
                     );
                 } catch (FileException $e) {
@@ -87,7 +87,7 @@ class BoissonsController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('success', 'Boisson modifiée avec succès !');
-            return $this->redirect('boissons_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
         return $this->render('admin/boissons/form.html.twig', [
             'form' => $form->createView(),
@@ -122,6 +122,18 @@ class BoissonsController extends AbstractController {
             'selectedCategory' => $categoryId,
             'keyword' => $keyword
         ]);
+    }
+
+    #[IsGranted('ROLE_EMPLOYE')]
+    public function delete(Request $request, Boissons $boisson): Response {
+        if (!$this->isCsrfTokenValid('delete'.$boisson->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+        $this->em->remove($boisson);
+        $this->em->flush();
+
+        $this->addFlash('success', 'Boisson supprimée !');
+        return $this->redirectToRoute('employe_dashboard'); 
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

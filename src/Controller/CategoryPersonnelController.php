@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-
+ 
 class CategoryPersonnelController extends AbstractController
 {
     private EntityManagerInterface $em;
@@ -29,7 +29,7 @@ class CategoryPersonnelController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_EMPLOYE')]
+   #[IsGranted('ROLE_EMPLOYE')]
     public function create(Request $request): Response
     {
         $category = new CategoryPersonnel();
@@ -41,10 +41,10 @@ class CategoryPersonnelController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Catégorie créée !');
 
-            return $this->redirectToRoute('categorypersonnel_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
 
-        return $this->render('admin/categorypersonnelform.html.twig', [
+        return $this->render('admin/categorypersonnel/new.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -59,7 +59,7 @@ class CategoryPersonnelController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Catégorie modifiée !');
 
-            return $this->redirectToRoute('categorypersonnel_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
 
         return $this->render('admin/categorypersonnel/form.html.twig', [
@@ -68,7 +68,7 @@ class CategoryPersonnelController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_EMPLOYE')]
+   #[IsGranted('ROLE_EMPLOYE')]
     public function delete(CategoryPersonnel $category, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete' . $category->getId(), $request->request->get('_token'))) {
@@ -77,7 +77,7 @@ class CategoryPersonnelController extends AbstractController
             $this->addFlash('success', 'Catégorie supprimée !');
         }
 
-        return $this->redirectToRoute('categorypersonnel_list');
+        return $this->redirectToRoute('employe_dashboard');
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

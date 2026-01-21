@@ -1,26 +1,42 @@
-{# templates/admin/materiel/show.html.twig #}
-{% extends 'base.html.twig' %}
+<div class="ajx-list">
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('admin_plats_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+        </button>
+    </div>
 
-{% block title %}Détails du matériel{% endblock %}
+    <h1 class="options-title">{{ materiel.titreMateriel }}</h1>
 
-{% block body %}
-<h1>{{ materiel.titreBoisson }}</h1>
+    <div class="option-p">
+    <p><strong>Catégorie : </strong>{{ materiel.category ? materiel.category.libelle : '-' }}</p>
+    <p><strong>Description : </strong>{{ materiel.description }}</p>
+    <p><strong>Stock : </strong>{{ materiel.stock }}</p>
+    <p><strong>Prix pièce : </strong>{{ materiel.prixPiece }} €</p>
 
-<p>Catégorie : {{ materiel.category ? materiel.category.nom : '-' }}</p>
-<p>Description : {{ materiel.description }}</p>
-<p>Stock : {{ materiel.stock }}</p>
-<p>Prix pièce : {{ materiel.prixPiece }}</p>
+    {% if materiel.image %}
+    <h2>Image</h2>
+        <img src="{{ asset(materiel.image) }}" alt="{{ materiel.alt }}">
+    {% endif %}
+    </div>
 
-{% if materiel.image %}
-<h2>Image</h2>
-    <img src="{{ asset(materiel.image) }}" alt="{{ materiel.altTexte }}">
-{% endif %}
+    <div class="plat-actions">
+        <button class="btn ajax-btn" data-url="{{ path('materiel_edit', {'id': materiel.id}) }}">
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+            Modifier
+        </button>
 
-<a href="{{ path('materiel_edit') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
-</a>
-<a href="{{ path('materiel_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
+        <form method="post"
+            action="{{ path('materiel_delete', {'id': materiel.id}) }}"
+            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce matériel ?');"
+            style="display:inline-block;">
+            
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ materiel.id) }}">
 
-{% endblock %}
+            <button class="btn plat-btn-delete" type="submit">
+                <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
+                Supprimer
+            </button>
+        </form>
+    </div>
+
+</div>

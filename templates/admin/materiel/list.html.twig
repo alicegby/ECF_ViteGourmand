@@ -1,82 +1,73 @@
-{# templates/admin/materiel/list.html.twig #}
-{% block title %}Liste du matériel{% endblock %}
+<div class="ajx-list">
+    <h1 class="materiel-header">
+    Liste du matériel
+        <button class="filter-toggle" data-type="materiel" data-url="{{ path('materiel_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
+        </button>
+    </h1>
 
-{% block body %}
-<h1>Liste du matériel</h1>
-
-<a href="{{ path('materiel_new') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouveau matériel
-</a>
-
-<form method="get" action="{{ path ('materiel_list') }}" class="filter-form">
-
-    <label for="category">Catégorie : </label>
-    <select name="category" id="category">
-        <option value="">Toutes</option>
-        {% for category in categories %}
-            <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
-                {{ category.nom }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <label for="keyword">Mot-clé : </label>
-    <input type="text" name="keyword" id="keyword" value="{{ keyword|default('') }}" placeholder="Nom du matériel">
-
-    <button type="submit" class="btn">
-        <img src="{{ asset('Visuels/Icônes/Search_Beige.png') }}" alt="Filtrer">Filtrer
+<button class="ajax-btn add-materiel" 
+        data-url="{{ path('materiel_new') }}" 
+        data-default="false">
+        <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer un matériel">
+        Créer un matériel
     </button>
 
-</form>
+    <div class="filter-panel" data-type="materiel">
+        <button class="close-panel">
+            <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
+        </button>
 
-<table>
-    <thead>
-        <tr>
-            <th>Nom du matériel</th>
-            <th>Catégorie</th>
-            <th>Description</th>
-            <th>Stock</th>
-            <th>Prix pièce</th>
-            <th>Image</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
+        <div class="filter-group">
+            <label for="category-filter">Filtrer par catégorie</label>
+            <select id="category-filter" name="category">
+                <option value="">Tous</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.libelle }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <tbody>
-        {% for materiel in materiels %}
-        <tr>
-            <td>{{ materiel.titreMateriel }}</td>
-            <td>{{ materiel.category ? materiel.category.nom : '-' }}</td>
-            <td>{{ materiel.description }}</td>
-            <td>{{ materiel.stock }}</td>
-            <td>{{ materiel.prixPiece }}</td>
-            <td>
-                {% if materiel.image %}
-                    <img src="{{ asset(materiel.image) }}" alt="{{ materiel.altTexte }}">
-                {% else %}
-                        - 
-                {% endif %}
-            </td>
-            <td class="actions">
-                <a href="{{ path('materiel_show', {'id': materiel.id}) }}" class="btn">
-                    <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
-                </a>
-                <a href="{{ path('materiel_edit', {'id': materiel.id}) }}" class="btn">
-                    <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
-                </a>
-                <form action="{{ path('materiel_delete', {'id': materiel.id}) }}" method="post" onsubmit="return confirm('Supprimer ce matériel ?');">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ materiel.id) }}">
-                    <button type="submit" class="btn">
-                        <img src="{{ asset('Visuel/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+        <div class="filter-group">
+            <label for="keyword-filter">Mot-clé</label>
+            <input type="text" id="keyword-filter" name="keyword" placeholder="Rechercher..." value="{{ app.request.query.get('keyword') }}">
+        </div>
+
+        <button type="button" class="apply-filters">Appliquer</button>
+        <button type="button" class="reset-filters">Réinitialiser les filtres</button>
+    </div>
+
+    <table class="materiel-table">
+        <thead>
+            <tr>
+                <th>Nom du matériel</th>
+                <th>Catégorie</th>
+                <th>Stock</th>
+                <th>Prix pièce</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for materiel in materiels %}
+            <tr>
+                <td>{{ materiel.titreMateriel }}</td>
+                <td>{{ materiel.category ? materiel.category.libelle : '-' }}</td>
+                <td>{{ materiel.stock }}</td>
+                <td>{{ materiel.prixPiece }} €</td>
+                
+                <td class="action-buttons">
+                    <button class="ajax-btn btn-see" data-url="{{ path('materiel_show', {'id': materiel.id}) }}">
+                        <img src="{{ asset('Visuels/Icônes/See_Beige.png')}}" class="image-plat">
+                        Voir &amp; modifier
                     </button>
-                </form>
-            </td>
+                </td>
+            </tr>
+        {% else %}
+        <tr>
+            <td>Aucun matériel trouvé.</td>
         </tr>
-    {% else %}
-    <tr>
-        <td>Aucun matériel trouvé.</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-{% endblock %}
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

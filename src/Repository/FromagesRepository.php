@@ -10,7 +10,7 @@ class FromagesRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Fromages::class);
-    }
+    } 
     public function findByStockDisponible(int $minStock): array {
         return $this->createQueryBuilder('f')
             ->andWhere('f.stock >= :minStock')

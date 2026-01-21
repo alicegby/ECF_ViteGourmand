@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller; 
 
 use App\Entity\CategoryDrink;
 use App\Form\CategoryDrinkType;
@@ -41,10 +41,10 @@ class CategoryDrinkController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Catégorie créée !');
 
-            return $this->redirectToRoute('categorydrink_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
 
-        return $this->render('admin/categorydrink/form.html.twig', [
+        return $this->render('admin/categorydrink/new.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -59,7 +59,7 @@ class CategoryDrinkController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Catégorie modifiée !');
 
-            return $this->redirectToRoute('categorydrink_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
 
         return $this->render('admin/categorydrink/form.html.twig', [
@@ -77,7 +77,7 @@ class CategoryDrinkController extends AbstractController
             $this->addFlash('success', 'Catégorie supprimée !');
         }
 
-        return $this->redirectToRoute('categorydrink_list');
+        return $this->redirectToRoute('employe_dashboard');
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

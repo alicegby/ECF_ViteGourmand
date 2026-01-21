@@ -1,0 +1,76 @@
+<div class="ajx-list">
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('materiel_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">
+            Retour à la liste
+        </button>
+    </div>
+
+    <h1 class="materiel-header">Créer un matériel</h1>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash-message flash-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="materiel-new-container">
+    {{ form_start(form, {
+        'attr': { 'class': 'ajax-materiel-form' },
+        'enctype': 'multipart/form-data',
+        'action': path('materiel_new'),
+        'method': 'POST'
+    }) }}
+
+    <div class="form-group">
+                {{ form_label(form.titreMateriel) }}
+                {{ form_widget(form.titreMateriel, { attr: { class: 'form-input' } }) }}
+                {{ form_errors(form.titreMateriel) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.category) }}
+                {{ form_widget(form.category, { attr: { class:'form-select'} }) }}
+                {{ form_errors(form.category) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description, { attr: { class: 'form-textarea' } }) }}
+                {{ form_errors(form.description) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.stock) }}
+                {{ form_widget(form.stock, { attr: { class: 'form-input' } }) }}
+                {{ form_errors(form.stock) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.prixPiece) }}
+                {{ form_widget(form.prixPiece, { attr: { class: 'form-input' } }) }}
+                {{ form_errors(form.prixPiece) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.caution) }}
+                {{ form_widget(form.caution, { attr: { class: 'form-input' } }) }}
+                {{ form_errors(form.caution) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.image) }}
+                {{ form_widget(form.image, { attr: { class: 'form-input' } }) }}
+                {{ form_errors(form.image) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.alt) }}
+                {{ form_widget(form.alt, { attr: { class: 'form-input' } }) }}
+                {{ form_errors(form.alt) }}
+            </div>
+
+        <div class="form-actions">
+                <button type="submit" class="btn btn-submit">
+                    <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}" alt="">
+                    Sauvegarder le matériel
+                </button>
+        </div>
+    {{ form_end(form) }}
+
+</div>

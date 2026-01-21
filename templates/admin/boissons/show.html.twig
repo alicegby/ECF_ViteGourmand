@@ -1,28 +1,46 @@
-{# templates/admin/boissons/show.html.twig #}
-{% extends 'base.html.twig' %}
+<div class="ajx-list">
 
-{% block title %}Détails de la boisson{% endblock %}
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('boissons_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+        </button>
+    </div>
 
-{% block body %}
-<h1>{{ boisson.titreBoisson }}</h1>
+    <h1 class="options-title">{{ boisson.titreBoisson }}</h1>
 
-<p>Catégorie : {{ boisson.category ? boisson.category.nom : '-' }}</p>
-<p>Description : {{ boisson.description }}</p>
-<p>Stock : {{ boisson.stock }}</p>
-<p>Quantité par personne : {{ boisson.qteParPers }}</p>
-<p>Minimum de commande : {{ boisson.minCommande }}</p>
-<p>Prix par bouteille : {{ bouteille.prixParBouteille }}</p>
+    <div class="option-p">
+        <p><strong>Catégorie : </strong>{{ boisson.category ? boisson.category.libelle : '-' }}</p>
+        <p><strong>Description : </strong>{{ boisson.description }}</p>
+        <p><strong>Stock : </strong>{{ boisson.stock }}</p>
+        <p><strong>Quantité par personne : </strong>{{ boisson.qteParPers }}</p>
+        <p><strong>Minimum de commande : </strong>{{ boisson.minCommande }}</p>
+        <p><strong>Prix par bouteille : </strong>{{ boisson.prixParBouteille }} €</p>
 
-{% if boisson.image %}
-<h2>Image</h2>
-    <img src="{{ asset(boisson.image) }}" alt="{{ boisson.altTexte }}">
-{% endif %}
+        {% if boisson.image %}
+        <h2>Image</h2>
+            <img src="{{ asset(boisson.image) }}" alt="{{ boisson.alt }}">
+        {% endif %}
+    </div>
 
-<a href="{{ path('boissons_edit') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
-</a>
-<a href="{{ path('boissons_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
+    <div class="plat-actions">
+        <button class="btn ajax-btn" data-url="{{ path('boissons_edit', {'id': boisson.id}) }}">
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+            Modifier
+        </button>
 
-{% endblock %}
+        <form method="post"
+            action="{{ path('boissons_delete', {'id': boisson.id}) }}"
+            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette boisson ?');"
+            style="display:inline-block;">
+            
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ boisson.id) }}">
+
+            <button class="btn plat-btn-delete" type="submit">
+                <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
+                Supprimer
+            </button>
+        </form>
+    </div>
+
+
+</div>

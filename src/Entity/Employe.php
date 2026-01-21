@@ -60,12 +60,18 @@ class Employe implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         if (!$this->role) {
-            return ['ROLE_USER'];
+            return ['ROLE_EMPLOYE'];
+        }
+        $roleLibelle = strtoupper($this->role->getLibelle()); // Admin -> ADMIN
+        $roles = ["ROLE_$roleLibelle"];
+
+        // Si l’utilisateur est Admin, il est aussi Employé
+        if ($roleLibelle === 'ADMIN') {
+            $roles[] = 'ROLE_EMPLOYE';
         }
 
-        $roleLibelle = strtoupper($this->role->getLibelle()); // Admin -> ADMIN, Employe -> EMPLOYE
-        return ["ROLE_$roleLibelle"];
+        return $roles;
     }
-
+    
     public function eraseCredentials(): void {}
 }

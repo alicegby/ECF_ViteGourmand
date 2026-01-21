@@ -51,7 +51,7 @@ class CommandeController extends AbstractController
         ]);
     }
 
-    #[IsGranted('ROLE_EMPLOYE')]
+   #[IsGranted('ROLE_EMPLOYE')]
     public function edit(Commande $commande, Request $request): Response
     {
         $form = $this->createForm(CommandeType::class, $commande);

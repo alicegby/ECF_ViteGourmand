@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller; 
 
 use App\Entity\Materiel;
 use App\Entity\CategoryMateriel;
@@ -37,7 +37,7 @@ class MaterielController extends AbstractController {
                 $newFilename = uniqid('materiel_') . '.' . $imageFile->guessExtension();
                 try {
                     $imageFile->move(
-                        $this->getParameter('uploads_directory'),
+                        $this->getParameter('materiel_images_directory'),
                         $newFilename
                     );
                 } catch (FileException $e) {
@@ -52,9 +52,9 @@ class MaterielController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('success', 'Matériel créé avec succès !');
-            return $this->redirectToRoute('materiel_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
-        return $this->render('admin/materiel/form.html.twig', [
+        return $this->render('admin/materiel/new.html.twig', [
             'form' => $form->createView(),
             'materiel' => $materiel,
         ]);
@@ -73,7 +73,7 @@ class MaterielController extends AbstractController {
                 $newFilename = uniqid('materiel_') . '.' . $imageFile->guessExtension();
                 try {
                     $imageFile->move(
-                        $this->getParameter('uploads_directory'),
+                        $this->getParameter('materiel_images_directory'),
                         $newFilename
                     );
                 } catch (FileException $e) {
@@ -87,7 +87,7 @@ class MaterielController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('success', 'Materiel modifié avec succès !');
-            return $this->redirect('materiel_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
         return $this->render('admin/materiel/form.html.twig', [
             'form' => $form->createView(),
@@ -122,6 +122,18 @@ class MaterielController extends AbstractController {
             'selectedCategory' => $categoryId,
             'keyword' => $keyword
         ]);
+    }
+
+    #[IsGranted('ROLE_EMPLOYE')]
+    public function delete(Request $request, Materiel $materiel): Response {
+        if (!$this->isCsrfTokenValid('delete'.$materiel->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+        $this->em->remove($materiel);
+        $this->em->flush();
+
+        $this->addFlash('success', 'Matériel supprimé !');
+        return $this->redirectToRoute('employe_dashboard'); 
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

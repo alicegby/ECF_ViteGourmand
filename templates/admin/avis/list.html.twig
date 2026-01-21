@@ -1,69 +1,69 @@
 <div class="ajx-list">
-<h1 class="avis-header">
-    Liste des avis
-    <button class="filter-toggle" data-type="avis" data-url="{{ path('avis_list_admin') }}">
-        <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
-    </button>
-</h1>
+    <h1 class="avis-header">
+        Liste des avis
+        <button class="filter-toggle" data-type="avis" data-url="{{ path('avis_list_admin') }}">
+            <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
+        </button>
+    </h1>
 
-<div class="filter-panel" data-type="avis">
-    <button class="close-panel">
-        <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
-    </button>
+    <div class="filter-panel" data-type="avis">
+        <button class="close-panel">
+            <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
+        </button>
 
-        <div class="filter-group">
-            <label for="statut-filter">Filtrer par statut</label>
-            <select id="statut-filter" name="statut">
-                <option value="">Tous</option>
-                {% for statut in statuts %}
-                    <option value="{{ statut.id }}"
-                        {% if app.request.query.get('statut') == statut.id %}selected{% endif %}
-                    >
-                        {{ statut.libelle }}
-                    </option>
-                {% endfor %}
-            </select>
-        </div>
+            <div class="filter-group">
+                <label for="statut-filter">Filtrer par statut</label>
+                <select id="statut-filter" name="statut">
+                    <option value="">Tous</option>
+                    {% for statut in statuts %}
+                        <option value="{{ statut.id }}"
+                            {% if app.request.query.get('statut') == statut.id %}selected{% endif %}
+                        >
+                            {{ statut.libelle }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <button type="button" class="apply-filters">Appliquer</button>
-        <button type="button" class="reset-filters">Réinitialiser les filtres</button>
-</div>
+            <button type="button" class="apply-filters">Appliquer</button>
+            <button type="button" class="reset-filters">Réinitialiser les filtres</button>
+    </div>
 
-<table class="avis-table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Commande</th>
-            <th>Statut</th>
-            <th>Validé par</th>
-            <th>Date de création</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% if avis is not empty %}
-        {% for avisItem in avis %}
+    <table class="avis-table">
+        <thead>
             <tr>
-                <td>{{ avisItem.id }}</td>
-                <td>{{ avisItem.commande.numeroCommande }}</td>
-                <td>{{ avisItem.statut.libelle }}</td>
-                <td>{{ avisItem.validePar ? avisItem.validePar.prenom ~ ' ' ~ avisItem.validePar.nom : '—' }}</td>
-                <td>{{ avisItem.dateCreation ? avisItem.dateCreation|date('d/m/Y H:i') : '—' }}</td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="ajax-btn btn-see"
-                                data-url="{{ path('avis_show_admin', {'id': avisItem.id}) }}">
-                            <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}">Voir &amp; modifier
-                        </button>
-                    </div>
-                </td>
+                <th>ID</th>
+                <th>Commande</th>
+                <th>Statut</th>
+                <th>Validé par</th>
+                <th>Date de création</th>
+                <th>Actions</th>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">Aucun avis trouvé.</td>
-            </tr>
-        {% endfor %}
-        {% endif %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% if avis is not empty %}
+            {% for avisItem in avis %}
+                <tr>
+                    <td>{{ avisItem.id }}</td>
+                    <td>{{ avisItem.commande.numeroCommande }}</td>
+                    <td>{{ avisItem.statut.libelle }}</td>
+                    <td>{{ avisItem.validePar ? avisItem.validePar.prenom ~ ' ' ~ avisItem.validePar.nom : '—' }}</td>
+                    <td>{{ avisItem.dateCreation ? avisItem.dateCreation|date('d/m/Y H:i') : '—' }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="ajax-btn btn-see"
+                                    data-url="{{ path('avis_show_admin', {'id': avisItem.id}) }}">
+                                <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}">Voir &amp; modifier
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">Aucun avis trouvé.</td>
+                </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
 </div>

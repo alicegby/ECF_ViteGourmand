@@ -1,16 +1,32 @@
-{% extends 'base.html.twig' %}
+<div class="ajx-list">
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('categorymateriel_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+        </button>
+    </div>
 
-{% block title %}Détails de la catégorie{% endblock %}
+    <h1>
+        Détails de la catégorie <br>
+        {{ category.libelle }}
+    </h1>
 
-{% block body %}
-<h1>Détails de la catégorie - Matériel</h1>
+    <div class="plat-actions">
+        <button class="btn ajax-btn" data-url="{{ path('categorymateriel_edit', {'id': category.id}) }}">
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+            Modifier
+        </button>
 
-<p>{{ category.libelle }}</p>
+        <form method="post"
+            action="{{ path('categorymateriel_delete', {'id': category.id}) }}"
+            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?');"
+            style="display:inline-block;">
+            
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
 
-<a href="{{ path('categorymateriel_edit') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
-</a>
-<a href="{{ path('categorymateriel_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
-{% endblock %}
+            <button class="btn plat-btn-delete" type="submit">
+                <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
+                Supprimer
+            </button>
+        </form>
+    </div>
+</div>

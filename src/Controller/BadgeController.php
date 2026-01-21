@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Badge;
+use App\Form\BadgeType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class BadgeController extends AbstractController
 {
@@ -26,44 +28,106 @@ class BadgeController extends AbstractController
     {
         $badge = new Badge();
 
-        if ($request->isMethod('POST')) {
-            $badge->setNom($request->request->get('nom'));
-            $badge->setDescription($request->request->get('description'));
-            $badge->setIcone($request->request->get('icone'));
-            $badge->setConditionObtention($request->request->get('conditionObtention'));
-            $badge->setActif($request->request->get('actif') ? true : false);
+        $form = $this->createForm(BadgeType::class, $badge, ['is_edit' => false]);
+        $form->handleRequest($request);
 
+       if ($form->isSubmitted()) {
+        if ($form->isValid()) {
+            $iconeFile = $form->get('icone')->getData();
+            if ($iconeFile) {
+                $newFilename = uniqid('badge_') . '.' . $iconeFile->guessExtension();
+                try {
+                    $iconeFile->move($this->getParameter('badge_icons_directory'), $newFilename);
+                    $badge->setIcone('uploads/' . $newFilename);
+                } catch (\Exception $e) {
+                    if ($request->isXmlHttpRequest()) {
+                        return $this->json(['success' => false, 'message' => "Erreur upload icône"]);
+                    }
+                    $this->addFlash('error', "Erreur upload icône");
+                }
+            }
+            $badge->setIcone('uploads/' . $newFilename);
             $em->persist($badge);
             $em->flush();
 
-            $this->addFlash('success', 'Badge créé avec succès');
-
-            return $this->redirectToRoute('badge_list');
+            if ($request->isXmlHttpRequest()) {
+                return $this->json([
+                    'success' => true,
+                    'message' => 'Badge créé avec succès !',
+                    'redirectUrl' => $this->generateUrl('badge_list')
+                ]);
+            }
+            $this->addFlash('success', 'Badge créé avec succès !');
+            return $this->redirectToRoute('employe_dashboard');
         }
-
-        return $this->render('admin/badge/form.html.twig');
+        if ($request->isXmlHttpRequest()) {
+            $errors = [];
+            foreach ($form->all() as $child) {
+                foreach ($child->getErrors(true) as $error) {
+                    $errors[] = $error->getMessage();
+                }
+            }
+            return $this->json(['success' => false, 'errors' => $errors]);
+        }
+       }
+       return $this->render('admin/badge/new.html.twig', [
+        'badge' => $badge,
+        'form' => $form->createView()
+       ]);
     }
 
     #[IsGranted('ROLE_EMPLOYE')]
     public function edit(Badge $badge, Request $request, EntityManagerInterface $em): Response
     {
-        if ($request->isMethod('POST')) {
-            $badge->setNom($request->request->get('nom'));
-            $badge->setDescription($request->request->get('description'));
-            $badge->setIcone($request->request->get('icone'));
-            $badge->setConditionObtention($request->request->get('conditionObtention'));
-            $badge->setActif($request->request->get('actif') ? true : false);
+        $form = $this->createForm(BadgeType::class, $badge, ['is_edit' => true]);
+        $form->handleRequest($request);
 
-            $em->flush();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $iconeFile = $form->get('icone')->getData();
+                if ($iconeFile) {
+                    $newFilename = uniqid('badge_') . '.' . $iconeFile->guessExtension();
+                    try {
+                        $iconeFile->move($this->getParameter('badge_icons_directory'), $newFilename);
+                    } catch (\Exception $e) {
+                        if ($request->isXmlHttpRequest()) {
+                            return $this->json(['succes' => false, 'message => "Erreur upload icône']);
+                        }
+                        $this->addFlash('error', "Erreur upload image");
+                    }
+                    $badge->setIcone('uploads/' . $newFilename);
+                }
+                $em->flush();
 
-            $this->addFlash('success', 'Badge modifié avec succès');
-
-            return $this->redirectToRoute('badge_list');
+                if ($request->isXmlHttpRequest()) {
+                    return $this->json([
+                        'success' => true,
+                        'message' => "Badge modifié avec succès !",
+                        'redirectUrl' => $this->generateUrl('badge_list')
+                    ]);
+                }
+                $this->addFlash('success', 'Badge modifié avec succès');
+                return $this->redirectToRoute('employe_dashboard');
+            } else if ($request->isXmlHttpRequest()) {
+                $errors = [];
+                foreach ($form->all() as $child) {
+                    foreach ($child->getErrors(true) as $error) {
+                        $errors[] = $error->getMessage();
+                    }
+                }
+                return $this->json(['success' => false, 'errors' => $errors]);
+            }
         }
-
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('admin/badge/form.html.twig', [
+                'badge' => $badge,
+                'form' => $form->createView(),
+            ]);
+        }
         return $this->render('admin/badge/form.html.twig', [
-            'badge' => $badge
-        ]);
+            'badge' => $badge,
+            'form' => $form->createView(),
+        ]); 
     }
 
     #[IsGranted('ROLE_EMPLOYE')]
@@ -74,7 +138,7 @@ class BadgeController extends AbstractController
 
         $this->addFlash('success', 'Badge supprimé');
 
-        return $this->redirectToRoute('badge_list');
+        return $this->redirectToRoute('employe_dashboard');
     }
 
     #[IsGranted('ROLE_EMPLOYE')]
@@ -84,4 +148,5 @@ class BadgeController extends AbstractController
             'badge' => $badge
         ]); 
     }
+    
 }

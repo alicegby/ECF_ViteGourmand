@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+ 
 use App\Entity\Personnel;
 use App\Entity\CategoryPersonnel;
 use App\Form\PersonnelType;
@@ -34,10 +34,10 @@ class PersonnelController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('success', 'Personnel créé avec succès !');
-            return $this->redirectToRoute('personnel_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
 
-        return $this->render('admin/personnel/form.html.twig', [
+        return $this->render('admin/personnel/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -51,7 +51,7 @@ class PersonnelController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Personnel modifié avec succès !');
-            return $this->redirectToRoute('personnel_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
 
         return $this->render('admin/personnel/form.html.twig', [
@@ -68,7 +68,7 @@ class PersonnelController extends AbstractController {
             $this->em->flush();
             $this->addFlash('success', 'Personnel supprimé !');
         }
-        return $this->redirectToRoute('personnel_list');
+        return $this->redirectToRoute('employe_dashboard');
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

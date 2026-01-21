@@ -1,56 +1,37 @@
-{% extends 'base.html.twig' %}
+<div class="ajx-list">
+    <h1>Horaires</h1>
 
-{% block title %}Horaires{% endblock %}
-
-{% block body %}
-<h1>Horaires</h1>
-
-<a href="{{ path('horaire_new') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">
-    Nouvel horaire
-</a>
-
-<table>
-    <thead>
-        <tr>
-            <th>Jour</th>
-            <th>Heure d’ouverture</th>
-            <th>Heure de fermeture</th>
-            <th>Dernière modification</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for horaire in horaires %}
+    <table class="horaire-table">
+        <thead>
             <tr>
-                <td>{{ horaire.jour }}</td>
-                <td>{{ horaire.heureOuverture|date('H:i') }}</td>
-                <td>{{ horaire.heureFermeture|date('H:i') }}</td>
-                <td>
-                    {{ horaire.dateModif ? horaire.dateModif|date('d/m/Y H:i') : '-' }}
-                </td>
-                <td>
-                    <a href="{{ path('horaire_edit', {'id': horaire.id}) }}" class="btn">
-                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
-                        Modifier
-                    </a>
-
-                    <form action="{{ path('horaire_delete', {'id': horaire.id}) }}"
-                          method="post"
-                          onsubmit="return confirm('Supprimer cet horaire ?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ horaire.id) }}">
-                        <button type="submit" class="btn">
-                            <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
-                            Supprimer
+                <th>Jour</th>
+                <th>Heure d’ouverture</th>
+                <th>Heure de fermeture</th>
+                <th>Dernière modification</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for horaire in horaires %}
+                <tr>
+                    <td>{{ horaire.jour }}</td>
+                    <td>{{ horaire.heureOuverture|date('H:i') }}</td>
+                    <td>{{ horaire.heureFermeture|date('H:i') }}</td>
+                    <td>
+                        {{ horaire.dateModif ? horaire.dateModif|date('d/m/Y H:i') : '-' }}
+                    </td>
+                    <td class="action-buttons">
+                        <button class="ajax-btn btn-see" data-url="{{ path('horaire_show', {'id': horaire.id}) }}">
+                            <img src="{{ asset('Visuels/Icônes/See_Beige.png')}}" class="image-plat">
+                            Voir &amp; modifier
                         </button>
-                    </form>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">Aucun horaire enregistré.</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endblock %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Aucun horaire enregistré.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

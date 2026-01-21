@@ -42,7 +42,7 @@ class PlatsController extends AbstractController
                 if ($imageFile) {
                     $newFilename = uniqid('plat_') . '.' . $imageFile->guessExtension();
                     try {
-                        $imageFile->move($this->getParameter('uploads_directory'), $newFilename);
+                        $imageFile->move($this->getParameter('plats_images_directory'), $newFilename);
                         $plat->setImage('uploads/' . $newFilename);
                     } catch (\Exception $e) {
                         if ($request->isXmlHttpRequest()) {

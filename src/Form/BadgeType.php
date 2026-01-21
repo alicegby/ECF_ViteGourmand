@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 
 class BadgeType extends AbstractType
 {
@@ -18,7 +20,7 @@ class BadgeType extends AbstractType
         $builder
             ->add('nom', TextType::class, [
                 'label' => 'Nom du badge',
-                'constraints' => [
+                'constraints' => [ 
                     new NotBlank(message: 'Le nom du badge est obligatoire')
                 ]
             ])
@@ -28,15 +30,21 @@ class BadgeType extends AbstractType
                     new NotBlank(message: 'La description est obligatoire')
                 ]
             ])
-            ->add('icone', TextType::class, [
-                'label' => 'Icône (nom ou chemin)',
+            ->add('icone', FileType::class, [
+                'label' => 'Icône du badge',
+                'mapped' => false,  
+                'required' => !$options['is_edit'],
                 'constraints' => [
-                    new NotBlank(message: 'L’icône est obligatoire')
-                ]
+                    new File(
+                        maxSize: '5M',
+                        mimeTypes: ['image/jpeg','image/jpg','image/png','image/webp'],
+                        mimeTypesMessage: 'Veuillez télécharger une image valide (jpeg, jpg, png, webp).'
+                    )
+                ],
             ])
-            ->add('conditionObtention', TextareaType::class, [
+            ->add('conditionObtention', TextType::class, [
                 'label' => 'Condition d’obtention',
-                'constraints' => [
+                'constraints' => [ 
                     new NotBlank(message: 'La condition est obligatoire')
                 ]
             ])
@@ -49,7 +57,8 @@ class BadgeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Badge::class
+            'data_class' => Badge::class,
+            'is_edit' => false
         ]);
     }
 }

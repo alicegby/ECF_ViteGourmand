@@ -5,7 +5,7 @@
         </button>
     </div>
 
-    <h1>{{ category is defined ? 'Modifier la catégorie' : 'Nouvelle catégorie' }}</h1>
+    <h1>{{ category is defined ? 'Modifier la catégorie' }}</h1>
 
     {% for label, messages in app.flashes %}
         {% for message in messages %}

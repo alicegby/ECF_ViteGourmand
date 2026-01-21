@@ -1,0 +1,66 @@
+<div class="ajx-list">
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('badge_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">
+            Retour à la liste
+        </button>
+    </div>
+
+    <h1 class="badge-header">Créer un badge</h1>
+
+     {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash-message flash-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="badge-new-container">
+        {{ form_start(form, {
+            'attr': { 'class': 'ajax-badge-form' },
+            'enctype': 'multipart/form-data',
+            'action': path('badge_new'),
+            'method': 'POST'
+        }) }}
+
+        <div class="form-group">
+            {{ form_label(form.nom)}}
+            {{ form_widget(form.nom, { attr: { class: 'form-input' } }) }}
+            {{ form_errors(form.nom) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, { attr: { class: 'form-textarea' } }) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.icone) }}
+            {{ form_widget(form.icone, { attr: { class: 'form-input' } }) }}
+            {{ form_errors(form.icone) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.conditionObtention) }}
+            {{ form_widget(form.conditionObtention, { attr: { class: 'form-input' } }) }}
+            {{ form_errors(form.conditionObtention) }}
+        </div>
+
+        <div class="form-group checkbox-group">
+            <label class="checkbox-container">
+                {{ form_widget(form.actif) }}
+                {{ form_label(form.actif) }}
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-submit">
+                <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}" alt="">
+                Sauvegarder la boisson
+            </button>
+        </div>
+    {{ form_end(form) }}
+
+</div>

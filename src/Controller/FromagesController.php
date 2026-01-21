@@ -36,7 +36,7 @@ class FromagesController extends AbstractController {
                 $newFilename = uniqid('fromage_') . '.' . $imageFile->guessExtension();
                 try {
                     $imageFile->move(
-                        $this->getParameter('uploads_directory'),
+                        $this->getParameter('fromages_images_directory'),
                         $newFilename
                     );
                 } catch (FileException $e) {
@@ -51,15 +51,15 @@ class FromagesController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('succes', 'Fromage créé avec succèes !');
-            return $this->redirectToRoute('fromage_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
-        return $this->render('admin/fromages/form.html.twig', [
+        return $this->render('admin/fromages/new.html.twig', [
             'form' => $form->createView(),
             'fromage' => $fromage,
         ]);
     }
 
-    #[IsGranted('ROLE_EMPLOYE')]
+   #[IsGranted('ROLE_EMPLOYE')]
     public function edit(Fromages $fromage, Request $request): Response {
         $form = $this->createForm(FromagesType::class, $fromage, [
             'is_edit' => true
@@ -72,7 +72,7 @@ class FromagesController extends AbstractController {
                 $newFilename = uniqid('fromage_') . '.' . $imageFile->guessExtension();
                 try {
                     $imageFile->move(
-                        $this->getParameter('uploads_directory'),
+                        $this->getParameter('fromages_images_directory'),
                         $newFilename
                     );
                 } catch (FileException $e) {
@@ -86,7 +86,7 @@ class FromagesController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('success', 'Fromage modifié avec succès !');
-            return $this->redirect('fromages_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
         return $this->render('admin/fromages/form.html.twig', [
             'form' => $form->createView(),
@@ -99,7 +99,7 @@ class FromagesController extends AbstractController {
         $categoryId = $request->query->get('category');
         $keyword = $request->query->get('keyword');
 
-        $qb = $this->fromagesRepository->createQueryBuilder('b')
+        $qb = $this->fromagesRepository->createQueryBuilder('f')
             ->leftJoin('f.category', 'c')
             ->addSelect('c');
 
@@ -108,7 +108,7 @@ class FromagesController extends AbstractController {
                 ->setParameter('categoryId', $categoryId);
         }
         if($keyword) {
-            $qb->andWhere('b.titreFromage LIKE :keyword')
+            $qb->andWhere('f.titreFromage LIKE :keyword')
                 ->setParameter('keyword', '%' . $keyword . '%');
         }
 
@@ -121,6 +121,18 @@ class FromagesController extends AbstractController {
             'selectedCategory' => $categoryId,
             'keyword' => $keyword
         ]);
+    }
+
+    #[IsGranted('ROLE_EMPLOYE')]
+    public function delete(Request $request, Fromages $fromage): Response {
+        if (!$this->isCsrfTokenValid('delete'.$fromage->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+        $this->em->remove($fromage);
+        $this->em->flush();
+
+        $this->addFlash('success', 'Fromage supprimé !');
+        return $this->redirectToRoute('employe_dashboard'); 
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

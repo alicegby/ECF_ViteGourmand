@@ -1,27 +1,44 @@
-{# templates/admin/fromages/show.html.twig #}
-{% extends 'base.html.twig' %}
+<div class="ajx-list">
 
-{% block title %}Détails du fromage{% endblock %}
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('admin_plats_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+        </button>
+    </div>
 
-{% block body %}
-<h1>{{ boisson.titreFromage }}</h1>
+    <h1 class="options-title">{{ fromage.titreFromage }}</h1>
 
-<p>Catégorie : {{ fromage.category ? fromage.category.nom : '-' }}</p>
-<p>Description : {{ fromage.description }}</p>
-<p>Stock : {{ fromage.stock }}</p>
-<p>Minimum de commande : {{ fromage.minCommande }}</p>
-<p>Prix par fromage : {{ fromage.prixParFromage }}</p>
+    <div class="option-p">
+    <p><strong>Catégorie : </strong>{{ fromage.category ? fromage.category.libelle : '-' }}</p>
+    <p><strong>Description : </strong>{{ fromage.description }}</p>
+    <p><strong>Stock : </strong>{{ fromage.stock }}</p>
+    <p><strong>Minimum de commande : </strong>{{ fromage.minCommande }}</p>
+    <p><strong>Prix par fromage : </strong>{{ fromage.prixParFromage }} €</p>
 
-{% if fromage.image %}
-<h2>Image</h2>
-    <img src="{{ asset(fromage.image) }}" alt="{{ fromage.altTexte }}">
-{% endif %}
+    {% if fromage.image %}
+    <h2>Image</h2>
+        <img src="{{ asset(fromage.image) }}" alt="{{ fromage.alt }}">
+    {% endif %}
+    </div>
 
-<a href="{{ path('fromages_edit') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
-</a>
-<a href="{{ path('fromages_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
+    <div class="plat-actions">
+        <button class="btn ajax-btn" data-url="{{ path('fromages_edit', {'id': fromage.id}) }}">
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+            Modifier
+        </button>
 
-{% endblock %}
+        <form method="post"
+            action="{{ path('fromages_delete', {'id': fromage.id}) }}"
+            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce fromage ?');"
+            style="display:inline-block;">
+            
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ fromage.id) }}">
+
+            <button class="btn plat-btn-delete" type="submit">
+                <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
+                Supprimer
+            </button>
+        </form>
+    </div>
+
+</div>

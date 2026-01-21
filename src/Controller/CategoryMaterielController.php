@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller; 
 
 use App\Entity\CategoryMateriel;
 use App\Form\CategoryMaterielType;
@@ -41,10 +41,10 @@ class CategoryMaterielController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Catégorie créée !');
 
-            return $this->redirectToRoute('categorymateriel_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
 
-        return $this->render('admin/categorymateriel/form.html.twig', [
+        return $this->render('admin/categorymateriel/new.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -59,7 +59,7 @@ class CategoryMaterielController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Catégorie modifiée !');
 
-            return $this->redirectToRoute('categorymateriel_list');
+            return $this->redirectToRoute('employe_dashboard');
         }
 
         return $this->render('admin/categorymateriel/form.html.twig', [
@@ -77,7 +77,7 @@ class CategoryMaterielController extends AbstractController
             $this->addFlash('success', 'Catégorie supprimée !');
         }
 
-        return $this->redirectToRoute('categorymateriel_list');
+        return $this->redirectToRoute('employe_dashboard');
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

@@ -1,30 +1,30 @@
 <div class="ajx-list">
-<div class="commande-actions">
-        <button class="ajax-btn btn-back" data-url="{{ path('avis_list_admin') }}">
-            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
-        </button>
+    <div class="commande-actions">
+            <button class="ajax-btn btn-back" data-url="{{ path('avis_list_admin') }}">
+                <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+            </button>
+        </div>
+    <h1 class="avis-header">Détails de l'avis</h1>
+
+    <div class="bloc-avis">
+        <p>Commande : {{ avis.commande.numeroCommande }}</p>
+        <p>Statut : {{ avis.statut.libelle }}</p>
+        <p>Note : {{ avis.notes }}/5</p>
+        <p>Commentaire :<br>{{ avis.contenu }}</p>
+        <p>Validé par : {{ avis.validePar ? avis.validePar.prenom ~ ' ' ~ avis.validePar.nom : '—' }}</p>
+        <p>Date de création : {{ avis.dateCreation ? avis.dateCreation|date('d/m/Y H:i') : '—' }}</p>
+        <p>Date de validation : {{ avis.dateValidation ? avis.dateValidation|date('d/m/Y H:i') : '—' }}</p>
+
+        <form action="{{ path('avis_show_admin', {'id': avis.id}) }}" method="post" class="avis-form-statut">
+            <label for="statut">Changer le statut :</label><br>
+            <select name="statut" id="statut">
+                {% for statut in statuts %}
+                    <option value="{{ statut.id }}" {% if avis.statut.id == statut.id %}selected{% endif %}>
+                        {{ statut.libelle }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn">Valider</button>
+        </form>
     </div>
-<h1 class="avis-header">Détails de l'avis</h1>
-
-<div class="bloc-avis">
-    <p>Commande : {{ avis.commande.numeroCommande }}</p>
-    <p>Statut : {{ avis.statut.libelle }}</p>
-    <p>Note : {{ avis.notes }}/5</p>
-    <p>Commentaire :<br>{{ avis.contenu }}</p>
-    <p>Validé par : {{ avis.validePar ? avis.validePar.prenom ~ ' ' ~ avis.validePar.nom : '—' }}</p>
-    <p>Date de création : {{ avis.dateCreation ? avis.dateCreation|date('d/m/Y H:i') : '—' }}</p>
-    <p>Date de validation : {{ avis.dateValidation ? avis.dateValidation|date('d/m/Y H:i') : '—' }}</p>
-
-    <form action="{{ path('avis_show_admin', {'id': avis.id}) }}" method="post" class="avis-form-statut">
-        <label for="statut">Changer le statut :</label><br>
-        <select name="statut" id="statut">
-            {% for statut in statuts %}
-                <option value="{{ statut.id }}" {% if avis.statut.id == statut.id %}selected{% endif %}>
-                    {{ statut.libelle }}
-                </option>
-            {% endfor %}
-        </select>
-        <button type="submit" class="btn">Valider</button>
-    </form>
-</div>
 </div>

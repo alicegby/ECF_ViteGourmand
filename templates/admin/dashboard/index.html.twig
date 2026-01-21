@@ -1,16 +1,106 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Votre Dashboard{% endblock %}
+{% block title %}Votre Dashboard - Admin - Vite &amp; Gourmand{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 {% endblock %}
 
 {% block content %}
-<h1>Bienvenue {{ app.user.prenom }}</h1>
+<div class="dashboard-opening">
+    <h1>Bonjour, {{ app.user.prenom }} !</h1>
+    <p>Bienvenue sur votre espace admin. Cliquez sur une section pour afficher les détails.</p>
+</div>
+
+<div class="dashboard-container">
+
+    <!--COLONNE DE GAUCHE-->
+    <div class="dashboard-buttons">
+
+        <div class="dashboard-theme">
+            <button class="theme-btn" data-url="{{ path('commande_list') }}">Gestion des commandes
+                <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" class="arrow">
+            </button>
+        </div>
+
+        <div class="dashboard-theme">
+            <button class="theme-btn" data-url="{{ path('avis_list') }}">Gestion des avis
+                <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" class="arrow">
+            </button>
+        </div>
+
+
+        <div class="dashboard-theme">
+            <button class="theme-btn" data-target="menu-submenu">Gestion des menus
+                <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" class="arrow">
+            </button>
+            <div class="submenu" id="menu-submenu">
+                <button class="ajax-btn" data-url="{{ path('admin_menu_list') }}">Menus</button>
+                <button class="ajax-btn" data-url="{{ path('condition_list') }}">Conditions</button>
+            </div>
+        </div>
+
+        <div class="dashboard-theme">
+            <button class="theme-btn" data-target="plats-submenu">Gestion des plats
+                <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" class="arrow">
+            </button>
+            <div class="submenu" id="plats-submenu">
+                <button class="ajax-btn" data-url="{{ path('admin_plats_list') }}">Plats</button>
+                <button class="ajax-btn" data-url="{{ path('menuplat_list') }}">Associer un plat avec un menu</button> 
+                <button class="ajax-btn" data-url="{{ path('categoryfood_list') }}">Catégories</button>
+            </div>
+        </div>
+
+        <div class="dashboard-theme">
+            <button class="theme-btn" data-target="options-submenu">Gestion des options
+                <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" class="arrow">
+            </button>
+            <div class="submenu" id="options-submenu">
+                <button class="ajax-btn" data-url="{{ path('fromages_list') }}">Fromages</button>
+                <button class="ajax-btn" data-url="{{ path('categorycheese_list') }}">Catégories - Fromages</button>
+                <button class="ajax-btn" data-url="{{ path('boissons_list') }}">Boissons</button>
+                <button class="ajax-btn" data-url="{{ path('categorydrink_list') }}">Catégories - Boissons</button>
+                <button class="ajax-btn" data-url="{{ path('materiel_list') }}">Matériel</button>
+                <button class="ajax-btn" data-url="{{ path('categorymateriel_list') }}">Catégories - Matériel</button>
+                <button class="ajax-btn" data-url="{{ path('personnel_list') }}">Personnel</button>
+                <button class="ajax-btn" data-url="{{ path('categorypersonnel_list') }}">Catégories - Personnel</button>
+            </div>
+        </div>
+
+        <div class="dashboard-theme">
+            <button class="theme-btn" data-url="{{ path('horaire_list') }}">Gestion des horaires
+                <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" class="arrow">
+            </button>
+        </div>
+
+        <div class="dashboard-theme">
+            <button class="theme-btn" data-url="{{ path('badge_list') }}">Gestion des badges
+                <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" class="arrow">
+            </button>
+        </div>
+
+        <div class="dashboard-theme">
+            <button class="theme-btn" data-url="{{ path('user_list') }}">Liste des clients
+                <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" class="arrow">
+            </button>
+        </div>
+
+    </div>
+
+    <!--COLONNE DE DROITE-->
+    <div class="dashboard-content" data-default-url="{{ path('commande_list') }}">
+        <!--Contenu Ajax-->
+    </div>
+   
+
+</div>
 
 <div class="logout-container">
     <a href="{{ path('admin_logout') }}" class="logout-button">Déconnexion</a>
 </div>
+{% endblock %} 
 
+{% block javascripts %}
+    <script src="{{ asset('js/dashboardemploye.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
 {% endblock %}

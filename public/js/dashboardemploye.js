@@ -287,6 +287,234 @@ document.addEventListener('DOMContentLoaded', function() {
 
             closePanel();
         });
+    }  else if (type === 'fromages') {
+
+        applyBtn.addEventListener('click', e => {
+            e.preventDefault();
+
+            const category = panel.querySelector('select[name="category"]').value;
+            const keyword = panel.querySelector('input[name="keyword"]').value;
+
+            const urlObj = new URL(toggleBtn.dataset.url, window.location.origin);
+
+            if (category) urlObj.searchParams.set('category', category);
+            if (keyword) urlObj.searchParams.set('keyword', keyword);
+
+            urlObj.searchParams.set('ajax', '1');
+
+            fetch(urlObj, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(resp => resp.text())
+            .then(html => {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+
+                const newTbody = temp.querySelector('.fromages-table tbody');
+                if (newTbody) {
+                    table.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                }
+            });
+
+            closePanel();
+        });
+
+        resetBtn.addEventListener('click', e => {
+            e.preventDefault();
+
+            panel.querySelector('select[name="category"]').value = '';
+            panel.querySelector('input[name="keyword"]').value = '';
+
+            const urlObj = new URL(toggleBtn.dataset.url, window.location.origin);
+            urlObj.searchParams.set('ajax', '1');
+
+            fetch(urlObj, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(resp => resp.text())
+            .then(html => {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+
+                const newTbody = temp.querySelector('.fromages-table tbody');
+                if (newTbody) {
+                    table.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                }
+            });
+
+            closePanel();
+        });
+    } else if (type === 'boissons') {
+
+        applyBtn.addEventListener('click', e => {
+            e.preventDefault();
+
+            const category = panel.querySelector('select[name="category"]').value;
+            const keyword = panel.querySelector('input[name="keyword"]').value;
+
+            const urlObj = new URL(toggleBtn.dataset.url, window.location.origin);
+
+            if (category) urlObj.searchParams.set('category', category);
+            if (keyword) urlObj.searchParams.set('keyword', keyword);
+
+            urlObj.searchParams.set('ajax', '1');
+
+            fetch(urlObj, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(resp => resp.text())
+            .then(html => {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+
+                const newTbody = temp.querySelector('.boissons-table tbody');
+                if (newTbody) {
+                    table.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                }
+            });
+
+            closePanel();
+        });
+
+        resetBtn.addEventListener('click', e => {
+            e.preventDefault();
+
+            panel.querySelector('select[name="category"]').value = '';
+            panel.querySelector('input[name="keyword"]').value = '';
+
+            const urlObj = new URL(toggleBtn.dataset.url, window.location.origin);
+            urlObj.searchParams.set('ajax', '1');
+
+            fetch(urlObj, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(resp => resp.text())
+            .then(html => {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+
+                const newTbody = temp.querySelector('.boissons-table tbody');
+                if (newTbody) {
+                    table.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                }
+            });
+
+            closePanel();
+        });
+    } else if (type === 'materiel') {
+
+        applyBtn.addEventListener('click', e => {
+            e.preventDefault();
+
+            const category = panel.querySelector('select[name="category"]').value;
+            const keyword = panel.querySelector('input[name="keyword"]').value;
+
+            const urlObj = new URL(toggleBtn.dataset.url, window.location.origin);
+
+            if (category) urlObj.searchParams.set('category', category);
+            if (keyword) urlObj.searchParams.set('keyword', keyword);
+
+            urlObj.searchParams.set('ajax', '1');
+
+            fetch(urlObj, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(resp => resp.text())
+            .then(html => {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+
+                const newTbody = temp.querySelector('.materiel-table tbody');
+                if (newTbody) {
+                    table.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                }
+            });
+
+            closePanel();
+        });
+
+        resetBtn.addEventListener('click', e => {
+            e.preventDefault();
+
+            panel.querySelector('select[name="category"]').value = '';
+            panel.querySelector('input[name="keyword"]').value = '';
+
+            const urlObj = new URL(toggleBtn.dataset.url, window.location.origin);
+            urlObj.searchParams.set('ajax', '1');
+
+            fetch(urlObj, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(resp => resp.text())
+            .then(html => {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+
+                const newTbody = temp.querySelector('.materiel-table tbody');
+                if (newTbody) {
+                    table.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                }
+            });
+
+            closePanel();
+        });
+    } else if (type === 'personnel') {
+
+        applyBtn.addEventListener('click', e => {
+            e.preventDefault();
+
+            const category = panel.querySelector('select[name="category"]').value;
+            const keyword = panel.querySelector('input[name="keyword"]').value;
+
+            const urlObj = new URL(toggleBtn.dataset.url, window.location.origin);
+
+            if (category) urlObj.searchParams.set('category', category);
+            if (keyword) urlObj.searchParams.set('keyword', keyword);
+
+            urlObj.searchParams.set('ajax', '1');
+
+            fetch(urlObj, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(resp => resp.text())
+            .then(html => {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+
+                const newTbody = temp.querySelector('.personnel-table tbody');
+                if (newTbody) {
+                    table.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                }
+            });
+
+            closePanel();
+        });
+
+        resetBtn.addEventListener('click', e => {
+            e.preventDefault();
+
+            panel.querySelector('select[name="category"]').value = '';
+            panel.querySelector('input[name="keyword"]').value = '';
+
+            const urlObj = new URL(toggleBtn.dataset.url, window.location.origin);
+            urlObj.searchParams.set('ajax', '1');
+
+            fetch(urlObj, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(resp => resp.text())
+            .then(html => {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+
+                const newTbody = temp.querySelector('.personnel-table tbody');
+                if (newTbody) {
+                    table.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                }
+            });
+
+            closePanel();
+        });
     } else {
             // Pour les autres panels (commande, avis), garde l'ancien code
             const select = panel.querySelector('select');

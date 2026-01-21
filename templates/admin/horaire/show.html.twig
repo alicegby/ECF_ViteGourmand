@@ -1,19 +1,21 @@
-{% extends 'base.html.twig' %}
+<div class="ajx-list">
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('horaire_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+        </button>
+    </div>
+    <h1 class="options-title">Détail de l’horaire</h1>
 
-{% block title %}Détail de l’horaire{% endblock %}
+    <div class="option-p">
+        <p><strong>Jour : </strong>{{ horaire.jour }}</p>
+        <p><strong>Heure d’ouverture : </strong>{{ horaire.heureOuverture|date('H:i') }}</p>
+        <p><strong>Heure de fermeture : </strong>{{ horaire.heureFermeture|date('H:i') }}</p>
+    </div>
 
-{% block body %}
-<h1>Détail de l’horaire</h1>
-
-<p>Jour : {{ horaire.jour }}</p>
-<p>Heure d’ouverture : {{ horaire.heureOuverture|date('H:i') }}</p>
-<p>Heure de fermeture : {{ horaire.heureFermeture|date('H:i') }}</p>
-
-<a href="{{ path('horaire_edit') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
-</a>
-<a href="{{ path('horaire_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">
-    Retour à la liste
-</a>
-{% endblock %}
+    <div class="plat-actions">
+        <button class="btn ajax-btn" data-url="{{ path('horaire_edit', {'id': horaire.id}) }}">
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+            Modifier
+        </button>
+    </div>
+</div>

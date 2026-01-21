@@ -1,86 +1,73 @@
-{# templates/admin/boissons/list.html.twig #}
-{% block title %}Liste des boissons{% endblock %}
+<div class="ajx-list">
+    <h1 class="boissons-header">
+    Liste des boissons
+        <button class="filter-toggle" data-type="boissons" data-url="{{ path('boissons_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
+        </button>
+    </h1>
 
-{% block body %}
-<h1>Liste des boissons</h1>
-
-<a href="{{ path('boissons_new') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Nouvelle boisson
-</a>
-
-<form method="get" action="{{ path ('boissons_list') }}" class="filter-form">
-
-    <label for="category">Catégorie : </label>
-    <select name="category" id="category">
-        <option value="">Toutes</option>
-        {% for category in categories %}
-            <option value="{{ category.id }}" {% if selectedCategory == category.id %}selected{% endif %}>
-                {{ category.nom }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <label for="keyword">Mot-clé : </label>
-    <input type="text" name="keyword" id="keyword" value="{{ keyword|default('') }}" placeholder="Nom de la boisson">
-
-    <button type="submit" class="btn">
-        <img src="{{ asset('Visuels/Icônes/Search_Beige.png') }}" alt="Filtrer">Filtrer
+    <button class="ajax-btn add-boissons" 
+        data-url="{{ path('boissons_new') }}" 
+        data-default="false">
+        <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Créer une boisson">
+        Créer une boisson
     </button>
 
-</form>
+    <div class="filter-panel" data-type="boissons">
+        <button class="close-panel">
+            <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
+        </button>
 
-<table>
-    <thead>
-        <tr>
-            <th>Nom de la boisson</th>
-            <th>Catégorie</th>
-            <th>Description</th>
-            <th>Stock</th>
-            <th>Quantité par personne</th>
-            <th>Minimum de commande</th>
-            <th>Prix par bouteille</th>
-            <th>Image</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
+        <div class="filter-group">
+            <label for="category-filter">Filtrer par catégorie</label>
+            <select id="category-filter" name="category">
+                <option value="">Tous</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.libelle }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <tbody>
-        {% for boisson in boissons %}
-        <tr>
-            <td>{{ boisson.titreBoisson }}</td>
-            <td>{{ boisson.category ? boisson.category.nom : '-' }}</td>
-            <td>{{ boisson.description }}</td>
-            <td>{{ boisson.stock }}</td>
-            <td>{{ boisson.qteParPersonne }}</td>
-            <td>{{ boisson.minCommande }}</td>
-            <td>{{ boisson.prixParBouteille }}</td>
-            <td>
-                {% if boisson.image %}
-                    <img src="{{ asset(boisson.image) }}" alt="{{ boisson.altTexte }}">
-                {% else %}
-                        - 
-                {% endif %}
-            </td>
-            <td class="actions">
-                <a href="{{ path('boissons_show', {'id': boisson.id}) }}" class="btn">
-                    <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
-                </a>
-                <a href="{{ path('boissons_edit', {'id': boisson.id}) }}" class="btn">
-                    <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
-                </a>
-                <form action="{{ path('boissons_delete', {'id': boisson.id}) }}" method="post" onsubmit="return confirm('Supprimer cette boisson ?');">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ boisson.id) }}">
-                    <button type="submit" class="btn">
-                        <img src="{{ asset('Visuel/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
+        <div class="filter-group">
+            <label for="keyword-filter">Mot-clé</label>
+            <input type="text" id="keyword-filter" name="keyword" placeholder="Rechercher..." value="{{ app.request.query.get('keyword') }}">
+        </div>
+
+        <button type="button" class="apply-filters">Appliquer</button>
+        <button type="button" class="reset-filters">Réinitialiser les filtres</button>
+    </div>
+
+    <table class="boissons-table">
+        <thead>
+            <tr>
+                <th>Nom de la boisson</th>
+                <th>Catégorie</th>
+                <th>Stock</th>
+                <th>Prix par bouteille</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for boisson in boissons %}
+            <tr>
+                <td>{{ boisson.titreBoisson }}</td>
+                <td>{{ boisson.category ? boisson.category.libelle : '-' }}</td>
+                <td>{{ boisson.stock }}</td>
+                <td>{{ boisson.prixParBouteille }} €</td>
+
+                <td class="action-buttons">
+                    <button class="ajax-btn btn-see" data-url="{{ path('boissons_show', {'id': boisson.id}) }}">
+                        <img src="{{ asset('Visuels/Icônes/See_Beige.png')}}" class="image-plat">
+                        Voir &amp; modifier
                     </button>
-                </form>
-            </td>
+                </td>
+            </tr>
+        {% else %}
+        <tr>
+            <td>Aucune boisson trouvée.</td>
         </tr>
-    {% else %}
-    <tr>
-        <td>Aucune boisson trouvée.</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-{% endblock %}
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

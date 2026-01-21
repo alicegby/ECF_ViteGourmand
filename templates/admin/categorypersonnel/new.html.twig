@@ -1,0 +1,42 @@
+<div class="ajx-list">
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('categorypersonnel_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">
+            Retour à la liste
+        </button>
+    </div>
+
+    <h1 class="menu-header">Créer une catégorie</h1>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash-message flash-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+    <div class="category-new-container">
+    {{ form_start(form, {
+        'attr': { 'class': 'ajax-categorypersonnel-form' },
+        'enctype': 'multipart/form-data',
+        'action': path('categorypersonnel_new'),
+        'method': 'POST'
+    }) }}
+
+        <div class="form-group">
+            {{ form_label(form.libelle) }}
+            {{ form_widget(form.libelle, { attr: { class: 'form-textarea' } }) }}
+            {{ form_errors(form.libelle) }}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-submit">
+                <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}">
+                Créer la catégorie
+            </button>
+        </div>
+
+    {{ form_end(form) }}
+
+</div>

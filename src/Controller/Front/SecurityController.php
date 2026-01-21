@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller\Front;
- 
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -18,18 +18,22 @@ class SecurityController extends AbstractController
 
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        $user = $this->getUser();
+
+        if ($user) {
+    // Vérifier le rôle exact
+            if ($this->isGranted('ROLE_ADMIN')) {
+                return $this->redirectToRoute('admin_dashboard');
+            } elseif ($this->isGranted('ROLE_EMPLOYE')) {
+                return $this->redirectToRoute('employe_dashboard');
+            } elseif ($this->isGranted('ROLE_USER')) {
+                return $this->redirectToRoute('dashboard_user');
+            }
+        }
+
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastEmail = $authenticationUtils->getLastUsername();
 
-        $request = $this->requestStack->getCurrentRequest();
-        $session = $request->getSession();
-
-        // Si l'utilisateur vient de la page d'accueil, on définit le dashboard comme cible
-        $fromHome = $request->query->get('from_home'); // exemple : /login?from_home=1
-        if ($fromHome) {
-            $session->set('_security_utilisateurs.target_path', $this->generateUrl('dashboard_user'));
-        }
- 
         return $this->render('security/login.html.twig', [
             'last_email' => $lastEmail,
             'error' => $error,

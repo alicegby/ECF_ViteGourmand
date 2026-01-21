@@ -33,20 +33,31 @@
                         </a>
                     </div>
 
-                    {% set account_path = 
-                        is_granted('ROLE_ADMIN') ? path('admin_dashboard') :
-                        is_granted('ROLE_EMPLOYE') ? path('employe_dashboard') :
-                        is_granted('ROLE_USER') ? path('dashboard_user') :
-                        path('app_login', {'from_home': 1}) 
-                    %}
-
                     <div class="icon-wrapper">
-                        <a href="{{ account_path }}">
-                            <img src="{{ asset('Visuels/Icônes/Compte.png') }}" class="header-icon" alt="Compte">
-                        </a>
+                        {% if app.user %}
+                            {# Utilisateur connecté #}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('admin_dashboard') }}">
+                            {% elseif is_granted('ROLE_EMPLOYE') %}
+                                <a href="{{ path('employe_dashboard') }}">
+                            {% elseif is_granted('ROLE_USER') %}
+                                <a href="{{ path('dashboard_user') }}">
+                            {% else %}
+                                {# Cas improbable : utilisateur connecté mais sans rôle connu #}
+                                <a href="{{ path('homepage') }}">
+                            {% endif %}
+                                <img src="{{ asset('Visuels/Icônes/Compte.png') }}" class="header-icon" alt="Compte">
+                            </a>
+                        {% else %}
+                            {# Non connecté #}
+                            <a href="{{ path('app_login') }}">
+                                <img src="{{ asset('Visuels/Icônes/Compte.png') }}" class="header-icon" alt="Compte">
+                            </a>
+                        {% endif %}
                     </div>
 
                 </div>
+
                 <div class="burger">
                     <div class="bar"></div>
                     <div class="bar"></div>
