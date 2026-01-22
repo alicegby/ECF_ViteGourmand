@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==================================================
-    // SÉLECTION MATERIEL
+    // SÉLECTION PERSONNEL
     // ==================================================
     const optionCards = document.querySelectorAll('.options-card');
     const nextBtn = document.querySelector('.next-option-btn');
@@ -57,10 +57,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const selectBtn = card.querySelector('.options-select-btn');
         const quantityControls = card.querySelector('.options-quantity-controls');
-        const decreaseBtn = quantityControls.querySelector('.decrease-btn');
-        const increaseBtn = quantityControls.querySelector('.increase-btn');
-        const quantityInput = quantityControls.querySelector('.quantity-input');
-        const validateBtn = card.querySelector('.options-validate-btn');
+        const quantityInput = quantityControls.querySelector('input[name^="personnel_"][name$="_quantite"]');
+        const hoursInput = quantityControls.querySelector('input[name^="personnel_"][name$="_heures"]');
+        const qtyDecreaseBtn = quantityControls.querySelector('label:nth-of-type(1) .decrease-btn');
+        const qtyIncreaseBtn = quantityControls.querySelector('label:nth-of-type(1) .increase-btn');
+        const hoursDecreaseBtn = quantityControls.querySelector('label:nth-of-type(2) .decrease-btn');
+        const hoursIncreaseBtn = quantityControls.querySelector('label:nth-of-type(2) .increase-btn');
+        const validateBtn = quantityControls.querySelector('.options-validate-btn');
         const stockError = quantityControls.querySelector('.options-stock-error');
 
         const minCommande = parseInt(card.dataset.min || 1, 10);
@@ -93,11 +96,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 checkIcon.style.display = 'none';
                 selectBtn.textContent = 'Sélectionner';
                 quantityControls.style.display = 'none';
+                if (!card.dataset.validated) {
+                    checkIcon.style.display = 'none';
+                }
             } else {
                 card.classList.add('selected');
                 selectBtn.textContent = 'Sélectionné';
                 quantityControls.style.display = 'flex';
                 quantityInput.value = 1;
+                if (card.dataset.validated === 'true') {
+                    checkIcon.style.display = 'block';
+                }
             }
 
             updateNextButton();
@@ -111,8 +120,9 @@ document.addEventListener('DOMContentLoaded', () => {
             checkIcon.style.display = 'none';
         };
 
-        increaseBtn.addEventListener('click', () => {
-            const qty = parseInt(quantityInput.value, 10);
+        // Quantité
+        qtyIncreaseBtn.addEventListener('click', () => {
+            let qty = parseInt(quantityInput.value, 10);
             if (qty < stock) {
                 quantityInput.value = qty + 1;
                 stockError.style.display = 'none';
@@ -123,13 +133,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        decreaseBtn.addEventListener('click', () => {
-            const qty = parseInt(quantityInput.value, 10);
+        qtyDecreaseBtn.addEventListener('click', () => {
+            let qty = parseInt(quantityInput.value, 10);
             if (qty > minCommande) {
                 quantityInput.value = qty - 1;
                 stockError.style.display = 'none';
                 invalidateValidation();
             }
+        });
+
+        // Heures
+        hoursIncreaseBtn.addEventListener('click', () => {
+            let hours = parseInt(hoursInput.value, 10);
+            hoursInput.value = hours + 1;
+            invalidateValidation();
+        });
+
+        hoursDecreaseBtn.addEventListener('click', () => {
+            let hours = parseInt(hoursInput.value, 10);
+            if (hours > 1) hoursInput.value = hours - 1;
+            invalidateValidation();
         });
 
         // ==================================================
@@ -139,6 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
             validateBtn.addEventListener('click', () => {
 
                 const qty = parseInt(quantityInput.value, 10);
+                const hours = parseInt(hoursInput.value, 10);
 
                 if (qty < minCommande) {
                     stockError.textContent = `Minimum ${minCommande} unité(s)`;
@@ -162,7 +186,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify([{
                         id: card.dataset.personnelId,
-                        qty: qty
+                        qty: qty,
+                        hours: hours
                     }])
                 })
                 .then(() => {

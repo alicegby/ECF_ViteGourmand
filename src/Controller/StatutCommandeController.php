@@ -3,18 +3,24 @@
 namespace App\Controller;
 
 use App\Entity\StatutCommande;
+use App\Entity\Commande;
 use App\Form\StatutCommandeType;
+use App\Form\CommandeEditType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class StatutCommandeController extends AbstractController {
     private EntityManagerInterface $em;
+    private MailerInterface $mailer;
 
-    public function __construct(EntityManagerInterface $em) {
+    public function __construct(EntityManagerInterface $em, MailerInterface $mailer) {
         $this->em =$em;
+        $this->mailer = $mailer;
     }
  
     #[IsGranted('ROLE_EMPLOYE')]
@@ -59,18 +65,6 @@ class StatutCommandeController extends AbstractController {
             'form' => $form->createView(),
             'statutCommande' => $statutCommande
         ]);
-    }
-
-    #[IsGranted('ROLE_EMPLOYE')]
-    public function delete(StatutCommande $statutCommande, Request $request): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $statutCommande->getId(), $request->request->get('_token'))) {
-            $this->em->remove($statutCommande);
-            $this->em->flush();
-            $this->addFlash('success', 'Statut supprimé !');
-        }
-
-        return $this->redirectToRoute('statutcommande_list');
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

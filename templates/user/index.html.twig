@@ -11,10 +11,10 @@
 {% block content %}
 <div class="dashboard-container">
 
-    {# Bienvenue #}
+    {# ===== Bienvenue ===== #}
     <h1 class="user-name">Bienvenue, {{ user.prenom }} !</h1>
 
-    {# Badges #}
+    {# ===== Badges ===== #}
     <div class="badge user-badge">
         {% if badge %}
             <div class="badge-card">
@@ -27,7 +27,7 @@
         {% endif %}
     </div>
 
-    {# Infos personnelles avec bouton modification #}
+    {# ===== Infos personnelles avec bouton modification ===== #}
     <div class="user-info-central">
         <div class="info-header">
             <h2>Mes informations</h2>
@@ -108,7 +108,7 @@
 
                                     {% if c.commandePersonnels is not empty %}
                                         {% for item in c.commandePersonnels %}
-                                            <li class="option-item personnel-game">Personnel : {{ item.personnel.titrePersonnel }} ({{ item.heures }}h)</li>
+                                            <li class="option-item personnel-game">Personnel : {{ item.personnel.titrePersonnel }} (x{{ item.quantite }}) - {{ item.heures }}h</li>
                                         {% endfor %}
                                     {% endif %}
                                 </ul>
@@ -149,7 +149,7 @@
     </div>
     {% endif %}
 
-    {# Commandes en cours / terminées #}
+    {# ===== Commandes en cours ===== #}
     <div class="dashboard-columns">
         <div class="column">
             <h2>Commandes en cours</h2>
@@ -157,21 +157,20 @@
                 <ul>
                     {% for c in commandesEnCours %}
                         <li class="commande-item">
-                            <div class="commande-header" onclick="this.nextElementSibling.classList.toggle('show'); this.querySelector('.arrow').classList.toggle('rotate')">
+                            <div class="commande-header">
                                 Commande #{{ c.numeroCommande }} - {{ c.statutCommande.libelle }}
                                 <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png')}}" alt="Déplier" class="arrow">
                             </div>
+
                             <div class="commande-details">
-                                <p><strong>Menu :</strong> {{ c.menu ? c.menu.nom : 'Aucun menu' }}</p>
-                                
+                                <p><strong>Menu :</strong> {{ c.menu ? c.menu.nom : 'Aucun menu' }} (x{{ c.nbPersonne }})</p>
+
                                 {% if c.commandePlats is not empty %}
                                     <div class="detail-plats">
-                                        <div class="titre-options">
-                                            <p><strong>Plats sélectionnés</strong></p>
-                                        </div>
+                                        <p><strong>Plats sélectionnés :</strong></p>
                                         <ul class="plats-list">
                                             {% for item in c.commandePlats %}
-                                                <li class="plat-item">{{ item.plat.category.libelle }} : {{ item.plat.titrePlat }}</li>
+                                                <li>{{ item.plat.category.libelle }} : {{ item.plat.titrePlat }}</li>
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -179,33 +178,20 @@
 
                                 {% if c.commandeFromages is not empty or c.commandeBoissons is not empty or c.commandeMateriels is not empty or c.commandePersonnels is not empty %}
                                     <div class="detail-options">
-                                        <div class="titre-options">
-                                            <p><strong>Options sélectionnées</strong></p>
-                                        </div>
+                                        <p><strong>Options sélectionnées :</strong></p>
                                         <ul class="options-list">
-                                            {% if c.commandeFromages is not empty %}
-                                                {% for item in c.commandeFromages %}
-                                                    <li class="option-item fromage">Fromage: {{ item.fromage.category.libelle }} - {{ item.fromage.titreFromage }} (x{{ item.quantite }})</li>
-                                                {% endfor %}
-                                            {% endif %}
-
-                                            {% if c.commandeBoissons is not empty %}
-                                                {% for item in c.commandeBoissons %}
-                                                    <li class="option-item boisson">Boisson: {{ item.boisson.category.libelle }} - {{ item.boisson.titreBoisson }} (x{{ item.quantite }})</li>
-                                                {% endfor %}
-                                            {% endif %}
-
-                                            {% if c.commandeMateriels is not empty %}
-                                                {% for item in c.commandeMateriels %}
-                                                    <li class="option-item materiel">Matériel: {{ item.materiel.titreMateriel }} (x{{ item.quantite }})</li>
-                                                {% endfor %}
-                                            {% endif %}
-
-                                            {% if c.commandePersonnels is not empty %}
-                                                {% for item in c.commandePersonnels %}
-                                                    <li class="option-item personnel">Personnel: {{ item.personnel.titrePersonnel }} ({{ item.heures }}h)</li>
-                                                {% endfor %}
-                                            {% endif %}
+                                            {% for item in c.commandeFromages %}
+                                                <li>Fromage : {{ item.fromage.category.libelle }} - {{ item.fromage.titreFromage }} (x{{ item.quantite }})</li>
+                                            {% endfor %}
+                                            {% for item in c.commandeBoissons %}
+                                                <li>Boisson : {{ item.boisson.category.libelle }} - {{ item.boisson.titreBoisson }} (x{{ item.quantite }})</li>
+                                            {% endfor %}
+                                            {% for item in c.commandeMateriels %}
+                                                <li>Matériel : {{ item.materiel.titreMateriel }} (x{{ item.quantite }})</li>
+                                            {% endfor %}
+                                            {% for item in c.commandePersonnels %}
+                                                <li>Personnel : {{ item.personnel.titrePersonnel }} (x{{ item.quantite }}) - {{ item.heures }}h</li>
+                                            {% endfor %}
                                         </ul>
                                     </div>
                                 {% endif %}
@@ -213,8 +199,15 @@
                                 <p><strong>Prix total :</strong> {{ c.prixTotal }}€</p>
                                 <p><strong>Date de livraison :</strong> {{ c.dateLivraison ? c.dateLivraison|date('d/m/Y') : 'Date inconnue' }}</p>
                                 <p><strong>Heure de livraison :</strong> {{ c.heureLivraison ? c.heureLivraison|date('H:i') : 'Heure inconnue' }}</p>
-                                <p><strong>Statut :</strong> {{ c.statutCommande ? c.statutCommande.libelle : 'Inconnu' }}</p>
+                                <p><strong>Statut :</strong> {{ c.statutCommande.libelle }}</p>
+
+                                {% if c.isModifiableParClient %}
+                                    <button type="button" class="btn-edit-cmd" data-commande-id="{{ c.id }}">Modifier la commande</button>
+                                {% endif %}
                             </div>
+
+                            {# Conteneur vide pour formulaire AJAX #}
+                            <div class="commande-form" style="display:none;"></div>
                         </li>
                     {% endfor %}
                 </ul>
@@ -223,6 +216,7 @@
             {% endif %}
         </div>
 
+        {# ===== Commandes terminées ===== #}
         <div class="column">
             <h2>Commandes terminées</h2>
             {% if commandesTerminees %}
@@ -295,18 +289,16 @@
             {% else %}
                 <p>Aucune commande terminée.</p>
             {% endif %}
-        </div>
     </div>
 
-    {# Déconnexion #}
+    {# ===== Déconnexion ===== #}
     <div class="logout-container">
         <a href="{{ path('app_logout') }}" class="logout-button">Déconnexion</a>
     </div>
-
 </div>
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('js/dashboarduser.js') }}"></script>
-    <script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ asset('js/dashboarduser.js') }}"></script>
+<script src="{{ asset('js/main.js') }}"></script>
 {% endblock %}

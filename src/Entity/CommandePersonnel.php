@@ -23,6 +23,9 @@ class CommandePersonnel
     #[ORM\Column(type:"integer")]
     private ?int $heures = null;
 
+    #[ORM\Column(type:"integer")]
+    private ?int $quantite = 1;
+
     #[ORM\Column(type:"decimal", precision:10, scale:2)]
     private ?string $prixUnitaire = null;
 
@@ -45,6 +48,11 @@ class CommandePersonnel
     public function getHeures(): ?int
     {
         return $this->heures;
+    }
+
+    public function getQuantite(): ?int
+    {
+        return $this->quantite;
     }
 
     public function getPrixUnitaire(): ?string
@@ -74,6 +82,12 @@ class CommandePersonnel
     public function setHeures(?int $heures): self
     {
         $this->heures = $heures;
+        return $this;
+    }
+
+    public function setQuantite (?int $quantite): self
+    {
+        $this->quantite = $quantite;
         return $this;
     }
 

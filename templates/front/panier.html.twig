@@ -79,7 +79,7 @@
                             {% endif %}
 
                             <li>
-                                {{ itemTitle }} — {{ data.qty }} unité(s)
+                                {{ itemTitle }} — {{ data.qty }} unité(s) x {{ data.hours }} heure(s)
                                 <span class="option-subtotal">{{ data.subtotal|number_format(2, ',', ' ') }} €</span>
                             </li>
                         {% endfor %}

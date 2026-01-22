@@ -1,0 +1,116 @@
+{# templates/user/edit.html.twig #}
+
+{{ form_start(form, {
+    'attr': {'id':'commande-edit-form', 'class':'commande-edit-form'},
+    'method':'POST'
+}) }}
+
+<div class="modify-cmd">
+    <h2>Modifier votre commande</h2>
+</div>
+
+{# ===== NOMBRE DE MENUS ===== #}
+<div class="commande-section commande-quantite">
+    <h3>Nombre de menus</h3>
+    <div class="form-group">
+        {{ form_label(form.nbPersonne) }}
+        {{ form_widget(form.nbPersonne, {'attr': {'class':'input-nb-personne'}}) }}
+        {{ form_errors(form.nbPersonne) }}
+    </div>
+</div>
+
+{# ===== PLATS DU MENU ===== #}
+<div class="commande-section commande-plats">
+    <h3>Plats du menu</h3>
+    <div class="plats-selectionnes">
+        {% for cp in commande.commandePlats %}
+            <div class="plat-selected" data-commande="{{ cp.commande.id }}" data-plat="{{ cp.plat.id }}">
+                <span>{{ cp.plat.category.libelle }} : {{ cp.plat.titrePlat }}</span>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="plats-disponibles">
+        {% set categoriesOrder = ['Entrée','Plat','Dessert'] %}
+        {% for cat in categoriesOrder %}
+            {% for mp in menu.menuPlats %}
+                {% if mp.plat.category and mp.plat.category.libelle == cat %}
+                    {% set platSelected = mp.plat.id in commande.commandePlats|map(cp => cp.plat.id) %}
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox"
+                                   name="menu_plats[]"
+                                   value="{{ mp.plat.id }}"
+                                   data-category="{{ mp.plat.category.libelle }}"
+                                   {% if platSelected %}checked{% endif %}>
+                            {{ mp.plat.category.libelle }} : {{ mp.plat.titrePlat }}
+                        </label>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+
+{# ===== OPTIONS ===== #}
+<div class="commande-section commande-options">
+
+    {% set options = {
+        'Fromages': form.commandeFromages,
+        'Boissons': form.commandeBoissons,
+        'Matériels': form.commandeMateriels,
+        'Personnels': form.commandePersonnels
+    } %}
+
+    {% for optionName, formField in options %}
+        <div class="commande-option commande-{{ optionName|lower }}">
+            <h4>{{ optionName }}</h4>
+            <div class="options-list-modify">
+                {% for item in formField %}
+                    {% set choix = null %}
+                    {% if optionName == 'Fromages' %}
+                        {% set choix = commande.commandeFromages|filter(o => o.fromage.id == item.vars.value)|first %}
+                        {% set quantite = choix ? choix.quantite : 0 %}
+                        {% set quantName = item.vars.full_name ~ '_quantite' %}
+                    {% elseif optionName == 'Boissons' %}
+                        {% set choix = commande.commandeBoissons|filter(o => o.boisson.id == item.vars.value)|first %}
+                        {% set quantite = choix ? choix.quantite : 0 %}
+                        {% set quantName = item.vars.full_name ~ '_quantite' %}
+                    {% elseif optionName == 'Matériels' %}
+                        {% set choix = commande.commandeMateriels|filter(o => o.materiel.id == item.vars.value)|first %}
+                        {% set quantite = choix ? choix.quantite : 0 %}
+                        {% set quantName = item.vars.full_name ~ '_quantite' %}
+                    {% elseif optionName == 'Personnels' %}
+                        {% set choix = commande.commandePersonnels|filter(o => o.personnel.id == item.vars.value)|first %}
+                        {% set quantite = choix ? choix.heures : 0 %}
+                        {% set quantName = item.vars.full_name ~ '_heures' %}
+                    {% endif %}
+
+                    <div class="option-item-modify" data-id="{{ choix ? choix.id : '' }}">
+                        <input type="checkbox"
+                               name="{{ item.vars.full_name }}"
+                               value="{{ item.vars.value }}"
+                               {% if quantite > 0 %}checked{% endif %}>
+                        <label>{{ item.vars.label }}</label>
+                        <input type="number" min="0"
+                               class="option-quantite"
+                               name="{{ quantName }}"
+                               value="{{ quantite }}">
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+
+{# ===== ACTIONS ===== #}
+<div class="commande-actions-modify">
+    <button type="submit" class="btn btn-modifier-commande">Enregistrer les modifications</button>
+    <button type="button" class="btn btn-annuler-commande"
+            data-url="{{ path('commande_user_annuler', {id: commande.id}) }}">
+        Annuler la commande
+    </button>
+</div>
+
+{{ form_end(form, {'render_rest': false}) }}

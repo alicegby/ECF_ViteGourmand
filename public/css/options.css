@@ -256,7 +256,8 @@
     background-color: #6B7B63;
 }
 
-.quantity-input {
+.quantity-input,
+.hours-input {
     width: 50px;
     text-align: center;
     border: 1px solid #A28873;

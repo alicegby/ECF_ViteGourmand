@@ -752,4 +752,5 @@ document.addEventListener('DOMContentLoaded', function() {
     attachConditionFormAjax();
     attachPlatFormAjax();
 
+    
 });

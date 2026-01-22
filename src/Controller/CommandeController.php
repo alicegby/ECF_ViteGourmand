@@ -4,12 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Commande;
 use App\Entity\StatutCommande;
+use App\Entity\Plats;
 use App\Form\CommandeType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class CommandeController extends AbstractController
 {
@@ -52,25 +56,46 @@ class CommandeController extends AbstractController
     }
 
    #[IsGranted('ROLE_EMPLOYE')]
-    public function edit(Commande $commande, Request $request): Response
+    public function edit(Commande $commande, Request $request, MailerInterface $mailer): Response
     {
         $form = $this->createForm(CommandeType::class, $commande);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $ancienStatut = $this->em->getUnitOfWork()->getOriginalEntityData($commande)['statutCommande'] ?? null;
+            $nouveauStatut = $commande->getStatutCommande();
+        
             /** @var \App\Entity\Employe $user */
             $user = $this->getUser();
             $commande->setModifiePar($user);
             $commande->setDateModif(new \DateTime());
             $this->em->flush();
 
+            if ($ancienStatut !== $nouveauStatut) {
+                $client = $commande->getClient();
+                if ($client && $client->getEmail()) {
+                    $email = (new \Symfony\Component\Mime\Email())
+                        ->from('viteetgourmand@gmail.com')
+                        ->to($client->getEmail())
+                        ->subject('Mise à jour de votre commande')
+                        ->html(sprintf(
+                            'Bonjour %s,<br><br>Le statut de votre commande #%d a été modifié : <strong>%s</strong>.',
+                            $client->getPrenom(),
+                            $commande->getNumeroCommande(),
+                            $nouveauStatut->getLibelle()
+                        ));
+
+                    $mailer->send($email);
+                }
+            }
+
+            $this->addFlash('success', 'Commande mise à jour !');
+
             if ($request->isXmlHttpRequest()) {
                 return $this->json([
                     'success' => true,
                 ]);
             }
-
-            $this->addFlash('success', 'Commande mise à jour !');
             return $this->redirectToRoute('employe_dashboard');
         }
 

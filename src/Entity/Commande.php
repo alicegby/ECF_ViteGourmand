@@ -251,4 +251,10 @@ class Commande
     {
         return $this->statutCommande?->getLibelle() === 'Acceptée';
     }
+
+    public function isModifiableParClient(): bool 
+    {
+       return $this->statutCommande
+        && $this->statutCommande->getLibelle() === 'En attente';
+    }
 }

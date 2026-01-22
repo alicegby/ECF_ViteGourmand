@@ -171,12 +171,13 @@ class PanierController extends AbstractController
             $pers = $personnelRepo->find($sel['id']);
             if (!$pers) continue;
 
-            $subtotal = $pers->getPrixHeure() * $sel['qty'];
+            $subtotal = $pers->getPrixHeure() * $sel['qty'] * $sel['hours'];
             $totalExtras += $subtotal;
 
             $personnelData[] = [
                 'item' => $pers,
                 'qty' => $sel['qty'],
+                'hours' => $sel['hours'],
                 'subtotal' => $subtotal,
             ];
         }
@@ -190,7 +191,7 @@ class PanierController extends AbstractController
 
         $cityDistances = [
             'ambares-et-lagrave'=>15,'ambes'=>20,'artigues-pres-bordeaux'=>8,'bassens'=>11,
-            'begles'=>5,'blanquefort'=>11,'bouliac'=>9,'bruges'=>9,'carbon-blanc'=>11,'cenon'=>9,
+            'begles'=>5,'blanquefort'=>11,'bouliac'=>9,'bordeaux'=>0,'bruges'=>9,'carbon-blanc'=>11,'cenon'=>9,
             'eysines'=>11,'floirac'=>9,'gradignan'=>9,'le bouscat'=>7,'le haillan'=>9,'le taillan-medoc'=>13,
             'lormont'=>9,'martignas-sur-jalle'=>14,'merignac'=>5,'parempuye'=>18,'pessac'=>8,
             'saint-aubin-de-medoc'=>20,'saint-louis-de-montferrand'=>18,'saint-vincent-de-paul'=>20,'talence'=>4,'villenave-d-ornon'=>7,
@@ -333,7 +334,7 @@ class PanierController extends AbstractController
 
         $cityDistances = [
             'ambares-et-lagrave'=>15,'ambes'=>20,'artigues-pres-bordeaux'=>8,'bassens'=>11,
-            'begles'=>5,'blanquefort'=>11,'bouliac'=>9,'bruges'=>9,'carbon-blanc'=>11,'cenon'=>9,
+            'begles'=>5,'blanquefort'=>11,'bouliac'=>9,'bruges'=>9,'bordeaux'=>0,'carbon-blanc'=>11,'cenon'=>9,
             'eysines'=>11,'floirac'=>9,'gradignan'=>9,'le bouscat'=>7,'le haillan'=>9,'le taillan-medoc'=>13,
             'lormont'=>9,'martignas-sur-jalle'=>14,'merignac'=>5,'parempuye'=>18,'pessac'=>8,
             'saint-aubin-de-medoc'=>20,'saint-louis-de-montferrand'=>18,'saint-vincent-de-paul'=>20,
@@ -440,12 +441,13 @@ class PanierController extends AbstractController
         foreach ($personnelSelections as $sel) {
             $pers = $personnelRepo->find($sel['id']);
             if ($pers) {
-                $montantOptions += $pers->getPrixHeure() * $sel['qty'];
+                $montantOptions += $pers->getPrixHeure() * $sel['qty'] * $sel['hours'];
 
                 $commandePersonnel = new \App\Entity\CommandePersonnel();
                 $commandePersonnel->setCommande($commande);
                 $commandePersonnel->setPersonnel($pers);
-                $commandePersonnel->setHeures($sel['qty']); // correspond au nombre d'heures
+                $commandePersonnel->setQuantite($sel['qty']); 
+                $commandePersonnel->setHeures($sel['hours']);
                 $commandePersonnel->setPrixUnitaire($pers->getPrixHeure());
 
                 $entityManager->persist($commandePersonnel);

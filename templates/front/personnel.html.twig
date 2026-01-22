@@ -59,18 +59,33 @@
                 <p>{{ personnel.description }}</p>
                 <p class="option-category">{{ category.libelle }}</p>
                 <p>Personnel disponnible : {{ personnel.stock }}</p>
-                <p>{{ personnel.prixHeure}} € / unité</p>
+                <p>{{ personnel.prixHeure}} € / heure</p>
                 
                 <button type="button" class="options-select-btn">Sélectionner</button>
 
                 <!-- Contrôles quantité -->
                 <div class="options-quantity-controls" style="display: none;">
-                    <button type="button" class="decrease-btn">-</button>
-                    <input type="number"
-                           class="quantity-input"
-                           value="1"
-                           max="{{ personnel.stock }}">
-                    <button type="button" class="increase-btn">+</button>
+                    <label>Quantité :
+                        <button type="button" class="decrease-btn">-</button>
+                        <input type="number"
+                            class="quantity-input"
+                            name="personnel_{{ personnel.id }}_quantite"
+                            value="1"
+                            min="1"
+                            max="{{ personnel.stock }}">
+                        <button type="button" class="increase-btn">+</button>
+                    </label>
+
+                    <!-- Nombre d'heures -->
+                    <label>Heures :
+                        <button type="button" class="decrease-btn">-</button>
+                        <input type="number"
+                            class="hours-input"
+                            name="personnel_{{ personnel.id }}_heures"
+                            value="1"
+                            min="1">
+                            <button type="button" class="increase-btn">+</button>
+                    </label>
                     <button type="button" class="options-validate-btn">
                         <img src="{{ asset('Visuels/Icônes/Select_Beige.png') }}" alt="Valider">
                         Valider
