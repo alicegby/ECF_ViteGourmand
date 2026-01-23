@@ -135,7 +135,8 @@
 
 /* Filtres */
 /* Header */
-.avis-header, .commande-header, .menu-header, .plats-header, .menuplat-header, .fromages-header, .boissons-header, .materiel-header, .personnel-header {
+.avis-header, .commande-header, .menu-header, .plats-header, .menuplat-header, .fromages-header, .boissons-header, .materiel-header, .personnel-header,
+.employe-header, .client-header {
     position: relative;
     display: flex;
     align-items: center;
@@ -144,7 +145,8 @@
     gap: 15px;
 }
 
-.avis-header h1, .commande-header h1, .menu-header h1, .plats-header h1, .menuplat-header h1, .fromages-header h1, .boissons-header h1, .materiel-header h1, .personnel-header h1 {
+.avis-header h1, .commande-header h1, .menu-header h1, .plats-header h1, .menuplat-header h1, .fromages-header h1, .boissons-header h1, .materiel-header h1, 
+.personnel-header h1, .employe-header h1, .client-header h1 {
     font-family: 'Playfair Display';
 }
 
@@ -370,8 +372,26 @@
     text-decoration: none;  
 }
 
+.btn-see-client {
+    background-color: #5C4033;
+    color: #F6F1EB;
+    border: none;
+    padding: 12px 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;      
+    gap: 10px;       
+    margin-bottom: 10px;   
+    text-decoration: none;
+}
+
 .btn-see:hover, 
-.btn-edit:hover {
+.btn-edit:hover,
+.btn-see-client:hover {
     background-color: #6B7B63;
 }
 
@@ -1742,32 +1762,34 @@ ul li {
 
 /* OPTIONS */
 
-.fromages-table, .boissons-table, .materiel-table, .personnel-table, .horaire-table, .badge-table {
+.fromages-table, .boissons-table, .materiel-table, .personnel-table, .horaire-table, .badge-table, .employe-table, .client-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0 10px;
     font-family: 'Inter', sans-serif;
 }
 
-.fromages-table th, .boissons-table th, .materiel-table th, .personnel-table th, .horaire-table th, .badge-table th {
+.fromages-table th, .boissons-table th, .materiel-table th, .personnel-table th, .horaire-table th, .badge-table th, .employe-table th, .client-table th {
     background-color: #5C4033;
     color: #F6F1EB;
     padding: 10px;
     text-align: left;
 }
 
-.fromages-table td, .boissons-table td, .materiel-table td, .personnel-table td, .horaire-table td, .badge-table td {
+.fromages-table td, .boissons-table td, .materiel-table td, .personnel-table td, .horaire-table td, .badge-table td, .employe-table td, .client-table td {
     background-color: #A28873;
     padding: 10px;
     vertical-align: middle;
     color: #F6F1EB;
 }
 
-.fromages-table tr td:first-child, .boissons-table tr td:first-child, .materiel-table tr td:first-child, .personnel-table tr td:first-child, .horaire-table tr td:first-child, .badge-table tr td:first-child {
+.fromages-table tr td:first-child, .boissons-table tr td:first-child, .materiel-table tr td:first-child, .personnel-table tr td:first-child, 
+.horaire-table tr td:first-child, .badge-table tr td:first-child, .employe-table tr td:first-child, .client-table tr td:first-child {
     font-weight: bold;
 }
 
-.fromages-table td img, .boissons-table td img, .materiel-table td img, .personnel-table td img, .horaire-table td img, .badge-table td img {
+.fromages-table td img, .boissons-table td img, .materiel-table td img, .personnel-table td img, .horaire-table td img, .badge-table td img,
+.employe-table td img, .client-table td img {
     vertical-align: middle;
     margin-right: 5px;
     width: 20px;
@@ -1881,4 +1903,27 @@ ul li {
     border-bottom: 2px solid #E0D7CE;
     padding-bottom: 3px;
     font-weight: 600;
+}
+
+/* EMPLOYE */
+.add-employe {
+    background-color: #5C4033;      
+    color: #F6F1EB;                 
+    border: none;                      
+    padding: 6px 12px;              
+    border-radius: 5px;              
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;                      
+    gap: 10px;                
+    margin: 10px auto;     
+    margin-bottom: 10px;
+    text-decoration: none;           
+    transition: background 0.3s ease;  
+}
+
+.add-employe:hover {
+    background-color: #6B7B63;        
 }

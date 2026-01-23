@@ -1,0 +1,17 @@
+<div class="ajx-list">
+
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('user_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+        </button>
+    </div>
+
+    <h1 class="plat-title">{{ utilisateur.prenom }} {{ utilisateur.nom }}</h1>
+
+    <div class="option-p">
+        <p><strong>Email : </strong>{{ utilisateur.email }}</p>
+        <p><strong>Numéro de téléphone : </strong>{{ utilisateur.telephone }}</p>
+        <p><strong>Adresse : </strong>{{ utilisateur.adressePostale }} - {{ utilisateur.codePostal}} {{ utilisateur.ville }}</p>
+        <p><strong>Client depuis : </strong>{{ utilisateur.dateCreation|date('d/m/Y') }}</p>
+    </div>
+</div>

@@ -1,22 +1,39 @@
-{% extends 'base.html.twig' %}
+<div class="ajx-list">
 
-{% block title %}Détails de l’employé{% endblock %}
+    <div class="commande-actions">
+        <button class="ajax-btn btn-back" data-url="{{ path('employe_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}">Retour à la liste
+        </button>
+    </div>
 
-{% block body %}
-<h1>Détails de l’employé</h1>
+    <h1 class="options-title">Détails de l’employé</h1>
 
 
-<p>Nom : {{ employe.nom }}</p>
-<p>Prénom : {{ employe.prenom }}</p>
-<p>Email : {{ employe.email }}</p>
-<p>Téléphone : {{ employe.telephone ?: 'Non renseigné' }}</p>
-<p>Rôle : {{ employe.role.libelle }}</p>
-<p>Actif :</strong> {{ employe.actif ? 'Oui' : 'Non' }}</p>
+    <p><strong>Nom : </strong>{{ employe.nom }}</p>
+    <p><strong>Prénom : </strong>{{ employe.prenom }}</p>
+    <p><strong>Email : </strong>{{ employe.email }}</p>
+    <p><strong>Téléphone : </strong>{{ employe.telephone ?: 'Non renseigné' }}</p>
+    <p><strong>Rôle : </strong>{{ employe.role.libelle }}</p>
+    <p><strong>Actif :</strong></strong> {{ employe.actif ? 'Oui' : 'Non' }}</p>
 
-<a href="{{ path('employe_edit') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Modifier">Modifier
-</a>
-<a href="{{ path('employe_list') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Back_Beige.png') }}" alt="Retour">Retour à la liste
-</a>
-{% endblock %}
+    <div class="plat-actions">
+        <button class="btn ajax-btn" data-url="{{ path('employe_edit', {'id': employe.id}) }}">
+            <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">
+            Modifier
+        </button>
+
+        <form method="post"
+            action="{{ path('employe_delete', {'id': employe.id}) }}"
+            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce compte employé ?');"
+            style="display:inline-block;">
+            
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ employe.id) }}">
+
+            <button class="btn plat-btn-delete" type="submit">
+                <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">
+                Supprimer
+            </button>
+        </form>
+    </div>
+
+</div>

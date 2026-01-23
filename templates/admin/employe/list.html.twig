@@ -1,52 +1,46 @@
-{% extends 'base.html.twig' %}
+<div class="ajx-list">
+    <h1 class="employe-header">Liste des employés</h1>
 
-{% block title %}Liste des employés{% endblock %}
+    <button class="ajax-btn add-employe" 
+        data-url="{{ path('employe_new') }}" 
+        data-default="false">
+        <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="ajouter employé">
+        Ajouter un employé
+    </button>
 
-{% block body %}
-<h1>Liste des employés</h1>
-
-<a href="{{ path('employe_new') }}" class="btn">
-    <img src="{{ asset('Visuels/Icônes/Plus_Beige.png') }}" alt="Ajouter">Ajouter un nouvel employé
-</a>
-
-<table>
-    <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Email</th>
-            <th>Téléphone</th>
-            <th>Rôle</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for employe in employes %}
+    <table class="employe-table">
+        <thead>
             <tr>
-                <td>{{ employe.nom }}</td>
-                <td>{{ employe.prenom }}</td>
-                <td>{{ employe.email }}</td>
-                <td>{{ employe.telephone ?: 'Non renseigné' }}</td>
-                <td>{{ employe.role.libelle }}</td>
-                <td>
-                    <a href="{{ path('employe_show', {'id': employe.id}) }}" class="btn">
-                        <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">Voir
-                    </a>
-                    <a href="{{ path('employe_edit', {'id': employe.id}) }}" class="btn">
-                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Modifier">Modifier
-                    </a>
-                    <form action="{{ path('employe_delete', {'id': employe.id}) }}" method="post" onsubmit="return confirm('Supprimer cet employé ?');">
-                        <button class="btn">
-                            <img src="{{ asset('Visuels/Icônes/Delete_Beige.png') }}" alt="Supprimer">Supprimer
-                        </button>
-                    </form>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Rôle</th>
+                <th>Actif</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employe in employes %}
+                <tr>
+                    <td>{{ employe.nom }}</td>
+                    <td>{{ employe.prenom }}</td>
+                    <td>{{ employe.email }}</td>
+                    <td>{{ employe.telephone ?: 'Non renseigné' }}</td>
+                    <td>{{ employe.role.libelle }}</td>
+                    <td>{{ employe.actif ? 'Oui' : 'Non'}}</td>
+                    <td class="action-buttons">
+                    <button class="ajax-btn btn-see" data-url="{{ path('employe_show', {'id': employe.id}) }}">
+                        <img src="{{ asset('Visuels/Icônes/See_Beige.png')}}" class="image-plat">
+                        Voir &amp; modifier
+                    </button>
                 </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">Aucun employé trouvé.</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endblock %}
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">Aucun employé trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

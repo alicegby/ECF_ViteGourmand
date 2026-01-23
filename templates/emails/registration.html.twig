@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Bienvenue chez Vite &amp; Gourmand</title>
+</head>
+<body style="font-family: 'Inter', sans-serif; background-color: #F6F1EB; padding: 20px;">
+
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center">
+
+                <table width="600" cellpadding="20" cellspacing="0" style="background-color: #ffffff; border-radius: 8px;">
+                    
+                    <!-- LOGO -->
+                    <tr>
+                        <td align="center">
+                            <img src="{{ absolute_url('Visuels/Logo.png') }}" 
+                                    alt="Vite &amp; Gourmand" 
+                                    width="140">
+                        </td>
+                    </tr>
+
+                    <!-- TITRE -->
+                    <tr>
+                        <td>
+                            <h2 style="color: #2F2F2F;">
+                                Bonjour {{ utilisateur.prenom }},
+                            </h2>
+
+                            <p>
+                                Nous sommes ravis de vous compter parmi les clients
+                                <strong>Vite &amp; Gourmand</strong> 🎉
+                            </p>
+
+                            <p style="font-size: 16px; color: #6B7B63;">
+                                Votre compte a bien été créé.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- INFOS COMPTE -->
+                    <tr>
+                        <td style="background-color: #F6F1EB; border-radius: 6px;">
+                            <p>
+                                <strong>📧 Adresse email :</strong><br>
+                                {{ utilisateur.email }}
+                            </p>
+
+                            <p>
+                                Vous pouvez dès maintenant vous connecter, passer commande et suivre vos commandes directement depuis votre espace client.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- CTA -->
+                    <tr>
+                        <td align="center">
+                            <a href="{{ absolute_url(path('app_login')) }}"
+                               style="
+                                   display:inline-block;
+                                   background-color:#6B7B63;
+                                   color:#F6F1EB;
+                                   padding:12px 20px;
+                                   border-radius:6px;
+                                   text-decoration:none;
+                                   font-weight:bold;
+                               ">
+                                Accéder à mon compte
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td style="font-size: 13px; color: #2F2F2F;">
+                            <hr>
+                            <p>
+                                À très bientôt,<br>
+                                <strong>L’équipe Vite &amp; Gourmand</strong><br>
+                                📧 viteetgourmand@gmail.com<br>
+                                📞 06 00 00 00 00
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

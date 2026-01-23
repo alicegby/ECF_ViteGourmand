@@ -515,6 +515,61 @@ document.addEventListener('DOMContentLoaded', function() {
 
             closePanel();
         });
+    } else if (type === 'client') {
+
+        applyBtn.addEventListener('click', e => {
+            e.preventDefault();
+
+            const keyword = panel.querySelector('input[name="keyword"]').value;
+
+            const urlObj = new URL(toggleBtn.dataset.url, window.location.origin);
+
+            if (keyword) urlObj.searchParams.set('keyword', keyword);
+
+            urlObj.searchParams.set('ajax', '1');
+
+            fetch(urlObj, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(resp => resp.text())
+            .then(html => {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+
+                const newTbody = temp.querySelector('.client-table tbody');
+                if (newTbody) {
+                    table.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                }
+            });
+
+            closePanel();
+        });
+
+        resetBtn.addEventListener('click', e => {
+            e.preventDefault();
+
+            panel.querySelector('input[name="keyword"]').value = '';
+
+            const urlObj = new URL(toggleBtn.dataset.url, window.location.origin);
+            urlObj.searchParams.set('ajax', '1');
+
+            fetch(urlObj, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(resp => resp.text())
+            .then(html => {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+
+                const newTbody = temp.querySelector('.client-table tbody');
+                if (newTbody) {
+                    table.querySelector('tbody').innerHTML = newTbody.innerHTML;
+                }
+            });
+
+            closePanel();
+        });
+
     } else {
             // Pour les autres panels (commande, avis), garde l'ancien code
             const select = panel.querySelector('select');

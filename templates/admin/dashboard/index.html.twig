@@ -18,6 +18,18 @@
     <div class="dashboard-buttons">
 
         <div class="dashboard-theme">
+            <button class="theme-btn" data-url="{{ path('employe_list') }}">Gestion des employés
+                <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" class="arrow">
+            </button>
+        </div>
+
+        <div class="dashboard-theme">
+            <button class="theme-btn" data-url="{{ path('user_list') }}">Liste des clients
+                <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" class="arrow">
+            </button>
+        </div>
+
+        <div class="dashboard-theme">
             <button class="theme-btn" data-url="{{ path('commande_list') }}">Gestion des commandes
                 <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" class="arrow">
             </button>
@@ -75,12 +87,6 @@
 
         <div class="dashboard-theme">
             <button class="theme-btn" data-url="{{ path('badge_list') }}">Gestion des badges
-                <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" class="arrow">
-            </button>
-        </div>
-
-        <div class="dashboard-theme">
-            <button class="theme-btn" data-url="{{ path('user_list') }}">Liste des clients
                 <img src="{{ asset('Visuels/Icônes/Flèche_Beige.png') }}" class="arrow">
             </button>
         </div>

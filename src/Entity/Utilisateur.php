@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Entity\UtilisateurBadge;
+use App\Entity\Commande;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -45,12 +46,16 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy:"utilisateur", targetEntity:UtilisateurBadge::class)]
     private Collection $utilisateurBadge;
 
+    #[ORM\OneToMany(mappedBy:"utilisateur", targetEntity:Commande::class)]
+    private Collection $commandes;
+
     #[ORM\Column(type:"json")]
     private array $roles = [];
 
     public function __construct()
     {
         $this->utilisateurBadge = new ArrayCollection();
+        $this->commandes = new ArrayCollection();
     }
 
     public function getId(): ?int { return $this->id; }
@@ -112,5 +117,29 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
         return false;
+    }
+
+    public function getCommandes(): Collection
+{
+    return $this->commandes;
+}
+
+    public function addCommande(Commande $commande): self
+    {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes->add($commande);
+            $commande->setClient($this);
+        }
+        return $this;
+    }
+
+    public function removeCommande(Commande $commande): self
+    {
+        if ($this->commandes->removeElement($commande)) {
+            if ($commande->getClient() === $this) {
+                $commande->setClient(null);
+            }
+        }
+        return $this;
     }
 }

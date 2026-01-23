@@ -6,10 +6,11 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\RouterInterface;
+use App\Entity\Employe;
 
 class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
 {
-    private $router;
+    private RouterInterface $router;
 
     public function __construct(RouterInterface $router)
     { 
@@ -18,9 +19,21 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): RedirectResponse
     {
+        $user = $token->getUser();
+
+        // Si l'utilisateur est un employé inactif
+        if ($user instanceof Employe && !$user->isActif()) {
+            // Déconnecter immédiatement
+            $request->getSession()?->invalidate(); // supprime la session si elle existe
+
+            // Rediriger vers la page de login avec un paramètre "error"
+            return new RedirectResponse($this->router->generate('admin_login', [
+                'error' => 'inactif'
+            ]));
+        }
+
         $roles = $token->getRoleNames();
 
-        // Vérifie l'ordre : ROLE_ADMIN avant ROLE_EMPLOYE
         if (in_array('ROLE_ADMIN', $roles, true)) {
             return new RedirectResponse($this->router->generate('admin_dashboard'));
         }
@@ -29,7 +42,6 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             return new RedirectResponse($this->router->generate('employe_dashboard'));
         }
 
-        // Sinon, redirige vers le front
         return new RedirectResponse($this->router->generate('homepage'));
     }
 }

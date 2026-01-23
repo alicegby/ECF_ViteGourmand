@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Mise à jour de votre commande</title>
+</head>
+<body style="font-family: 'Inter', sans-serif; background-color: #F6F1EB; padding: 20px;">
+
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center">
+
+                <table width="600" cellpadding="20" cellspacing="0" style="background-color: #ffffff; border-radius: 8px;">
+                    
+                    <!-- LOGO -->
+                    <tr>
+                        <td align="center">
+                            <img src="{{ absolute_url('Visuels/Logo.png') }}" 
+                                    alt="Vite &amp; Gourmand" 
+                                    width="140">
+                        </td>
+                    </tr>
+
+                    <!-- TITRE -->
+                    <tr>
+                        <td>
+                            <h2 style="color: #2F2F2F;">Bonjour {{ client.prenom }},</h2>
+
+                            <p>
+                                Le statut de votre commande
+                                <strong>#{{ commande.numeroCommande }}</strong>
+                                a été mis à jour :
+                            </p>
+
+                            <p style="font-size: 18px; color: #6B7B63;">
+                                <strong>{{ statut.libelle }}</strong>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- INFOS COMMANDE -->
+                    <tr>
+                        <td style="background-color: #F6F1EB; border-radius: 6px;">
+                            <p><strong>📍 Adresse de livraison :</strong><br>
+                                {{ commande.adresseLivraison }}
+                            </p>
+
+                            <p><strong>🕒 Date et heure :</strong><br>
+                                {{ commande.dateLivraison|date('d/m/Y à H:i') }}
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td style="font-size: 13px; color: #2F2F2F;">
+                            <hr>
+                            <p>
+                                À très bientôt,<br>
+                                <strong>L’équipe Vite &amp; Gourmand</strong><br>
+                                📧 viteetgourmand@gmail.com<br>
+                                📞 06 00 00 00 00
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

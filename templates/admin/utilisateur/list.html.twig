@@ -1,0 +1,58 @@
+<div class="ajx-list">
+    <h1 class="client-header">
+        Liste des clients
+        <button class="filter-toggle" data-type="client" data-url="{{ path('user_list') }}">
+            <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
+        </button>
+    </h1>
+
+    <div class="filter-panel" data-type="client">
+        <button class="close-panel">
+            <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
+        </button>
+
+        <div class="filter-group">
+            <label for="keyword-filter">Mot-clé</label>
+            <input type="text" id="keyword-filter" name="keyword" placeholder="Rechercher..." value="{{ app.request.query.get('keyword') }}">
+        </div>
+        <button type="button" class="apply-filters">Appliquer</button>
+        <button type="button" class="reset-filters">Réinitialiser les filtres</button>
+
+    </div>
+
+    <table class="client-table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>CP</th>
+                <th>Ville</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for utilisateur in utilisateurs %}
+                <tr>
+                    <td>{{ utilisateur.prenom }} {{ utilisateur.nom }}</td>
+                    <td>{{ utilisateur.codePostal }}</td>
+                    <td>{{ utilisateur.ville }}</td>
+                    <td>{{ utilisateur.email }}</td>
+                    <td>{{ utilisateur.telephone }}</td>
+                    <td class="action-buttons">
+                        <button class="ajax-btn btn-see-client" data-url="{{ path('user_show', {'id': utilisateur.id}) }}">
+                            <img src="{{ asset('Visuels/Icônes/See_Beige.png')}}" class="image-plat">
+                            Voir
+                        </button>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Aucun client trouvé</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>

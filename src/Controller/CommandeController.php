@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 
 class CommandeController extends AbstractController
 {
@@ -74,16 +74,16 @@ class CommandeController extends AbstractController
             if ($ancienStatut !== $nouveauStatut) {
                 $client = $commande->getClient();
                 if ($client && $client->getEmail()) {
-                    $email = (new \Symfony\Component\Mime\Email())
+                    $email = (new TemplatedEmail())
                         ->from('viteetgourmand@gmail.com')
                         ->to($client->getEmail())
                         ->subject('Mise à jour de votre commande')
-                        ->html(sprintf(
-                            'Bonjour %s,<br><br>Le statut de votre commande #%d a été modifié : <strong>%s</strong>.',
-                            $client->getPrenom(),
-                            $commande->getNumeroCommande(),
-                            $nouveauStatut->getLibelle()
-                        ));
+                        ->htmlTemplate('emails/commande_statut.html.twig')
+                        ->context([
+                            'client' => $client,
+                            'commande' => $commande,
+                            'statut' => $nouveauStatut,
+                        ]);
 
                     $mailer->send($email);
                 }
