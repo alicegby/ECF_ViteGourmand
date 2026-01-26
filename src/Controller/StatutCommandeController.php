@@ -41,7 +41,11 @@ class StatutCommandeController extends AbstractController {
             $this->em->persist($statutCommande);
             $this->em->flush();
             $this->addFlash('success', 'Statut créé !');
-            return $this->redirectToRoute('statutcommande_list');
+           if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
         return $this->render('admin/statutcommande/form.html.twig', [
             'form' => $form->createView()
@@ -58,7 +62,11 @@ class StatutCommandeController extends AbstractController {
             $this->em->flush();
             $this->addFlash('success', 'Statut modifié !');
 
-            return $this->redirectToRoute('statutcommande_list');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
 
         return $this->render('admin/statutcommande/form.html.twig', [

@@ -52,7 +52,11 @@ class MaterielController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('success', 'Matériel créé avec succès !');
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
         return $this->render('admin/materiel/new.html.twig', [
             'form' => $form->createView(),
@@ -87,7 +91,11 @@ class MaterielController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('success', 'Materiel modifié avec succès !');
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
         return $this->render('admin/materiel/form.html.twig', [
             'form' => $form->createView(),
@@ -133,7 +141,11 @@ class MaterielController extends AbstractController {
         $this->em->flush();
 
         $this->addFlash('success', 'Matériel supprimé !');
-        return $this->redirectToRoute('employe_dashboard'); 
+       if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

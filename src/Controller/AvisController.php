@@ -124,7 +124,11 @@ class AvisController extends AbstractController {
             $this->em->flush();
             $this->addFlash('success', 'Avis mis à jour !');
 
-            return $this->redirectToRoute('avis_list');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
 
         return $this->render('admin/avis/form.html.twig', [
@@ -155,7 +159,11 @@ class AvisController extends AbstractController {
                 }
                 $this->em->flush();
                 $this->addFlash('success', 'Statut mis à jour !');
-                return $this->redirectToRoute('employe_dashboard');
+                if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
             } else {
                 $this->addFlash('error', 'Statut invalide.');
             }

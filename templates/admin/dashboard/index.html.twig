@@ -10,6 +10,14 @@
 <div class="dashboard-opening">
     <h1>Bonjour, {{ app.user.prenom }} !</h1>
     <p>Bienvenue sur votre espace admin. Cliquez sur une section pour afficher les détails.</p>
+
+    <div class="stats-btn">
+        <button type="button" onclick='window.location.href="{{ path("admin_stats") }}"'>
+            <img src="{{ asset('Visuels/Icônes/See_Beige.png') }}" alt="Voir">
+            Statistiques &amp; Chiffre d'Affaires
+        </button>
+    </div>
+
 </div>
 
 <div class="dashboard-container">

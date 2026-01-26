@@ -32,7 +32,11 @@ class MenuPlatController extends AbstractController {
             $this->em->persist($menuPlat);
             $this->em->flush();
             $this->addFlash('success', 'Plat ajouté au menu !');
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
         return $this->render('admin/menuplat/new.html.twig', ['form' => $form->createView(),]);
     } 
@@ -45,7 +49,11 @@ class MenuPlatController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Association Menu/Plat modifiée !');
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
         return $this->render('admin/menuplat/form.html.twig', [
             'form' => $form->createView(),
@@ -60,7 +68,11 @@ class MenuPlatController extends AbstractController {
             $this->em->flush();
             $this->addFlash('success', 'Association supprimée !');
         }
-        return $this->redirectToRoute('employe_dashboard');
+        if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

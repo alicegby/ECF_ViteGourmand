@@ -44,7 +44,11 @@ class HoraireController extends AbstractController
 
             $this->addFlash('success', 'Horaire modifié');
 
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
 
         return $this->render('admin/horaire/form.html.twig', [

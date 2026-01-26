@@ -96,7 +96,11 @@ class CommandeController extends AbstractController
                     'success' => true,
                 ]);
             }
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
 
         if ($request->isXmlHttpRequest()) {

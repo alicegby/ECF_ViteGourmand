@@ -83,7 +83,11 @@ class MenuController extends AbstractController
             }
 
             $this->addFlash('success', 'Menu créé avec succès !');
-            return $this->redirectToRoute('employe_dashboard', ['id' => $menu->getId()]);
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard', ['id' => $menu->getId()]);
+                } else {
+                    return $this->redirectToRoute('employe_dashboard', ['id' => $menu->getId()]);
+                }
         }
 
         // Formulaire invalide ou pas soumis
@@ -117,7 +121,11 @@ class MenuController extends AbstractController
             $this->em->flush();
 
             $this->addFlash('success', 'Menu modifié avec succès !');
-            return $this->redirectToRoute('employe_dashboard', ['id' => $menu->getId()]);
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard', ['id' => $menu->getId()]);
+                } else {
+                    return $this->redirectToRoute('employe_dashboard', ['id' => $menu->getId()]);
+                }
         }
 
         $conditions = $this->em->getRepository(Condition::class)->findAll();
@@ -140,7 +148,11 @@ class MenuController extends AbstractController
         $this->em->flush();
 
         $this->addFlash('success', 'Menu supprimé !');
-        return $this->redirectToRoute('employe_dashboard'); 
+        if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

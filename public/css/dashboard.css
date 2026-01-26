@@ -17,6 +17,56 @@
     margin-bottom: 20px;
 }
 
+.stats-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.stats-btn button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background-color: #5A3E36;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    color: #F6F1EB;
+    font-size: 1.2rem;
+    font-family: 'Inter';
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.stats-btn button:hover {
+    background-color: #6B7B63;
+    transform: translateY(-2px);
+}
+
+.stats-btn button img {
+    width: 20px;  /* Ajuste la taille de l’icône */
+    height: 20px;
+}
+
+.stats-list{
+    background: #F6F1EB;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    max-width: 900px;
+    margin: 20px auto;
+    font-family: 'Inter', sans-serif;
+    color: #2F2F2F;
+}
+
+.stats-list h1 {
+    font-family: 'Playfair Display';
+    color: #5C4033;
+    text-align: center;
+}
+
 .ajx-list {
     background: #F6F1EB;
     padding: 20px;
@@ -171,10 +221,12 @@
     background: rgba(0,0,0,0.4);
     z-index: 100;
     display: none;
+    pointer-events: none
 }
-
+ 
 .filter-overlay.active {
     display: block;
+    pointer-events: auto;
 }
 
 /* Panel */
@@ -1926,4 +1978,101 @@ ul li {
 
 .add-employe:hover {
     background-color: #6B7B63;        
+}
+
+/* STATS */
+.stats-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    background-color: #F6F1EB;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    text-align: center;
+    justify-content: center;
+}
+
+.stats-filters label {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    color: #2F2F2F;
+}
+
+.stats-filters input[type="date"],
+.stats-filters select {
+    margin-top: 5px;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #fff;
+    min-width: 120px;
+}
+
+.stats-filters button {
+    padding: 2px 10px;
+    background-color: #A28873;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+    height: 40px;
+    align-self: flex-end;
+}
+
+.stats-filters button:hover {
+    background-color: #6B7B63;
+}
+
+.ca-class  {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.ca-class h3 {
+    font-size: 1rem;
+    color: #2F2F2F;
+    font-style: italic;
+}
+
+.ca-class h4 {
+    font-size: 1.2rem;
+    color: #6B7B63;
+    font-weight: bold;
+}
+
+.menu-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.menu-tag {
+    background-color: #5C4033;
+    color: #F6F1EB;
+    padding: 10px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+}
+
+.menu-tag button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    color: #F6F1EB;
 }

@@ -58,7 +58,11 @@ class BadgeController extends AbstractController
                 ]);
             }
             $this->addFlash('success', 'Badge créé avec succès !');
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
         if ($request->isXmlHttpRequest()) {
             $errors = [];
@@ -107,7 +111,11 @@ class BadgeController extends AbstractController
                     ]);
                 }
                 $this->addFlash('success', 'Badge modifié avec succès');
-                return $this->redirectToRoute('employe_dashboard');
+               if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
             } else if ($request->isXmlHttpRequest()) {
                 $errors = [];
                 foreach ($form->all() as $child) {
@@ -138,7 +146,11 @@ class BadgeController extends AbstractController
 
         $this->addFlash('success', 'Badge supprimé');
 
-        return $this->redirectToRoute('employe_dashboard');
+        if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

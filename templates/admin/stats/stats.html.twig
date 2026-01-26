@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques - Dashboard Admin{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-opening">
+    <h1>Bonjour, {{ app.user.prenom }} !</h1>
+    <p>Bienvenue sur votre espace admin. Cliquez sur une section pour afficher les détails.</p>
+
+<div class="stats-list">
+    <h1 class="plats-header">Statistiques &amp; Chiffre d'Affaires</h1>
+
+    <div class="ca-class">
+        <h3>Chiffre d'Affaires global depuis le 01/01/2026 : <br></h3>
+        <h4>{{ caGlobal|number_format(2, ',', ' ') }} € </h4>
+    </div>
+
+    <div class="stats-filters">
+        <label>Du : <input type="date" id="filter-start"></label>
+        <label>Au : <input type="date" id="filter-end"></label>
+
+        <label>Menu :
+            <select id="filter-menu">
+                <option value="">Tous</option>
+                {% for menu in menus %}
+                    {# ici menu est un objet ou un string selon ce que tu passes depuis le controller #}
+                    {% if menu is iterable and menu.id is defined %}
+                        <option value="{{ menu.id }}" data-name="{{ menu.nom }}">{{ menu.nom }}</option>
+                    {% else %}
+                        <option value="{{ menu }}" data-name="{{ menu }}">{{ menu }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </label>
+        <button type="button" id="add-menu-btn">Ajouter</button>
+
+        <div id="menu-tags" class="menu-tags">
+            <!-- Les tags sélectionnés apparaîtront ici -->
+        </div>
+
+    </div>
+
+    <canvas id="statsChart" width="800" height="400"></canvas>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('js/stats.js') }}"></script>
+{% endblock %}

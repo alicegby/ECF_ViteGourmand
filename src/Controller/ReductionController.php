@@ -41,7 +41,11 @@ class ReductionController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Réduction créée avec succès !');
 
-            return $this->redirectToRoute('reduction_list');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
 
         return $this->render('admin/reduction/form.html.twig', [
@@ -59,7 +63,11 @@ class ReductionController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Réduction modifiée avec succès !');
 
-            return $this->redirectToRoute('reduction_list');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
 
         return $this->render('admin/reduction/form.html.twig', [
@@ -77,7 +85,11 @@ class ReductionController extends AbstractController
             $this->addFlash('success', 'Réduction supprimée !');
         }
 
-        return $this->redirectToRoute('reduction_list');
+        if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

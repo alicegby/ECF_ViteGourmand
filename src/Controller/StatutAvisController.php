@@ -35,7 +35,11 @@ class StatutAvisController extends AbstractController {
             $this->em->persist($statutAvis);
             $this->em->flush();
             $this->addFlash('success', 'Statut créé !');
-            return $this->redirectToRoute('statutavis_list');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
         return $this->render('admin/statutavis/form.html.twig', [
             'form' => $form->createView()
@@ -52,7 +56,11 @@ class StatutAvisController extends AbstractController {
             $this->em->flush();
             $this->addFlash('success', 'Statut modifié !');
 
-            return $this->redirectToRoute('statutavis_list');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
 
         return $this->render('admin/statutavis/form.html.twig', [
@@ -70,7 +78,11 @@ class StatutAvisController extends AbstractController {
             $this->addFlash('success', 'Statut supprimé !');
         }
 
-        return $this->redirectToRoute('statutavis_list');
+        if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

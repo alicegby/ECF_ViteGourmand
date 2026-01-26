@@ -39,7 +39,11 @@ class ConditionController extends AbstractController
             $this->em->persist($condition);
             $this->em->flush();
             $this->addFlash('success', 'Condition créée avec succès !');
-            return $this->redirectToRoute('employe_dashboard');
+           if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
 
         return $this->render('admin/condition/new.html.twig', [
@@ -64,7 +68,11 @@ class ConditionController extends AbstractController
             }
 
             $this->addFlash('success', 'Condition modifiée avec succès !');
-            return $this->redirectToRoute('employe_dashboard');
+           if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
 
         return $this->render('admin/condition/form.html.twig', [
@@ -81,7 +89,11 @@ class ConditionController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Condition supprimée !');
         }
-        return $this->redirectToRoute('employe_dashboard');
+        if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

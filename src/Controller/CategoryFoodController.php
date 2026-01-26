@@ -41,7 +41,11 @@ class CategoryFoodController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Catégorie créée !');
 
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
  
         return $this->render('admin/categoryfood/new.html.twig', [
@@ -59,7 +63,11 @@ class CategoryFoodController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Catégorie modifiée !');
 
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
 
         return $this->render('admin/categoryfood/form.html.twig', [
@@ -77,7 +85,11 @@ class CategoryFoodController extends AbstractController
             $this->addFlash('success', 'Catégorie supprimée !');
         }
 
-        return $this->redirectToRoute('employe_dashboard');
+        if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

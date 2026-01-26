@@ -52,7 +52,11 @@ class BoissonsController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('success', 'Boisson créée avec succès !');
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
         return $this->render('admin/boissons/new.html.twig', [
             'form' => $form->createView(),
@@ -87,7 +91,11 @@ class BoissonsController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('success', 'Boisson modifiée avec succès !');
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
         return $this->render('admin/boissons/form.html.twig', [
             'form' => $form->createView(),
@@ -133,7 +141,11 @@ class BoissonsController extends AbstractController {
         $this->em->flush();
 
         $this->addFlash('success', 'Boisson supprimée !');
-        return $this->redirectToRoute('employe_dashboard'); 
+        if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

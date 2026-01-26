@@ -34,7 +34,11 @@ class PersonnelController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('success', 'Personnel créé avec succès !');
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
 
         return $this->render('admin/personnel/new.html.twig', [
@@ -51,7 +55,11 @@ class PersonnelController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
             $this->addFlash('success', 'Personnel modifié avec succès !');
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
 
         return $this->render('admin/personnel/form.html.twig', [
@@ -68,7 +76,11 @@ class PersonnelController extends AbstractController {
             $this->em->flush();
             $this->addFlash('success', 'Personnel supprimé !');
         }
-        return $this->redirectToRoute('employe_dashboard');
+       if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

@@ -67,7 +67,11 @@ class PlatsController extends AbstractController
                 }
 
                 $this->addFlash('success', 'Plat créé avec succès !');
-                return $this->redirectToRoute('employe_dashboard');
+                if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
             }
 
             // Gestion des erreurs pour AJAX
@@ -124,7 +128,11 @@ class PlatsController extends AbstractController
                 }
 
                 $this->addFlash('success', 'Plat modifié avec succès !');
-                return $this->redirectToRoute('employe_dashboard');
+                if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
             } else if ($request->isXmlHttpRequest()) {
                 $errors = [];
                 foreach ($form->all() as $child) {
@@ -161,7 +169,11 @@ class PlatsController extends AbstractController
         $this->em->flush();
 
         $this->addFlash('success', 'Plat supprimé !');
-        return $this->redirectToRoute('employe_dashboard');
+        if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
     }
 
     #[IsGranted('ROLE_EMPLOYE')]

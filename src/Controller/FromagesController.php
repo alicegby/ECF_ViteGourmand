@@ -51,7 +51,11 @@ class FromagesController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('succes', 'Fromage créé avec succèes !');
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
         return $this->render('admin/fromages/new.html.twig', [
             'form' => $form->createView(),
@@ -86,7 +90,11 @@ class FromagesController extends AbstractController {
             $this->em->flush();
 
             $this->addFlash('success', 'Fromage modifié avec succès !');
-            return $this->redirectToRoute('employe_dashboard');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
         }
         return $this->render('admin/fromages/form.html.twig', [
             'form' => $form->createView(),
@@ -132,7 +140,11 @@ class FromagesController extends AbstractController {
         $this->em->flush();
 
         $this->addFlash('success', 'Fromage supprimé !');
-        return $this->redirectToRoute('employe_dashboard'); 
+        if ($this->isGranted('ROLE_ADMIN')) {
+                    return $this->redirectToRoute('admin_dashboard');
+                } else {
+                    return $this->redirectToRoute('employe_dashboard');
+                }
     }
 
     #[IsGranted('ROLE_EMPLOYE')]
