@@ -1,4 +1,4 @@
-// stats.js
+// Chargement initial
 function initStatsModule(container) {
     const menuSelect = container.querySelector('#filter-menu');
     const addMenuBtn = container.querySelector('#add-menu-btn');
@@ -12,13 +12,14 @@ function initStatsModule(container) {
     let statsChartInstance;
     let selectedMenus = [];
 
-    // =====================
-    // Mettre à jour le chart
-    // =====================
+    // Si les inputs de date sont vides, on met des dates par défaut
+    if (!startDateInput.value) startDateInput.value = '2026-01-01';
+    if (!endDateInput.value) endDateInput.value = new Date().toISOString().split('T')[0];
+
     async function loadStatsChart() {
         try {
-            const start = startDateInput?.value;
-            const end = endDateInput?.value;
+            const start = startDateInput.value;
+            const end = endDateInput.value;
 
             const params = new URLSearchParams();
             if (start) params.append('start', start);
@@ -30,55 +31,63 @@ function initStatsModule(container) {
             });
 
             const data = await resp.json();
+            if (!data.labels || !data.counts || !data.ca) return;
 
-            console.log('Données reçues pour Chart.js:', data); // 🔹 utile pour debug
-
-            if (!data.labels || !data.counts || !data.ca) {
-                console.warn('JSON incomplet pour le chart.');
-                return;
-            }
-
-            if (statsChartInstance) statsChartInstance.destroy();
-
-            statsChartInstance = new Chart(chartCanvas.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: data.labels,
-                    datasets: [
-                        { label: 'Nombre de commandes', data: data.counts, backgroundColor: '#A28873' },
-                        { label: 'Chiffre d’affaires (€)', data: data.ca, backgroundColor: '#5A3E36' }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    if (context.dataset.label === 'Chiffre d’affaires (€)') {
-                                        return context.dataset.label + ': ' + context.raw.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+            if (statsChartInstance) {
+                statsChartInstance.data.labels = data.labels;
+                statsChartInstance.data.datasets[0].data = data.counts;
+                statsChartInstance.data.datasets[1].data = data.ca;
+                statsChartInstance.update();
+            } else {
+                statsChartInstance = new Chart(chartCanvas.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [
+                            { label: 'Nombre de commandes', data: data.counts, backgroundColor: '#A28873', yAxisID: 'y' },
+                            { label: 'Chiffre d’affaires (€)', data: data.ca, backgroundColor: '#5A3E36', yAxisID: 'y1' }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        if (context.dataset.label === 'Chiffre d’affaires (€)') {
+                                            return context.dataset.label + ': ' + context.raw.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+                                        }
+                                        return context.dataset.label + ': ' + context.raw;
                                     }
-                                    return context.dataset.label + ': ' + context.raw;
                                 }
                             }
+                        },
+                        scales: {
+                            y: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: 'Nombre de commandes' } },
+                            y1: { type: 'linear', position: 'right', beginAtZero: true, grid: { drawOnChartArea: false }, title: { display: true, text: 'Chiffre d’affaires (€)' } }
                         }
-                    },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
+                    }
+                });
+            }
         } catch (err) {
             console.error('Erreur lors du chargement du chart:', err);
         }
     }
 
-    // =====================
-    // Créer un tag menu
-    // =====================
-    function createTag(menuId, menuName) {
+    // Événements
+    [startDateInput, endDateInput].forEach(input => {
+        if (input) input.addEventListener('change', loadStatsChart);
+    });
+
+    addMenuBtn?.addEventListener('click', () => {
+        const selectedOption = menuSelect.options[menuSelect.selectedIndex];
+        const menuId = selectedOption.value;
+        const menuName = selectedOption.dataset.name || selectedOption.text;
+        if (!menuId || selectedMenus.includes(menuId)) return;
+        selectedMenus.push(menuId);
         const tag = document.createElement('span');
         tag.classList.add('menu-tag');
         tag.textContent = menuName;
-
         const removeBtn = document.createElement('button');
         removeBtn.type = 'button';
         removeBtn.textContent = 'x';
@@ -87,50 +96,20 @@ function initStatsModule(container) {
             menuTagsContainer.removeChild(tag);
             loadStatsChart();
         });
-
         tag.appendChild(removeBtn);
         menuTagsContainer.appendChild(tag);
-    }
-
-    // =====================
-    // Ajouter un menu depuis le select
-    // =====================
-    addMenuBtn?.addEventListener('click', () => {
-        const selectedOption = menuSelect.options[menuSelect.selectedIndex];
-        const menuId = selectedOption.value;
-        const menuName = selectedOption.dataset.name || selectedOption.text;
-
-        if (!menuId || selectedMenus.includes(menuId)) return;
-
-        selectedMenus.push(menuId);
-        createTag(menuId, menuName);
         loadStatsChart();
     });
 
-    // =====================
-    // Rechargement automatique si dates changent
-    // =====================
-    [startDateInput, endDateInput].forEach(input => {
-        if (input) input.addEventListener('change', loadStatsChart);
-    });
-
-    // =====================
-    // Chargement initial
-    // =====================
+    // Chargement initial avec les dates actuelles
     loadStatsChart();
 }
 
-// =====================
-// Chargement si la page charge la section stats directement
-// =====================
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.querySelector('.stats-list');
     if (container) initStatsModule(container);
 });
 
-// =====================
-// Chargement si la section stats est insérée via AJAX
-// =====================
 document.addEventListener('statsContentLoaded', (e) => {
     const container = e.detail.container;
     if (container) initStatsModule(container);

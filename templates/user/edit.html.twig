@@ -1,116 +1,173 @@
-{# templates/user/edit.html.twig #}
+{% extends 'base.html.twig' %}
 
-{{ form_start(form, {
-    'attr': {'id':'commande-edit-form', 'class':'commande-edit-form'},
-    'method':'POST'
-}) }}
+{% block title %}Modifier ma commande - Dashboard Vite &amp; Gourmand{% endblock %}
 
-<div class="modify-cmd">
-    <h2>Modifier votre commande</h2>
-</div>
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('css/editcommande.css') }}"> 
+{% endblock %}
 
-{# ===== NOMBRE DE MENUS ===== #}
-<div class="commande-section commande-quantite">
-    <h3>Nombre de menus</h3>
-    <div class="form-group">
-        {{ form_label(form.nbPersonne) }}
-        {{ form_widget(form.nbPersonne, {'attr': {'class':'input-nb-personne'}}) }}
-        {{ form_errors(form.nbPersonne) }}
-    </div>
-</div>
+{% block content %}
+<div class="dashboard-container">
+    <h1>Modifier la commande  #{{ commande.numeroCommande }}</h1> 
 
-{# ===== PLATS DU MENU ===== #}
-<div class="commande-section commande-plats">
-    <h3>Plats du menu</h3>
-    <div class="plats-selectionnes">
-        {% for cp in commande.commandePlats %}
-            <div class="plat-selected" data-commande="{{ cp.commande.id }}" data-plat="{{ cp.plat.id }}">
-                <span>{{ cp.plat.category.libelle }} : {{ cp.plat.titrePlat }}</span>
-            </div>
-        {% endfor %}
-    </div>
+    <form id="editCommandeForm" method="POST" action="{{ path('commande_user_edit', {id: commande.id}) }}">
 
-    <div class="plats-disponibles">
-        {% set categoriesOrder = ['Entrée','Plat','Dessert'] %}
-        {% for cat in categoriesOrder %}
-            {% for mp in menu.menuPlats %}
-                {% if mp.plat.category and mp.plat.category.libelle == cat %}
-                    {% set platSelected = mp.plat.id in commande.commandePlats|map(cp => cp.plat.id) %}
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox"
-                                   name="menu_plats[]"
-                                   value="{{ mp.plat.id }}"
-                                   data-category="{{ mp.plat.category.libelle }}"
-                                   {% if platSelected %}checked{% endif %}>
-                            {{ mp.plat.category.libelle }} : {{ mp.plat.titrePlat }}
-                        </label>
+        {# BLOC MENU ACTUEL #}
+        <div class="menu-actuel">
+            <h2>Menu choisi : {{ commande.menu.nom }}</h2>
+            <p>Prix par personne : {{ commande.menu.prixParPersonne }} €</p>
+            <p>Nombre de menus : {{ commande.nbPersonne }} </p>
+            <label>Nombre de personnes : 
+                <input type="number"
+                            name="nbPersonne"
+                            value="{{ commande.nbPersonne }}"
+                            min="{{ commande.menu.nbPersMin }}"
+                            data-prixParPersonne="{{ commande.menu.prixParPersonne }}"
+                            required>
+            </label>
+
+            <h3>Plats choisis : </h3>
+            <div class="plats-choisis">
+                {% for cp in commande.commandePlats %}
+                    {% set plat = cp.plat %}
+                    {% set categorie = plat.category.libelle %} 
+                    <div class="plat-actuel">
+                        <strong>{{ categorie }} :</strong> {{ plat.titrePlat }}
+                        {% if plat.image %}
+                            <img src="{{ asset(plat.image) }}" alt="{{ plat.titrePlat }}">
+                        {% endif %}
                     </div>
-                {% endif %}
-            {% endfor %}
-        {% endfor %}
-    </div>
-</div>
+                {% else %}
+                    <p>Aucun plat choisi pour cette commande.</p>
+                {% endfor %}
+            </div>
+        </div>
 
-{# ===== OPTIONS ===== #}
-<div class="commande-section commande-options">
+        {# BLOC MODIFICATION PLATS #}
+        <div class="modify-plats">
+            <h2>Modifier les plats</h2>
+            <div class="select-row-container">
+                {% for catId, catNom in {4: 'Entrée', 5: 'Plat', 6: 'Dessert'} %}
+                    <div class="select-row">
+                        <label>{{ catNom }} :</label>
+                        <select name="plats[{{ catId }}]" required>
+                            <option value="">Choisir</option>
+                            {% for plat in platsParCategorie[catId] %}
+                                <option value="{{ plat.id }}" {% if platsSelectionnes[catId] and platsSelectionnes[catId].id == plat.id %}selected{% endif %}>
+                                    {{ plat.titrePlat }} 
+                                </option>
+                            {% endfor %}
+                        </select>
 
-    {% set options = {
-        'Fromages': form.commandeFromages,
-        'Boissons': form.commandeBoissons,
-        'Matériels': form.commandeMateriels,
-        'Personnels': form.commandePersonnels
-    } %}
-
-    {% for optionName, formField in options %}
-        <div class="commande-option commande-{{ optionName|lower }}">
-            <h4>{{ optionName }}</h4>
-            <div class="options-list-modify">
-                {% for item in formField %}
-                    {% set choix = null %}
-                    {% if optionName == 'Fromages' %}
-                        {% set choix = commande.commandeFromages|filter(o => o.fromage.id == item.vars.value)|first %}
-                        {% set quantite = choix ? choix.quantite : 0 %}
-                        {% set quantName = item.vars.full_name ~ '_quantite' %}
-                    {% elseif optionName == 'Boissons' %}
-                        {% set choix = commande.commandeBoissons|filter(o => o.boisson.id == item.vars.value)|first %}
-                        {% set quantite = choix ? choix.quantite : 0 %}
-                        {% set quantName = item.vars.full_name ~ '_quantite' %}
-                    {% elseif optionName == 'Matériels' %}
-                        {% set choix = commande.commandeMateriels|filter(o => o.materiel.id == item.vars.value)|first %}
-                        {% set quantite = choix ? choix.quantite : 0 %}
-                        {% set quantName = item.vars.full_name ~ '_quantite' %}
-                    {% elseif optionName == 'Personnels' %}
-                        {% set choix = commande.commandePersonnels|filter(o => o.personnel.id == item.vars.value)|first %}
-                        {% set quantite = choix ? choix.heures : 0 %}
-                        {% set quantName = item.vars.full_name ~ '_heures' %}
-                    {% endif %}
-
-                    <div class="option-item-modify" data-id="{{ choix ? choix.id : '' }}">
-                        <input type="checkbox"
-                               name="{{ item.vars.full_name }}"
-                               value="{{ item.vars.value }}"
-                               {% if quantite > 0 %}checked{% endif %}>
-                        <label>{{ item.vars.label }}</label>
-                        <input type="number" min="0"
-                               class="option-quantite"
-                               name="{{ quantName }}"
-                               value="{{ quantite }}">
+                        {% if platsParCategorie[catId] %}
+                            <div class="plat-info">
+                                {% for plat in platsParCategorie[catId] %}
+                                    <div class="plat-item">
+                                        <p class="titre-plat">{{ plat.titrePlat }}</p>
+                                        {% if plat.image %}
+                                            <img src="{{ asset(plat.image) }}" alt="{{ plat.titrePlat }}">
+                                        {% endif %}
+                                        {% if plat.description %}
+                                            <p class="description">{{ plat.description }}</p>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
         </div>
-    {% endfor %}
 
-</div>
+        {# BLOC MODIFICATION OPTIONS #}
+        <div class="modify-options">
+            <h2>Options</h2>
+            {% for section, items in {
+                'Fromages': fromagesData,
+                'Boissons': boissonsData,
+                'Matériel': materielsData,
+                'Personnel': personnelsData
+            } %}
+                {% if items is not empty %}
+                    <h3>{{ section }}</h3>
+                    <div class="options-section">
+                        {% for item in items %}
+                            {% if section == 'Fromages' %}
+                                {% set entity = item.fromage %}
+                                {% set qty = item.quantite %}
+                                {% set minQty = item.fromage.minCommande %}
+                                {% set prix = entity.prixParFromage %}
+                            {% elseif section == 'Boissons' %}
+                                {% set entity = item.boisson %}
+                                {% set qty = item.quantite %}
+                                {% set minQty = item.boisson.minCommande %}
+                                {% set prix = entity.prixParBouteille %}
+                            {% elseif section == 'Matériel' %}
+                                {% set entity = item.materiel %}
+                                {% set qty = item.quantite %}
+                                {% set minQty = 0 %}
+                                {% set prix = entity.prixPiece %}
+                            {% elseif section == 'Personnel' %}
+                                {% set entity = item.personnel %}
+                                {% set qty = item.heures %}
+                                {% set minQty = 0 %}
+                                {% set prix = entity.prixHeure %}
+                            {% endif %}
 
-{# ===== ACTIONS ===== #}
-<div class="commande-actions-modify">
-    <button type="submit" class="btn btn-modifier-commande">Enregistrer les modifications</button>
-    <button type="button" class="btn btn-annuler-commande"
-            data-url="{{ path('commande_user_annuler', {id: commande.id}) }}">
-        Annuler la commande
-    </button>
-</div>
+                            <div class="option-item">
+                                <div class="option-info">
+                                    <p>
+                                        {% if section == 'Fromages' %}
+                                            {{ entity.titreFromage }} - {{ prix }} € / pièce
+                                        {% elseif section == 'Boissons' %}
+                                            {{ entity.titreBoisson }} - {{ prix }} € / bouteille
+                                        {% elseif section == 'Matériel' %}
+                                            {{ entity.titreMateriel }} - {{ prix }} € / pièce
+                                        {% elseif section == 'Personnel' %}
+                                            {{ entity.titrePersonnel }} - {{ prix }} € / heure &amp; unité de personnel
+                                        {% endif %}
+                                    </p>
+                                    {% if entity.description %}
+                                        <p>{{ entity.description }}</p>
+                                    {% endif %}
+                                    {% if minQty > 0 %}
+                                        <small>Minimum commande : {{ minQty }}</small>
+                                    {% endif %}
+                                    <input type="number"
+                                           name="{{ section|lower }}[{{ entity.id }}]"
+                                           value="{{ qty }}"
+                                           min="0"
+                                           step="1"
+                                           data-prix="{{ prix }}"
+                                           data-min="{{ minQty }}">
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
 
-{{ form_end(form, {'render_rest': false}) }}
+        {# BLOC TOTAL #}
+        <div class="modify-total">
+            <h2>Total</h2>
+            <p>Remise : <span id="remise">{{ remise|number_format(2, ',', ' ') }}</span> €</p>
+            <p id="totalGeneral" class="prix-total">{{ commande.prixTotal|number_format(2, ',', ' ') }} €</p>
+        </div>
+
+        {# BOUTONS #}
+        <div class="modify-buttons">
+            <button type="submit" class="save">Appliquer les modifications</button>
+            <button type="button" id="deleteCommandeBtn" class="delete">Supprimer la commande</button>
+        </div>
+    
+    </form>
+
+</div>  
+
+
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('js/editcommande-ajax.js') }}"></script>
+{% endblock %}

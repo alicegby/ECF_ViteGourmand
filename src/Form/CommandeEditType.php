@@ -17,26 +17,33 @@ class CommandeEditType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $isEdit = $options['is_edit'] ?? false;
+        $commande = $options['data'];
+        $minPersonne = $commande->getNbPersonne(); // minimum à partir de la commande
 
         $builder
+            // Nombre de personnes avec min
             ->add('nbPersonne', IntegerType::class, [
                 'label' => 'Nombre de personnes',
-                'attr' => ['min' => 1],
+                'attr' => ['min' => $minPersonne],
             ])
-            ->add('menu_plats', EntityType::class, [
+
+            // Plats du menu (modifiable)
+            ->add('menuPlats', EntityType::class, [
                 'class' => Plats::class,
                 'choice_label' => 'titrePlat',
                 'multiple' => true,
                 'expanded' => true,
-                'mapped' => false, // géré manuellement dans le controller
-                'required' => false,
+                'mapped' => false, // on gère manuellement
+                'required' => true,
+                'data' => $commande->getCommandePlats()->map(fn($cp) => $cp->getPlat())->toArray(),
             ])
+
+            // Options : fromages, boissons, matériel, personnel
             ->add('commandeFromages', EntityType::class, [
                 'class' => Fromages::class,
                 'choice_label' => 'titreFromage',
                 'multiple' => true,
-                'expanded' => true,
+                'expanded' => false, // juste quantité
                 'mapped' => false,
                 'required' => false,
             ])
@@ -44,7 +51,7 @@ class CommandeEditType extends AbstractType
                 'class' => Boissons::class,
                 'choice_label' => 'titreBoisson',
                 'multiple' => true,
-                'expanded' => true,
+                'expanded' => false,
                 'mapped' => false,
                 'required' => false,
             ])
@@ -52,7 +59,7 @@ class CommandeEditType extends AbstractType
                 'class' => Materiel::class,
                 'choice_label' => 'titreMateriel',
                 'multiple' => true,
-                'expanded' => true,
+                'expanded' => false,
                 'mapped' => false,
                 'required' => false,
             ])
@@ -60,7 +67,7 @@ class CommandeEditType extends AbstractType
                 'class' => Personnel::class,
                 'choice_label' => 'titrePersonnel',
                 'multiple' => true,
-                'expanded' => true,
+                'expanded' => false,
                 'mapped' => false,
                 'required' => false,
             ]);
@@ -70,7 +77,7 @@ class CommandeEditType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => \App\Entity\Commande::class,
-            'is_edit' => false, // option personnalisée pour le controller
+            'is_edit' => false,
         ]);
     }
 }

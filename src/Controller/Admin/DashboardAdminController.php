@@ -16,7 +16,9 @@ class DashboardAdminController extends AbstractController
     private function getMongoCollection()
     {
         $client = new MongoClient("mongodb://admin:admin123@mongo:27017");
-        return $client->selectDatabase("vite_gourmand_stats")->selectCollection("commandes");
+        return $client
+            ->selectDatabase("vite_gourmand_stats")
+            ->selectCollection("commandes");
     }
 
     public function index(): Response
@@ -26,30 +28,82 @@ class DashboardAdminController extends AbstractController
         ]);
     }
 
+    /**
+     * PAGE STATS
+     * - menus distincts
+     * - CA global (sans filtres dynamiques)
+     */
     public function statsPage(): Response
     {
         $commandes = $this->getMongoCollection();
 
-        // Récupérer tous les menus distincts
+        // Menus distincts
         $menus = $commandes->distinct('menu.nom', [
             'statutCommande' => [
-                '$in' => ['Acceptée', 'En attente de retour du matériel', 'En livraison', 'En préparation', 'Livrée', 'Terminée']
+                '$in' => [
+                    'Acceptée',
+                    'En attente du matériel',
+                    'En livraison',
+                    'En préparation',
+                    'Livrée',
+                    'Terminée'
+                ]
             ]
         ]) ?? [];
 
-        // Chiffre d'affaires global depuis le 01/01/2026
-        $startGlobal = new UTCDateTime(strtotime('2026-01-01') * 1000);
-        $pipeline = [
-            ['$match' => [
-                'statutCommande' => [
-                    '$in' => ['Acceptée', 'En attente du matériel', 'En livraison', 'En préparation', 'Livrée', 'Terminée']
-                ],
-                'dateCommande' => ['$gte' => $startGlobal]
-            ]],
-            ['$group' => ['_id' => null, 'totalCA' => ['$sum' => '$prixTotal']]]
+        // CA global depuis le 01/01/2026
+        $startGlobal = new UTCDateTime(strtotime('2026-01-01 00:00:00') * 1000);
+
+        $pipelineCA = [
+            [
+                '$match' => [
+                    'statutCommande' => [
+                        '$in' => [
+                            'Acceptée',
+                            'En attente du matériel',
+                            'En livraison',
+                            'En préparation',
+                            'Livrée',
+                            'Terminée'
+                        ]
+                    ],
+                    'prixTotal' => ['$exists' => true, '$ne' => null]
+                ]
+            ],
+            [
+                '$addFields' => [
+                    'prixTotalDouble' => [
+                        '$convert' => [
+                            'input' => '$prixTotal',
+                            'to' => 'double',
+                            'onError' => 0,
+                            'onNull' => 0
+                        ]
+                    ],
+                    'dateCommandeDate' => [
+                        '$dateFromString' => [
+                            'dateString' => '$dateCommande'
+                        ]
+                    ]
+                ]
+            ],
+            [
+                '$match' => [
+                    'dateCommandeDate' => ['$gte' => $startGlobal]
+                ]
+            ],
+            [
+                '$group' => [
+                    '_id' => null,
+                    'totalCA' => ['$sum' => '$prixTotalDouble']
+                ]
+            ]
         ];
-        $caGlobalResult = $commandes->aggregate($pipeline)->toArray();
-        $caGlobal = $caGlobalResult[0]->totalCA ?? 0;
+
+        $result = $commandes->aggregate($pipelineCA)->toArray();
+        $caGlobal = (!empty($result) && isset($result[0]->totalCA))
+            ? (float) $result[0]->totalCA
+            : 0;
 
         return $this->render('admin/stats/stats.html.twig', [
             'menus' => $menus,
@@ -57,38 +111,86 @@ class DashboardAdminController extends AbstractController
         ]);
     }
 
+    /**
+     * API STATS (Chart.js)
+     * - filtres dates
+     * - filtres menus
+     */
     public function getStatsData(Request $request): JsonResponse
     {
         $start = $request->query->get('start');
         $end = $request->query->get('end');
-        $selectedMenus = $request->query->all('menu'); // tableau si plusieurs menus
+        $selectedMenus = $request->query->all('menu');
 
         $commandes = $this->getMongoCollection();
 
-        $filter = [
+        // Filtre statuts + menus
+        $match = [
             'statutCommande' => [
-                '$in' => ['Acceptée', 'En attente du matériel', 'En livraison', 'En préparation', 'Livrée', 'Terminée']
+                '$in' => [
+                    'Acceptée',
+                    'En attente du matériel',
+                    'En livraison',
+                    'En préparation',
+                    'Livrée',
+                    'Terminée'
+                ]
             ]
         ];
 
-        if ($start || $end) {
-            $filter['dateCommande'] = [];
-            if ($start) $filter['dateCommande']['$gte'] = new UTCDateTime(strtotime($start) * 1000);
-            if ($end) $filter['dateCommande']['$lte'] = new UTCDateTime(strtotime($end) * 1000);
-        }
-
         if (!empty($selectedMenus)) {
-            $filter['menu.nom'] = ['$in' => $selectedMenus];
+            $match['menu.nom'] = ['$in' => $selectedMenus];
         }
 
         $pipeline = [
-            ['$match' => $filter],
-            ['$group' => [
-                '_id' => '$menu.nom',
-                'count' => ['$sum' => 1],
-                'ca' => ['$sum' => '$prixTotal']
-            ]],
-            ['$sort' => ['count' => -1]]
+
+            // 1. Filtre statuts / menus
+            [
+                '$match' => $match
+            ],
+
+            // 2. Conversion date + prix
+            [
+                '$addFields' => [
+                    'dateCommandeDate' => [
+                        '$dateFromString' => [
+                            'dateString' => '$dateCommande'
+                        ]
+                    ],
+                    'prixTotalDouble' => [
+                        '$convert' => [
+                            'input' => '$prixTotal',
+                            'to' => 'double',
+                            'onError' => 0,
+                            'onNull' => 0
+                        ]
+                    ]
+                ]
+            ],
+
+            // 3. Filtrage par période (APRÈS conversion)
+            [
+                '$match' => array_filter([
+                    'dateCommandeDate' => [
+                        '$gte' => $start ? new UTCDateTime(strtotime($start . ' 00:00:00') * 1000) : null,
+                        '$lte' => $end   ? new UTCDateTime(strtotime($end   . ' 23:59:59') * 1000) : null,
+                    ]
+                ])
+            ],
+
+            // 4. Groupement
+            [
+                '$group' => [
+                    '_id' => '$menu.nom',
+                    'count' => ['$sum' => 1],
+                    'ca' => ['$sum' => '$prixTotalDouble']
+                ]
+            ],
+
+            // 5. Tri
+            [
+                '$sort' => ['count' => -1]
+            ]
         ];
 
         $results = $commandes->aggregate($pipeline);

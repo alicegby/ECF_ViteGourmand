@@ -1,0 +1,214 @@
+/* Container général */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+.dashboard-container h1 {
+    color: #5C4033;
+    font-family: 'Playfair Display';
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Menu actuel */
+.menu-actuel {
+    background-color: #A28873;
+    color: #F6F1EB;
+    box-shadow: 0 1px 6px #2F2F2F;
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+.menu-actuel h2 {
+    margin-bottom: 10px;
+}
+
+.menu-actuel p {
+    margin: 5px 0;
+}
+
+.menu-actuel label {
+    display: block;
+    margin: 10px 0;
+}
+
+.menu-actuel input {
+    width: 100%;
+    font-size: 1rem;
+    padding: 5px 5px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+}
+
+.menu-actuel .plats-choisis {
+    display: flex;
+    gap: 20px; /* espace entre les colonnes */
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.menu-actuel .plat-actuel {
+    flex: 1; 
+    max-width: calc(33.333% - 13.33px);
+    background-color: rgba(255,255,255,0.1);
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.menu-actuel .plat-actuel img {
+    display: block;
+    margin: 10px auto 0 auto;
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+/* Modifier les plats */
+.modify-plats {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    background-color: #F6F1EB;
+    box-shadow: 0 1px 6px #2F2F2F;
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+.modify-plats .select-row-container {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.modify-plats .select-row {
+    flex: 1;
+    max-width: calc(33.333% - 13.33px);
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.modify-plats select {
+    width: 100%;
+    padding: 5px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.modify-plats .plat-info {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modify-plats .plat-info p.titre-plat {
+    font-weight: bold;
+    text-align: center;
+    margin: 0;
+}
+
+.modify-plats .plat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* titre et image centrés */
+    text-align: center;
+    min-height: 200px; /* ajuste selon la taille moyenne des descriptions */
+}
+
+.modify-plats .plat-info img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+.modify-plats .plat-info .description {
+    flex-grow: 1; /* pousse le bloc suivant à être aligné */
+}
+
+.modify-plats .plat-info:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+/* Options */
+.modify-options {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    background-color: #F6F1EB;
+    box-shadow: 0 1px 6px #2F2F2F;
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+.modify-options h3 {
+    margin-top: 20px;
+}
+
+.options-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; 
+}
+
+.option-item {
+    flex: 1 1 calc(33.333% - 20px); 
+    border: 1px solid #ddd;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.option-item .option-info {
+    margin-top: 5px;
+}
+
+.option-item input[type="number"] {
+    width: 60px;
+    padding: 4px;
+}
+
+/* Total et boutons */
+.modify-total {
+    margin-top: 30px;
+    font-size: 18px;
+}
+
+.prix-total {
+    color: #6B7B63;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.modify-buttons {
+    margin-top: 20px;
+}
+
+.modify-buttons button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: none;
+}
+
+.modify-buttons .save {
+    background-color: #6B7B63;
+    color: #F6F1EB;
+}
+
+.modify-buttons .delete {
+    background-color: #721c24;
+    border: none;
+    color: #F6F1EB;
+}

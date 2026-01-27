@@ -16,7 +16,13 @@
 
     <div class="ca-class">
         <h3>Chiffre d'Affaires global depuis le 01/01/2026 : <br></h3>
-        <h4>{{ caGlobal|number_format(2, ',', ' ') }} € </h4>
+        <h4>
+            {% if caGlobal is not null %}
+                {{ caGlobal|number_format(2, ',', ' ') }} €
+            {% else %}
+                0,00 €
+            {% endif %}
+        </h4>
     </div>
 
     <div class="stats-filters">

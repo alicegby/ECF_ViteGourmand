@@ -81,7 +81,7 @@
                                 <li class="plat-item">{{ item.plat.category.libelle }} : {{ item.plat.titrePlat }}</li>
                             {% endfor %}
                          </ul>
-                         </div>
+                         </div> 
                         {% endif %}
 
                         {% if c.commandeFromages is not empty or c.commandeBoissons is not empty or c.commandeMateriels is not empty or c.commandePersonnels is not empty %}
@@ -202,7 +202,10 @@
                                 <p><strong>Statut :</strong> {{ c.statutCommande.libelle }}</p>
 
                                 {% if c.isModifiableParClient %}
-                                    <button type="button" class="btn-edit-cmd" data-commande-id="{{ c.id }}">Modifier la commande</button>
+                                    <button type="button" onclick='window.location.href="{{ path("commande_user_edit", {"id": c.id}) }}"' class="modify-order">
+                                        <img src="{{ asset('Visuels/Icônes/Edit_Beige.png') }}" alt="Voir">
+                                        Modifier la commande
+                                    </button>
                                 {% endif %}
                             </div>
 
