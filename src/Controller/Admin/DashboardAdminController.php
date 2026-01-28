@@ -11,6 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DashboardAdminController extends AbstractController
 {
+
+    public function index(): Response
+    {
+        return $this->render('admin/dashboard/index.html.twig', [
+            'user' => $this->getUser(),
+        ]);
+    }
+
     // Collection MongoDB
     private function collection()
     {
@@ -28,7 +36,7 @@ class DashboardAdminController extends AbstractController
         'Lune de Miel',
         'Les Aventuriers',
         'Lumière & Tendresse',
-        'Festin Carnivore',
+        'Festin Carnivore', 
         'Sapori d\'Italia',
         'Jardin des Délices',
         'Évasion Asiatique',
@@ -83,7 +91,10 @@ class DashboardAdminController extends AbstractController
 
         $start = new UTCDateTime(strtotime($request->query->get('start', '2026-01-01').' 00:00:00') * 1000);
         $end   = new UTCDateTime(strtotime($request->query->get('end', date('Y-m-d')).' 23:59:59') * 1000);
-        $menusFilter = $request->query->all('menu'); // noms des menus
+        $menusFilter = array_filter(
+            $request->query->all('menu'), 
+            fn($menu) => in_array($menu, $this->allMenus, true)
+        );
         $validStatuses = ['Acceptée', 'En attente de retour du matériel', 'En livraison', 'En préparation', 'Livrée', 'Terminée'];
 
         $match = [

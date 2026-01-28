@@ -2185,3 +2185,63 @@ ul li {
 .stats-list canvas {
     max-height: 600px !important;
 }
+
+/* RESPONSIVE */
+/* Responsive : tablette et mobile */
+@media (max-width: 1024px) {
+    .dashboard-container {
+        display: flex;
+        flex-direction: column;
+        margin: 0 10px;
+    }
+
+    .dashboard-opening h1,
+    .dashboard-opening p {
+        text-align: center;
+    }
+
+    /* Les boutons passent sous le h1 et p */
+    .stats-btn,
+    .dashboard-buttons,
+    .theme-btn {
+        margin-top: 15px;
+        justify-content: center;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    /* AJAX / panel doit rester caché tant qu'on ne clique pas */
+    .panel-ajax,
+    .filter-panel,
+    .stats-filters {
+        display: none !important; /* force caché en responsive */
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    /* Liste simplifiée : seulement numéro + actions */
+      table th:not(:first-child):not(:last-child),
+    table td:not(:first-child):not(:last-child) {
+        display: none;
+    }
+
+    /* Les colonnes actions en flex */
+    table td:last-child {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    /* Boutons réduits et flexibles */
+    table .btn,
+    table .btn-see,
+    table .btn-edit,
+    table .btn-see-client,
+    table .btn-suppr,
+    table .condition-btn-edit,
+    table .condition-btn-delete {
+        width: auto;
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+}

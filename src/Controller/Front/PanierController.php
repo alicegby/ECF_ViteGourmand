@@ -47,12 +47,18 @@ class PanierController extends AbstractController
         // ===== MENUS =====
         foreach ($session->get('menu_add_to_cart', []) as $item) {
             $menu = $menuRepo->find($item['menuId']);
-            if (!$menu) continue;
+            if (!$menu) {
+                $this->addFlash('error', 'Menu invalide.');
+                return $this->redirectToRoute('panier');
+            }
 
             $plats = [];
             foreach ($item['plats'] as $platId) {
                 $plat = $platRepo->find($platId);
-                if ($plat) $plats[] = $plat;
+               if (!$plat) {
+                    $this->addFlash('error', 'Plat invalide.');
+                    return $this->redirectToRoute('panier');
+                }
             }
 
             $quantity = (int) $item['quantity'];
@@ -194,7 +200,7 @@ class PanierController extends AbstractController
             'begles'=>5,'blanquefort'=>11,'bouliac'=>9,'bordeaux'=>0,'bruges'=>9,'carbon-blanc'=>11,'cenon'=>9,
             'eysines'=>11,'floirac'=>9,'gradignan'=>9,'le bouscat'=>7,'le haillan'=>9,'le taillan-medoc'=>13,
             'lormont'=>9,'martignas-sur-jalle'=>14,'merignac'=>5,'parempuye'=>18,'pessac'=>8,
-            'saint-aubin-de-medoc'=>20,'saint-louis-de-montferrand'=>18,'saint-vincent-de-paul'=>20,'talence'=>4,'villenave-d-ornon'=>7,
+            'saint-aubin-de-medoc'=>20,'saint-louis-de-montferrand'=>18,'sainte-eulalie'=>17,'saint-vincent-de-paul'=>20,'talence'=>4,'villenave-d-ornon'=>7,
         ];
 
         if (!isset($cityDistances[$villeUser])) {
@@ -330,14 +336,14 @@ class PanierController extends AbstractController
         // ===== CALCUL DES FRAIS DE LIVRAISON =====
         $fraisLivraison = 0;
 
-        $villeUser = strtolower($user->getVille() ?? '');
+        $villeUser = strtolower($user->getVille() ?? ''); 
 
         $cityDistances = [
             'ambares-et-lagrave'=>15,'ambes'=>20,'artigues-pres-bordeaux'=>8,'bassens'=>11,
             'begles'=>5,'blanquefort'=>11,'bouliac'=>9,'bruges'=>9,'bordeaux'=>0,'carbon-blanc'=>11,'cenon'=>9,
             'eysines'=>11,'floirac'=>9,'gradignan'=>9,'le bouscat'=>7,'le haillan'=>9,'le taillan-medoc'=>13,
             'lormont'=>9,'martignas-sur-jalle'=>14,'merignac'=>5,'parempuye'=>18,'pessac'=>8,
-            'saint-aubin-de-medoc'=>20,'saint-louis-de-montferrand'=>18,'saint-vincent-de-paul'=>20,
+            'saint-aubin-de-medoc'=>20,'saint-louis-de-montferrand'=>18,'sainte-eulalie'=>17,'saint-vincent-de-paul'=>20,
             'talence'=>4,'villenave-d-ornon'=>7,
         ];
 

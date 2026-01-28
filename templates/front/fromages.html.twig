@@ -11,9 +11,6 @@
 <!-- Header avec titre et bouton filtre -->
 <div class="options-header">
     <h2 class="options-title">Nos Fromages</h2>
-    <button class="options-filter-toggle">
-        <img src="{{ asset('Visuels/Icônes/Filter_DarkBrown.png') }}" alt="Filtrer">
-    </button>
 </div>
 
 <!-- Proposition -->
@@ -21,33 +18,9 @@
     Nous vous proposons un assortiment de fromages pour accompagner vos repas.
 </p>
 
-<!-- Overlay & panel filtre latéral -->
-<div class="options-filter-overlay"></div>
-<div class="options-filter-panel">
-    <button class="options-close-panel">
-        <img src="{{ asset('Visuels/Icônes/Croix_DarkBrown.png') }}" alt="Fermer">
-    </button>
-    <h3>Filtres</h3>
 
-    <div class="options-filter-section">
-        <h4>Catégorie</h4>
-        <div id="categories-list">
-            {% for category in categories %}
-                <div class="options-filter-option" data-id="{{ category.id }}">
-                    {{ category.libelle }}
-                </div>
-            {% endfor %}
-        </div>
-    </div>
 
-    <button class="options-apply-filters">Appliquer</button>
-    <button class="options-reset-filters">Réinitialiser les filtres</button>
-</div>
-
-<!-- Étiquettes actives -->
-<div class="options-filter-tags"></div>
-
-<!-- Liste des fromages (tout mélangé) -->
+<!-- Liste des fromages -->
 <div class="options-selection">
     {% for category in categories %}
         {% for fromage in category.fromages %}
@@ -84,7 +57,7 @@
             </div>
         {% endfor %}
     {% endfor %}
-</div>
+</div> 
 
 <!-- Bouton Suivant général -->
 <div class="options-detail-actions">

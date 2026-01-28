@@ -17,6 +17,11 @@ use App\Entity\CommandeMateriel;
 use App\Entity\CommandeReduction;
 use App\Entity\Avis;
 
+/**
+ * @ORM\Entity
+ * @ORM\EntityListeners({"App\EventListener\CommandeListener"})
+ */
+
 #[ORM\Entity]
 class Commande
 {

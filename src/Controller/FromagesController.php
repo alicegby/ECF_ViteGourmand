@@ -50,7 +50,7 @@ class FromagesController extends AbstractController {
             $this->em->persist($fromage);
             $this->em->flush();
 
-            $this->addFlash('succes', 'Fromage créé avec succèes !');
+            $this->addFlash('success', 'Fromage créé avec succèes !');
             if ($this->isGranted('ROLE_ADMIN')) {
                     return $this->redirectToRoute('admin_dashboard');
                 } else {

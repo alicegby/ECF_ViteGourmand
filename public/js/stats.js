@@ -118,5 +118,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loadStats();
 
     // Auto refresh toutes les 5 secondes
-    setInterval(loadStats, 5000);
+    setInterval(loadStats, 5000); // toutes les 5 secondes
 });

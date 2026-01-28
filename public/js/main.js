@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ouvrir le menu
         burger.addEventListener('click', () => {
             mobileMenu.classList.add('active');
-        });
+        }); 
 
         // Fermer le menu quand on clique sur la croix
         closeBtn.addEventListener('click', () => {

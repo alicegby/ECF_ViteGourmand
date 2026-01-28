@@ -1,45 +1,41 @@
-<?php
+<?php 
 
 namespace App\EventListener;
 
 use App\Entity\Commande;
-use App\Service\MongoService;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use App\Service\MongoService;
 
 class CommandeListener
 {
-    private $mongoService;
+    private MongoService $mongoService;
 
     public function __construct(MongoService $mongoService)
     {
         $this->mongoService = $mongoService;
     }
 
-    public function postPersist(Commande $commande, LifecycleEventArgs $args)
+    public function postPersist(LifecycleEventArgs $args)
     {
-        $this->sendToMongo($commande);
-    }
+        $entity = $args->getObject();
+        if (!$entity instanceof Commande) return;
 
-    public function postUpdate(Commande $commande, LifecycleEventArgs $args)
-    {
-        $this->sendToMongo($commande);
-    }
-
-    private function sendToMongo(Commande $commande)
-    {
-        $doc = [
-            '_id' => $commande->getId(),
-            'numeroCommande' => $commande->getNumeroCommande(),
-            'client' => $commande->getClient()?->getId(),
+        $this->mongoService->upsertCommande([
+            '_id' => $entity->getId(),
+            'numeroCommande' => $entity->getNumeroCommande(),
+            'client' => $entity->getClient()?->getId(),
             'menu' => [
-                'id' => $commande->getMenu()?->getId(),
-                'nom' => $commande->getMenu()?->getNom(),
+                'id' => $entity->getMenu()?->getId(),
+                'nom' => $entity->getMenu()?->getNom(),
             ],
-            'dateCommande' => $commande->getDateCommande()?->format('c'),
-            'statutCommande' => $commande->getStatutCommande()?->getLibelle(),
-            'prixTotal' => $commande->getPrixTotal(),
-        ];
+            'dateCommande' => $entity->getDateCommande()?->format('c'),
+            'statutCommande' => $entity->getStatutCommande()?->getLibelle(),
+            'prixTotal' => $entity->getPrixTotal(),
+        ]);
+    }
 
-        $this->mongoService->upsertCommande($doc);
+    public function postUpdate(LifecycleEventArgs $args)
+    {
+        $this->postPersist($args); // même logique pour update
     }
 }
