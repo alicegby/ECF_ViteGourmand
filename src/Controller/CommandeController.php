@@ -14,6 +14,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CommandeController extends AbstractController
 {
@@ -71,9 +72,42 @@ class CommandeController extends AbstractController
             $commande->setDateModif(new \DateTime());
             $this->em->flush();
 
-            if ($ancienStatut !== $nouveauStatut) {
-                $client = $commande->getClient();
-                if ($client && $client->getEmail()) {
+            $client = $commande->getClient();
+            $ancienStatutId = $ancienStatut ? $ancienStatut->getId() : null;
+            $nouveauStatutId = $nouveauStatut ? $nouveauStatut->getId() : null;
+
+            if ($ancienStatutId !== $nouveauStatutId && $client && $client->getEmail()) {
+                // Ici on envoie le mail
+                if ($nouveauStatut->getLibelle() === 'En attente de retour du matériel') {
+                    $delai = 10;
+                    $frais = 600;
+
+                    $email = (new TemplatedEmail())
+                        ->from('viteetgourmand@gmail.com')
+                        ->to($client->getEmail())
+                        ->subject('Restitution du matériel – Action requise')
+                        ->htmlTemplate('emails/restitution_materiel.html.twig')
+                        ->context([
+                            'commande' => $commande,
+                            'delai' => $delai,
+                            'frais' => $frais,
+                        ]);
+                } elseif ($nouveauStatut->getLibelle() === 'Terminée') {
+                    $dashboardUrl = $this->generateUrl('dashboard_user', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+                    $email = (new TemplatedEmail())
+                        ->from('viteetgourmand@gmail.com')
+                        ->to($client->getEmail())
+                        ->subject('Donnez votre avis sur votre commande !')
+                        ->htmlTemplate('emails/avis.html.twig')
+                        ->context([
+                            'client' => $client,
+                            'commande' => $commande,
+                            'dashboardUrl' => $dashboardUrl,
+                        ]);
+
+                    $mailer->send($email);
+                } else {
                     $email = (new TemplatedEmail())
                         ->from('viteetgourmand@gmail.com')
                         ->to($client->getEmail())
@@ -84,9 +118,9 @@ class CommandeController extends AbstractController
                             'commande' => $commande,
                             'statut' => $nouveauStatut,
                         ]);
-
-                    $mailer->send($email);
                 }
+
+                $mailer->send($email);
             }
 
             $this->addFlash('success', 'Commande mise à jour !');

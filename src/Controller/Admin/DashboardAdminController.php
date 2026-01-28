@@ -2,210 +2,138 @@
 
 namespace App\Controller\Admin;
 
+use MongoDB\Client;
+use MongoDB\BSON\UTCDateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use MongoDB\Client as MongoClient;
-use MongoDB\BSON\UTCDateTime;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpFoundation\Response;
 
-#[IsGranted('ROLE_ADMIN')]
 class DashboardAdminController extends AbstractController
 {
-    private function getMongoCollection()
+    // Collection MongoDB
+    private function collection()
     {
-        $client = new MongoClient("mongodb://admin:admin123@mongo:27017");
-        return $client
-            ->selectDatabase("vite_gourmand_stats")
-            ->selectCollection("commandes");
+        return (new Client("mongodb://admin:admin123@mongo:27017"))
+            ->selectDatabase('vite_gourmand_stats')
+            ->selectCollection('commandes');
     }
 
-    public function index(): Response
-    {
-        return $this->render('admin/dashboard/index.html.twig', [
-            'user' => $this->getUser(),
-        ]);
-    }
+    // Tous les menus connus (pour le select)
+    private array $allMenus = [
+        'Saveurs Enchantées',
+        'Le Festin des Cloches',
+        'Saveurs & Sortilèges',
+        'Minuit Étincelant',
+        'Lune de Miel',
+        'Les Aventuriers',
+        'Lumière & Tendresse',
+        'Festin Carnivore',
+        'Sapori d\'Italia',
+        'Jardin des Délices',
+        'Évasion Asiatique',
+        'Symphonie Maritime',
+        'Palette Végétale',
+        'Nature Sereine',
+        'Délicatesse'
+    ];
 
-    /**
-     * PAGE STATS
-     * - menus distincts
-     * - CA global (sans filtres dynamiques)
-     */
+    // Dashboard principal
     public function statsPage(): Response
     {
-        $commandes = $this->getMongoCollection();
+        $collection = $this->collection();
 
-        // Menus distincts
-        $menus = $commandes->distinct('menu.nom', [
-            'statutCommande' => [
-                '$in' => [
-                    'Acceptée',
-                    'En attente du matériel',
-                    'En livraison',
-                    'En préparation',
-                    'Livrée',
-                    'Terminée'
-                ]
-            ]
-        ]) ?? [];
+        // Dates par défaut
+        $start = new UTCDateTime(strtotime('2026-01-01 00:00:00') * 1000);
+        $validStatuses = ['Acceptée', 'En attente de retour du matériel', 'En livraison', 'En préparation', 'Livrée', 'Terminée'];
 
-        // CA global depuis le 01/01/2026
-        $startGlobal = new UTCDateTime(strtotime('2026-01-01 00:00:00') * 1000);
-
-        $pipelineCA = [
-            [
-                '$match' => [
-                    'statutCommande' => [
-                        '$in' => [
-                            'Acceptée',
-                            'En attente du matériel',
-                            'En livraison',
-                            'En préparation',
-                            'Livrée',
-                            'Terminée'
-                        ]
-                    ],
-                    'prixTotal' => ['$exists' => true, '$ne' => null]
-                ]
-            ],
-            [
-                '$addFields' => [
-                    'prixTotalDouble' => [
-                        '$convert' => [
-                            'input' => '$prixTotal',
-                            'to' => 'double',
-                            'onError' => 0,
-                            'onNull' => 0
-                        ]
-                    ],
-                    'dateCommandeDate' => [
-                        '$dateFromString' => [
-                            'dateString' => '$dateCommande'
-                        ]
-                    ]
-                ]
-            ],
-            [
-                '$match' => [
-                    'dateCommandeDate' => ['$gte' => $startGlobal]
-                ]
-            ],
-            [
-                '$group' => [
-                    '_id' => null,
-                    'totalCA' => ['$sum' => '$prixTotalDouble']
-                ]
-            ]
+        // CA global depuis 01/01/2026
+        $pipeline = [
+            ['$addFields' => [
+                'dateCommandeDate' => ['$dateFromString' => ['dateString' => '$dateCommande']],
+                'prixTotalDouble' => ['$toDouble' => '$prixTotal'],
+                'menuNomString' => ['$toString' => ['$ifNull' => ['$menu.nom', 'INCONNU']]]
+            ]],
+            ['$match' => [
+                'dateCommandeDate' => ['$gte' => $start],
+                'statutCommande' => ['$in' => $validStatuses]
+            ]],
+            ['$group' => [
+                '_id' => null,
+                'caTotal' => ['$sum' => '$prixTotalDouble']
+            ]]
         ];
 
-        $result = $commandes->aggregate($pipelineCA)->toArray();
-        $caGlobal = (!empty($result) && isset($result[0]->totalCA))
-            ? (float) $result[0]->totalCA
-            : 0;
+        $caResult = $collection->aggregate($pipeline)->toArray();
+        $caGlobal = $caResult[0]->caTotal ?? 0;
+
+        // Préparer le select menu
+        $menusForSelect = array_map(fn($name) => ['nom' => $name], $this->allMenus);
 
         return $this->render('admin/stats/stats.html.twig', [
-            'menus' => $menus,
-            'caGlobal' => $caGlobal,
+            'menus' => $menusForSelect,
+            'caGlobal' => $caGlobal
         ]);
     }
 
-    /**
-     * API STATS (Chart.js)
-     * - filtres dates
-     * - filtres menus
-     */
+    // API pour Chart.js
     public function getStatsData(Request $request): JsonResponse
     {
-        $start = $request->query->get('start');
-        $end = $request->query->get('end');
-        $selectedMenus = $request->query->all('menu');
+        $collection = $this->collection();
 
-        $commandes = $this->getMongoCollection();
+        $start = new UTCDateTime(strtotime($request->query->get('start', '2026-01-01').' 00:00:00') * 1000);
+        $end   = new UTCDateTime(strtotime($request->query->get('end', date('Y-m-d')).' 23:59:59') * 1000);
+        $menusFilter = $request->query->all('menu'); // noms des menus
+        $validStatuses = ['Acceptée', 'En attente de retour du matériel', 'En livraison', 'En préparation', 'Livrée', 'Terminée'];
 
-        // Filtre statuts + menus
         $match = [
-            'statutCommande' => [
-                '$in' => [
-                    'Acceptée',
-                    'En attente du matériel',
-                    'En livraison',
-                    'En préparation',
-                    'Livrée',
-                    'Terminée'
-                ]
-            ]
+            'statutCommande' => ['$in' => $validStatuses],
+            'dateCommandeDate' => ['$gte' => $start, '$lte' => $end]
         ];
 
-        if (!empty($selectedMenus)) {
-            $match['menu.nom'] = ['$in' => $selectedMenus];
+        if (!empty($menusFilter)) {
+            $match['menuNomString'] = ['$in' => $menusFilter];
         }
 
         $pipeline = [
-
-            // 1. Filtre statuts / menus
-            [
-                '$match' => $match
-            ],
-
-            // 2. Conversion date + prix
-            [
-                '$addFields' => [
-                    'dateCommandeDate' => [
-                        '$dateFromString' => [
-                            'dateString' => '$dateCommande'
-                        ]
-                    ],
-                    'prixTotalDouble' => [
-                        '$convert' => [
-                            'input' => '$prixTotal',
-                            'to' => 'double',
-                            'onError' => 0,
-                            'onNull' => 0
-                        ]
-                    ]
-                ]
-            ],
-
-            // 3. Filtrage par période (APRÈS conversion)
-            [
-                '$match' => array_filter([
-                    'dateCommandeDate' => [
-                        '$gte' => $start ? new UTCDateTime(strtotime($start . ' 00:00:00') * 1000) : null,
-                        '$lte' => $end   ? new UTCDateTime(strtotime($end   . ' 23:59:59') * 1000) : null,
-                    ]
-                ])
-            ],
-
-            // 4. Groupement
-            [
-                '$group' => [
-                    '_id' => '$menu.nom',
-                    'count' => ['$sum' => 1],
-                    'ca' => ['$sum' => '$prixTotalDouble']
-                ]
-            ],
-
-            // 5. Tri
-            [
-                '$sort' => ['count' => -1]
-            ]
+            ['$addFields' => [
+                'dateCommandeDate' => ['$dateFromString' => ['dateString' => '$dateCommande']],
+                'prixTotalDouble' => ['$toDouble' => '$prixTotal'],
+                'menuNomString' => ['$toString' => ['$ifNull' => ['$menu.nom', 'INCONNU']]]
+            ]],
+            ['$match' => $match],
+            ['$group' => [
+                '_id' => '$menuNomString',
+                'count' => ['$sum' => 1],
+                'ca' => ['$sum' => '$prixTotalDouble']
+            ]]
         ];
 
-        $results = $commandes->aggregate($pipeline);
+        $data = $collection->aggregate($pipeline)->toArray();
 
+        // Préparer le chart avec tous les menus, même ceux sans commandes
         $labels = [];
         $counts = [];
         $ca = [];
 
-        foreach ($results as $r) {
-            $labels[] = $r->_id ?? 'Inconnu';
-            $counts[] = (int) ($r->count ?? 0);
-            $ca[] = (float) ($r->ca ?? 0);
+        foreach ($this->allMenus as $menu) {
+            $found = false;
+            foreach ($data as $row) {
+                if ($row->_id === $menu) {
+                    $counts[] = $row->count;
+                    $ca[] = $row->ca;
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $counts[] = 0;
+                $ca[] = 0;
+            }
+            $labels[] = $menu;
         }
 
-        return $this->json([
+        return new JsonResponse([
             'labels' => $labels,
             'counts' => $counts,
             'ca' => $ca

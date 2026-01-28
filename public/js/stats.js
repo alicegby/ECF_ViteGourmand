@@ -1,116 +1,122 @@
-// Chargement initial
-function initStatsModule(container) {
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.querySelector('.stats-list');
+    if (!container) return;
+
+    const startInput = container.querySelector('#filter-start');
+    const endInput = container.querySelector('#filter-end');
     const menuSelect = container.querySelector('#filter-menu');
     const addMenuBtn = container.querySelector('#add-menu-btn');
-    const menuTagsContainer = container.querySelector('#menu-tags');
-    const chartCanvas = container.querySelector('#statsChart');
-    const startDateInput = container.querySelector('#filter-start');
-    const endDateInput = container.querySelector('#filter-end');
+    const menuTags = container.querySelector('#menu-tags');
+    const canvas = container.querySelector('#statsChart');
 
-    if (!chartCanvas) return;
-
-    let statsChartInstance;
+    let chart = null;
     let selectedMenus = [];
 
-    // Si les inputs de date sont vides, on met des dates par défaut
-    if (!startDateInput.value) startDateInput.value = '2026-01-01';
-    if (!endDateInput.value) endDateInput.value = new Date().toISOString().split('T')[0];
+    // Dates par défaut
+    startInput.value ||= '2026-01-01';
+    endInput.value ||= new Date().toISOString().split('T')[0];
 
-    async function loadStatsChart() {
+    async function loadStats() {
         try {
-            const start = startDateInput.value;
-            const end = endDateInput.value;
+            const params = new URLSearchParams({
+                start: startInput.value,
+                end: endInput.value
+            });
 
-            const params = new URLSearchParams();
-            if (start) params.append('start', start);
-            if (end) params.append('end', end);
-            selectedMenus.forEach(m => params.append('menu[]', m));
+            selectedMenus.forEach(name => params.append('menu[]', name));
 
-            const resp = await fetch(`/admin/stats-data?${params.toString()}`, {
+            const res = await fetch('/admin/stats-data?' + params.toString(), {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             });
 
-            const data = await resp.json();
-            if (!data.labels || !data.counts || !data.ca) return;
+            const data = await res.json();
 
-            if (statsChartInstance) {
-                statsChartInstance.data.labels = data.labels;
-                statsChartInstance.data.datasets[0].data = data.counts;
-                statsChartInstance.data.datasets[1].data = data.ca;
-                statsChartInstance.update();
-            } else {
-                statsChartInstance = new Chart(chartCanvas.getContext('2d'), {
+            const labels = data.labels.length ? data.labels : ['Aucun menu'];
+            const counts = data.counts.length ? data.counts : [0];
+            const ca = data.ca.length ? data.ca : [0];
+
+            if (!chart) {
+                chart = new Chart(canvas, {
                     type: 'bar',
                     data: {
-                        labels: data.labels,
+                        labels,
                         datasets: [
-                            { label: 'Nombre de commandes', data: data.counts, backgroundColor: '#A28873', yAxisID: 'y' },
-                            { label: 'Chiffre d’affaires (€)', data: data.ca, backgroundColor: '#5A3E36', yAxisID: 'y1' }
+                            { label: 'Nombre de commandes', data: counts, backgroundColor: '#A28873', yAxisID: 'y' },
+                            { label: 'Chiffre d’affaires (€)', data: ca, backgroundColor: '#5A3E36', yAxisID: 'y1' }
                         ]
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         plugins: {
                             tooltip: {
                                 callbacks: {
-                                    label: function(context) {
-                                        if (context.dataset.label === 'Chiffre d’affaires (€)') {
-                                            return context.dataset.label + ': ' + context.raw.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+                                    label(context) {
+                                        if (context.dataset.yAxisID === 'y1') {
+                                            return context.dataset.label + ' : ' + context.raw.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
                                         }
-                                        return context.dataset.label + ': ' + context.raw;
+                                        return context.dataset.label + ' : ' + context.raw;
                                     }
                                 }
                             }
                         },
                         scales: {
-                            y: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: 'Nombre de commandes' } },
-                            y1: { type: 'linear', position: 'right', beginAtZero: true, grid: { drawOnChartArea: false }, title: { display: true, text: 'Chiffre d’affaires (€)' } }
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: 'Nombre de commandes' }
+                            },
+                            y1: {
+                                beginAtZero: true,
+                                position: 'right',
+                                grid: { drawOnChartArea: false },
+                                title: { display: true, text: 'CA (€)' }
+                            }
                         }
                     }
                 });
+            } else {
+                chart.data.labels = labels;
+                chart.data.datasets[0].data = counts;
+                chart.data.datasets[1].data = ca;
+                chart.update();
             }
-        } catch (err) {
-            console.error('Erreur lors du chargement du chart:', err);
+        } catch (e) {
+            console.error('Erreur stats chart', e);
         }
     }
 
-    // Événements
-    [startDateInput, endDateInput].forEach(input => {
-        if (input) input.addEventListener('change', loadStatsChart);
-    });
+    // Filtres dates
+    startInput.addEventListener('change', loadStats);
+    endInput.addEventListener('change', loadStats);
 
-    addMenuBtn?.addEventListener('click', () => {
-        const selectedOption = menuSelect.options[menuSelect.selectedIndex];
-        const menuId = selectedOption.value;
-        const menuName = selectedOption.dataset.name || selectedOption.text;
-        if (!menuId || selectedMenus.includes(menuId)) return;
-        selectedMenus.push(menuId);
+    // Ajouter un menu
+    addMenuBtn.addEventListener('click', () => {
+        const option = menuSelect.selectedOptions[0];
+        if (!option || selectedMenus.includes(option.value)) return;
+
+        selectedMenus.push(option.value);
+
         const tag = document.createElement('span');
-        tag.classList.add('menu-tag');
-        tag.textContent = menuName;
-        const removeBtn = document.createElement('button');
-        removeBtn.type = 'button';
-        removeBtn.textContent = 'x';
-        removeBtn.addEventListener('click', () => {
-            selectedMenus = selectedMenus.filter(m => m !== menuId);
-            menuTagsContainer.removeChild(tag);
-            loadStatsChart();
-        });
-        tag.appendChild(removeBtn);
-        menuTagsContainer.appendChild(tag);
-        loadStatsChart();
+        tag.className = 'menu-tag';
+        tag.textContent = option.value;
+
+        const remove = document.createElement('button');
+        remove.textContent = '×';
+        remove.onclick = () => {
+            selectedMenus = selectedMenus.filter(name => name !== option.value);
+            tag.remove();
+            loadStats();
+        };
+
+        tag.appendChild(remove);
+        menuTags.appendChild(tag);
+
+        loadStats();
     });
 
-    // Chargement initial avec les dates actuelles
-    loadStatsChart();
-}
+    // Chargement initial
+    loadStats();
 
-document.addEventListener('DOMContentLoaded', () => {
-    const container = document.querySelector('.stats-list');
-    if (container) initStatsModule(container);
-});
-
-document.addEventListener('statsContentLoaded', (e) => {
-    const container = e.detail.container;
-    if (container) initStatsModule(container);
+    // Auto refresh toutes les 5 secondes
+    setInterval(loadStats, 5000);
 });

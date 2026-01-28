@@ -2181,3 +2181,7 @@ ul li {
     font-weight: bold;
     color: #F6F1EB;
 }
+
+.stats-list canvas {
+    max-height: 600px !important;
+}

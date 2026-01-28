@@ -14,7 +14,7 @@
 <div class="stats-list">
     <h1 class="plats-header">Statistiques &amp; Chiffre d'Affaires</h1>
 
-    <div class="ca-class">
+    <div class="ca-class"> 
         <h3>Chiffre d'Affaires global depuis le 01/01/2026 : <br></h3>
         <h4>
             {% if caGlobal is not null %}
@@ -33,24 +33,21 @@
             <select id="filter-menu">
                 <option value="">Tous</option>
                 {% for menu in menus %}
-                    {# ici menu est un objet ou un string selon ce que tu passes depuis le controller #}
-                    {% if menu is iterable and menu.id is defined %}
-                        <option value="{{ menu.id }}" data-name="{{ menu.nom }}">{{ menu.nom }}</option>
-                    {% else %}
-                        <option value="{{ menu }}" data-name="{{ menu }}">{{ menu }}</option>
-                    {% endif %}
+                    <option value="{{ menu.nom }}" data-name="{{ menu.nom }}">{{ menu.nom }}</option>
                 {% endfor %}
             </select>
         </label>
         <button type="button" id="add-menu-btn">Ajouter</button>
 
         <div id="menu-tags" class="menu-tags">
-            <!-- Les tags sélectionnés apparaîtront ici -->
+            <!-- Les tags sélectionnés ici -->
         </div>
 
     </div>
 
-    <canvas id="statsChart" width="800" height="400"></canvas>
+        <div style="height: 500px;">
+            <canvas id="statsChart"></canvas>
+        </div>
 </div>
 
 {% endblock %}

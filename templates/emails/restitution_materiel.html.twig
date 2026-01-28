@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Restitution du matériel – Action requise</title>
+</head>
+<body style="font-family: 'Inter', sans-serif; background-color: #F6F1EB; padding: 20px;">
+
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center">
+
+                <table width="600" cellpadding="20" cellspacing="0" style="background-color: #ffffff; border-radius: 8px;">
+                    
+                    <!-- LOGO -->
+                    <tr>
+                        <td align="center">
+                            <img src="{{ absolute_url('Visuels/Logo.png') }}" 
+                                 alt="Vite &amp; Gourmand" 
+                                 width="140">
+                        </td>
+                    </tr>
+
+                    <!-- TITRE -->
+                    <tr>
+                        <td>
+                            <h2 style="color: #2F2F2F;">Bonjour {{ commande.client.prenom }},</h2>
+
+                            <p>
+                                Votre commande <strong>#{{ commande.numeroCommande }}</strong> est désormais
+                                <strong>en attente de restitution du matériel</strong>.
+                            </p>
+
+                            <p style="font-size: 16px; color: #6B7B63;">
+                                Merci de restituer le matériel sous <strong>{{ delai }} jours ouvrés</strong>.
+                                À défaut, des frais de <strong>{{ frais }} €</strong> seront appliqués conformément à nos conditions générales de vente.
+                            </p>
+
+                            <p>
+                                Pour organiser la restitution, merci de <strong>prendre contact avec notre société</strong>.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- INFOS COMMANDE -->
+                    <tr>
+                        <td style="background-color: #F6F1EB; border-radius: 6px;">
+                            <p><strong>📍 Adresse de livraison :</strong><br>
+                                {{ commande.adresseLivraison }}
+                            </p>
+
+                            <p><strong>🕒 Date et heure :</strong><br>
+                                {{ commande.dateLivraison|date('d/m/Y à H:i') }}
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td style="font-size: 13px; color: #2F2F2F;">
+                            <hr>
+                            <p>
+                                Merci pour votre confiance,<br>
+                                <strong>L’équipe Vite &amp; Gourmand</strong><br>
+                                📧 viteetgourmand@gmail.com<br>
+                                📞 06 00 00 00 00
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
