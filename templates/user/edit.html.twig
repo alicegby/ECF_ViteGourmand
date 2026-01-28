@@ -118,28 +118,48 @@
                                 <div class="option-info">
                                     <p>
                                         {% if section == 'Fromages' %}
-                                            {{ entity.titreFromage }} - {{ prix }} € / pièce
+                                            <strong>{{ entity.titreFromage }} - {{ prix }} € / pièce</strong>
                                         {% elseif section == 'Boissons' %}
-                                            {{ entity.titreBoisson }} - {{ prix }} € / bouteille
+                                            <strong>{{ entity.titreBoisson }} - {{ prix }} € / bouteille</strong>
                                         {% elseif section == 'Matériel' %}
-                                            {{ entity.titreMateriel }} - {{ prix }} € / pièce
+                                            <strong>{{ entity.titreMateriel }} - {{ prix }} € / pièce</strong>
                                         {% elseif section == 'Personnel' %}
-                                            {{ entity.titrePersonnel }} - {{ prix }} € / heure &amp; unité de personnel
+                                            <strong>{{ entity.titrePersonnel }} - {{ prix }} € / heure / unité</strong>
+                                            {% set entity = item.personnel %}
+                                            {% set qtyHeures = item.heures|default(0) %} 
+                                            {% set qtyPersonnes = item.quantite|default(0) %}
+                                            {% set minQty = 0 %}
+                                            {% set prix = entity.prixHeure %}
                                         {% endif %}
                                     </p>
-                                    {% if entity.description %}
-                                        <p>{{ entity.description }}</p>
+                                    {% if entity.description %}<p>{{ entity.description }}</p>{% endif %}
+                                    {% if minQty > 0 %}<small>Minimum commande : {{ minQty }}</small>{% endif %}
+
+                                    {% if section == 'Personnel' %}
+                                        <label>Nombre de personnel :
+                                            <input type="number"
+                                                   name="personnel_qty[{{ entity.id }}]"
+                                                   value="{{ qtyPersonnes }}"
+                                                   min="0"
+                                                   step="1"> <br>
+                                        </label>
+                                        <label>Heures :
+                                            <input type="number"
+                                                   name="personnel_hours[{{ entity.id }}]"
+                                                   value="{{ qtyHeures }}"
+                                                   min="0"
+                                                   step="1"
+                                                   data-prix="{{ prix }}">
+                                        </label>
+                                    {% else %}
+                                        <input type="number"
+                                               name="{{ section|lower }}[{{ entity.id }}]"
+                                               value="{{ qty }}"
+                                               min="0"
+                                               step="1"
+                                               data-prix="{{ prix }}"
+                                               data-min="{{ minQty }}">
                                     {% endif %}
-                                    {% if minQty > 0 %}
-                                        <small>Minimum commande : {{ minQty }}</small>
-                                    {% endif %}
-                                    <input type="number"
-                                           name="{{ section|lower }}[{{ entity.id }}]"
-                                           value="{{ qty }}"
-                                           min="0"
-                                           step="1"
-                                           data-prix="{{ prix }}"
-                                           data-min="{{ minQty }}">
                                 </div>
                             </div>
                         {% endfor %}
@@ -158,7 +178,14 @@
         {# BOUTONS #}
         <div class="modify-buttons">
             <button type="submit" class="save">Appliquer les modifications</button>
-            <button type="button" id="deleteCommandeBtn" class="delete">Supprimer la commande</button>
+
+            <button type="button" 
+                        class="delete" 
+                        id="deleteCommandeBtn" 
+                        data-url="{{ path('commande_user_annuler', {'id': commande.id}) }}" 
+                        data-token="{{ deleteToken|e('html_attr') }}">
+                Annuler la commande
+            </button>
         </div>
     
     </form>
@@ -169,5 +196,5 @@
 {% endblock %}
 
 {% block javascripts %}
-<script src="{{ asset('js/editcommande-ajax.js') }}"></script>
+<script src="{{ asset('js/usereditcommande.js') }}"></script>
 {% endblock %}
