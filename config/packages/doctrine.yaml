@@ -1,9 +1,8 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
-        server_version: '8.0' # MySQL 8, adapte si nécessaire
+        server_version: '8.0' 
         charset: utf8mb4
-        # Collecte des backtraces si debug activé
         profiling_collect_backtrace: '%kernel.debug%'
 
     orm:
