@@ -5,6 +5,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Entity\Commande;
 use Symfony\Component\Dotenv\Dotenv; 
 use MongoDB\Client as MongoClient;
+use MongoDB\BSON\UTCDateTime;
 
 $dotenv = new Dotenv();
 $dotenv->load(__DIR__ . '/../.env.local');
@@ -31,15 +32,18 @@ foreach ($commandes as $commande) {
             'id' => $commande->getMenu()?->getId(),
             'nom' => $commande->getMenu()?->getNom(),
         ],
-        'dateCommande' => $commande->getDateCommande()?->format('c'),
-        'statutCommande' => $commande->getStatutCommande()?->getLibelle(),
+       'dateCommande' => $commande->getDateCommande()?->format(\DateTime::ATOM),
+        'dateCommandeDate' => $commande->getDateCommande() 
+            ? new \MongoDB\BSON\UTCDateTime($commande->getDateCommande()->getTimestamp()*1000) 
+            : null,
+        'statutCommande' => trim($commande->getStatutCommande()?->getLibelle() ?? ''),
         'prixTotal' => $commande->getPrixTotal(),
     ];
 
-    $collection->updateOne(
-        ['_id' => $commande->getId()],
-        ['$set' => $doc],
-        ['upsert' => true]
+    $collection->replaceOne(
+        ['_id' => $commande->getId()], // filtre
+        $doc,                          // document complet
+        ['upsert' => true]             // crée si absent
     );
 }
 

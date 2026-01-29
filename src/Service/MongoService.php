@@ -6,23 +6,19 @@ use MongoDB\Client;
 
 class MongoService
 {
-    private $client;
+    private Client $client;
     private $collection;
 
-    public function __construct()
+    public function __construct(string $mongoUrl)
     {
-        $this->client = new Client("mongodb://admin:admin123@mongo:27017");
+        $this->client = new Client($mongoUrl);
         $this->collection = $this->client
             ->selectDatabase('vite_gourmand_stats')
             ->selectCollection('commandes');
     }
 
-    public function upsertCommande(array $data)
+    public function upsertCommande(array $data): void
     {
-        $this->collection->updateOne(
-            ['_id' => $data['_id']],
-            ['$set' => $data],
-            ['upsert' => true]
-        );
+        $this->collection->replaceOne(['_id' => $data['_id']], $data, ['upsert' => true]);
     }
 }

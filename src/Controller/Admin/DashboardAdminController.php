@@ -11,23 +11,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DashboardAdminController extends AbstractController
 {
+    private Client $mongoClient;
+    private $collection;
 
-    public function index(): Response
-    {
-        return $this->render('admin/dashboard/index.html.twig', [
-            'user' => $this->getUser(),
-        ]);
-    }
-
-    // Collection MongoDB
-    private function collection()
-    {
-        return (new Client("mongodb://admin:admin123@mongo:27017"))
-            ->selectDatabase('vite_gourmand_stats')
-            ->selectCollection('commandes');
-    }
-
-    // Tous les menus connus (pour le select)
+    // Tous les menus connus
     private array $allMenus = [
         'Saveurs Enchantées',
         'Le Festin des Cloches',
@@ -46,16 +33,28 @@ class DashboardAdminController extends AbstractController
         'Délicatesse'
     ];
 
-    // Dashboard principal
+    // Constructor : MongoDB injecté
+    public function __construct(Client $client)
+    {
+        $this->mongoClient = $client;
+        $this->collection = $this->mongoClient
+            ->selectDatabase('vite_gourmand_stats')
+            ->selectCollection('commandes');
+    }
+
+    // PAGE ADMIN DASHBOARD
+    public function index(): Response
+    {
+        return $this->render('admin/dashboard/index.html.twig', [
+            'user' => $this->getUser(),
+        ]);
+    }
+
+    // PAGE STATS
     public function statsPage(): Response
     {
-        $collection = $this->collection();
-
-        // Dates par défaut
-        $start = new UTCDateTime(strtotime('2026-01-01 00:00:00') * 1000);
         $validStatuses = ['Acceptée', 'En attente de retour du matériel', 'En livraison', 'En préparation', 'Livrée', 'Terminée'];
 
-        // CA global depuis 01/01/2026
         $pipeline = [
             ['$addFields' => [
                 'dateCommandeDate' => ['$dateFromString' => ['dateString' => '$dateCommande']],
@@ -63,7 +62,7 @@ class DashboardAdminController extends AbstractController
                 'menuNomString' => ['$toString' => ['$ifNull' => ['$menu.nom', 'INCONNU']]]
             ]],
             ['$match' => [
-                'dateCommandeDate' => ['$gte' => $start],
+                'dateCommandeDate' => ['$gte' => new UTCDateTime(strtotime('2026-01-01 00:00:00') * 1000)],
                 'statutCommande' => ['$in' => $validStatuses]
             ]],
             ['$group' => [
@@ -72,10 +71,9 @@ class DashboardAdminController extends AbstractController
             ]]
         ];
 
-        $caResult = $collection->aggregate($pipeline)->toArray();
+        $caResult = $this->collection->aggregate($pipeline)->toArray();
         $caGlobal = $caResult[0]->caTotal ?? 0;
 
-        // Préparer le select menu
         $menusForSelect = array_map(fn($name) => ['nom' => $name], $this->allMenus);
 
         return $this->render('admin/stats/stats.html.twig', [
@@ -84,18 +82,18 @@ class DashboardAdminController extends AbstractController
         ]);
     }
 
-    // API pour Chart.js
+    // API CHART.JS
     public function getStatsData(Request $request): JsonResponse
     {
-        $collection = $this->collection();
+        $validStatuses = ['Acceptée', 'En attente de retour du matériel', 'En livraison', 'En préparation', 'Livrée', 'Terminée'];
 
         $start = new UTCDateTime(strtotime($request->query->get('start', '2026-01-01').' 00:00:00') * 1000);
         $end   = new UTCDateTime(strtotime($request->query->get('end', date('Y-m-d')).' 23:59:59') * 1000);
+
         $menusFilter = array_filter(
             $request->query->all('menu'), 
             fn($menu) => in_array($menu, $this->allMenus, true)
         );
-        $validStatuses = ['Acceptée', 'En attente de retour du matériel', 'En livraison', 'En préparation', 'Livrée', 'Terminée'];
 
         $match = [
             'statutCommande' => ['$in' => $validStatuses],
@@ -108,9 +106,9 @@ class DashboardAdminController extends AbstractController
 
         $pipeline = [
             ['$addFields' => [
-                'dateCommandeDate' => ['$dateFromString' => ['dateString' => '$dateCommande']],
                 'prixTotalDouble' => ['$toDouble' => '$prixTotal'],
-                'menuNomString' => ['$toString' => ['$ifNull' => ['$menu.nom', 'INCONNU']]]
+                'menuNomString' => ['$toString' => ['$ifNull' => ['$menu.nom', 'INCONNU']]],
+                'dateCommandeDate' => ['$ifNull' => ['$dateCommandeDate', ['$dateFromString' => ['dateString' => '$dateCommande']]]]
             ]],
             ['$match' => $match],
             ['$group' => [
@@ -120,9 +118,8 @@ class DashboardAdminController extends AbstractController
             ]]
         ];
 
-        $data = $collection->aggregate($pipeline)->toArray();
+        $data = $this->collection->aggregate($pipeline)->toArray();
 
-        // Préparer le chart avec tous les menus, même ceux sans commandes
         $labels = [];
         $counts = [];
         $ca = [];

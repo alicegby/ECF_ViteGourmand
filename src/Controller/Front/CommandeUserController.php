@@ -77,6 +77,7 @@ class CommandeUserController extends AbstractController
                     $cp->setHeures($heures);
                 }
             }
+            
 
             $em->flush();
 

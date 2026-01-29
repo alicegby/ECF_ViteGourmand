@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         selectedMenus.push(option.value);
 
-        const tag = document.createElement('span');
+        const tag = document.createElement('span'); 
         tag.className = 'menu-tag';
         tag.textContent = option.value;
 
