@@ -1,0 +1,6 @@
+# translations/security.fr.yaml
+Invalid credentials.: "Identifiant ou mot de passe incorrect."
+Account is disabled.: "Votre compte est désactivé."
+Account is locked.: "Votre compte est bloqué."
+Account is expired.: "Votre compte a expiré."
+Credentials have expired.: "Votre mot de passe a expiré."

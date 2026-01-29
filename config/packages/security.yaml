@@ -1,0 +1,116 @@
+security:
+
+    password_hashers:
+        App\Entity\Utilisateur:
+            algorithm: bcrypt
+            cost: 12 
+        App\Entity\Employe:
+            algorithm: bcrypt
+            cost: 12
+
+    providers:
+        utilisateurs_provider:
+            entity:
+                class: App\Entity\Utilisateur
+                property: email
+
+        employes_provider:
+            entity:
+                class: App\Entity\Employe
+                property: email
+
+    firewalls:
+        # Désactive la sécurité pour le profiler et les assets
+        dev:
+            pattern: ^/(_(profiler|wdt)|assets)/
+            security: false
+
+        # Firewall pour les employés / admin
+        admin_employe:
+            pattern: ^/admin
+            provider: employes_provider
+            lazy: true
+            context: main
+            user_checker: App\Security\UserChecker
+            form_login:
+                login_path: admin_login
+                check_path: admin_login
+                username_parameter: email
+                password_parameter: password
+                enable_csrf: true
+                success_handler: App\Security\LoginSuccessHandler
+            logout:
+                path: admin_logout
+                target: homepage
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /admin
+                always_remember_me: false
+
+        # Firewall pour les utilisateurs front
+        utilisateurs:
+            pattern: ^/
+            provider: utilisateurs_provider
+            lazy: true
+            context: main
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                default_target_path: dashboard_user
+                username_parameter: email
+                password_parameter: password
+                enable_csrf: true
+            logout:
+                path: app_logout
+                target: homepage
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800  
+                path: /
+                always_remember_me: false
+
+
+    access_control:
+        # Pages login accessibles à tous
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/admin/login, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+
+        # Pages accessibles seulement par les utilisateurs connectés
+        - { path: ^/panier, roles: ROLE_USER }
+        - { path: ^/espace, roles: ROLE_USER }
+        - { path: ^/dashboard, roles: ROLE_USER }
+
+        - { path: ^/admin/employe/dashboard, roles: ROLE_EMPLOYE }
+
+        - { path: ^/admin/dashboard, roles: ROLE_ADMIN }
+        - { path: ^/admin/employe, roles: ROLE_ADMIN }
+        - { path: ^/admin/list/utilisateur, roles: ROLE_ADMIN }
+
+        # Pages accessibles aux admin / employe
+        - { path: ^/admin/avis, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/badge, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/boissons, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/categorycheese, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/categorydrink, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/categorymateriel, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/categorypersonnel, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/commande, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/condition, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/fromages, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/horaire, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/materiel, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/menu, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/menuplat, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/personnel, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/plats, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/statutavis, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/statutcommande, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/category, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin/reduction, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+
+        - { path: ^/admin/logout, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+        - { path: ^/admin, roles: [ROLE_EMPLOYE, ROLE_ADMIN] }
+
+        

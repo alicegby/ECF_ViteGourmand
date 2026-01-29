@@ -1,0 +1,795 @@
+controllers:
+    resource: routing.controllers
+
+app_register:
+    path: /register
+    controller: App\Controller\Front\RegistrationController::register
+
+app_login:
+    path: /login
+    controller: App\Controller\Front\SecurityController::login
+
+app_logout:
+    path: /logout
+    controller: App\Controller\Front\SecurityController::logout
+
+admin_login:
+    path: /admin/login
+    controller: App\Controller\Admin\AdminSecurityController::login
+
+admin_logout:
+    path: /admin/logout
+    controller: App\Controller\Admin\AdminSecurityController::logout
+
+admin_dashboard:
+    path: /admin/dashboard
+    controller: App\Controller\Admin\DashboardAdminController::index
+
+admin_stats:
+    path: /admin/stats
+    controller: App\Controller\Admin\DashboardAdminController::statsPage
+
+admin_stats_data:
+    path: /admin/stats-data
+    controller: App\Controller\Admin\DashboardAdminController::getStatsData
+
+employe_dashboard:
+    path: admin/employe/dashboard
+    controller: App\Controller\Front\DashboardEmployeController::index
+
+front_dashboard_user:
+    path: /dashboard-user
+    controller: App\Controller\Front\FrontDashboardController::user
+
+# Dashboard user
+dashboard_user:
+    path: /dashboard
+    controller: App\Controller\Front\DashboardUserController::index
+
+user_edit:
+    path: /espace/utilisateur/edit
+    controller: App\Controller\Front\DashboardUserController::edit
+
+# Vue client
+user_list:
+    path: /admin/list/utilisateur
+    controller: App\Controller\Admin\UserAdminController::list
+
+user_show:
+    path: /admin/show/utilisateur/{id}
+    controller: App\Controller\Admin\UserAdminController::show
+    requirements:
+        id: '\d+'
+
+front_admin_dashboard:
+    path: /dashboard-admin
+    controller: App\Controller\Front\FrontDashboardController::admin
+
+front_employe_dashboard:
+    path: /dashboard-employe
+    controller: App\Controller\Front\FrontDashboardController::employe
+
+commande_user_annuler:
+    path: /commande/{id}/annuler
+    controller: App\Controller\Front\CommandeUserController::delete
+    methods: [POST]
+
+commande_user_edit:
+    path: /commande/{id}/edit
+    controller: App\Controller\Front\CommandeUserController::edit
+    methods: [GET, POST]
+
+# CRUD MENU
+admin_menu_new:
+    path: /admin/menu/new
+    controller: App\Controller\MenuController::create
+    methods: [GET, POST]
+
+admin_menu_edit : 
+    path: /admin/menu/{id}/edit
+    controller: App\Controller\MenuController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+admin_menu_delete:
+    path: /admin/menu/{id}/delete
+    controller: App\Controller\MenuController::delete
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+admin_menu_list:
+    path: /admin/menu
+    controller: App\Controller\MenuController::list
+
+admin_menu_show:
+    path: /admin/menu/{id}
+    controller: App\Controller\MenuController::show
+    requirements:
+        id: '\d+'
+
+# CRUD PLATS
+admin_plats_list:
+    path: /admin/plats
+    controller: App\Controller\PlatsController::list
+    methods: [GET]
+
+admin_plats_show:
+    path: /admin/plats/{id}
+    controller: App\Controller\PlatsController::show
+    requirements:
+        id: '\d+'
+
+admin_plats_new:
+    path: /admin/plats/new
+    controller: App\Controller\PlatsController::create
+    methods: [GET, POST]
+
+admin_plats_edit:
+    path: /admin/plats/{id}/edit
+    controller: App\Controller\PlatsController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+admin_plats_delete:
+    path: /admin/plats/{id}/delete
+    controller: App\Controller\PlatsController::delete
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+# CRUD MENU-PLATS
+menuplat_list:
+    path: /admin/menu-plat
+    controller: App\Controller\MenuPlatController::list
+    methods: [GET]
+
+menuplat_new:
+    path: /admin/menu-plat/new
+    controller: App\Controller\MenuPlatController::create
+    methods: [GET, POST]
+
+menuplat_edit:
+    path: /admin/menu-plat/{id}/edit
+    controller: App\Controller\MenuPlatController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+menuplat_delete:
+    path: /admin/menu-plat/{id}/delete
+    controller: App\Controller\MenuPlatController::delete
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+menuplat_show:
+    path: /admin/menuplat/{id}
+    controller: App\Controller\MenuPlatController::show
+    requirements:
+        id: '\d+'
+
+# CRUD BOISSONS
+boissons_list:
+    path: /admin/boissons
+    controller: App\Controller\BoissonsController::list
+    methods: [GET]
+
+boissons_new:
+    path: /admin/boissons/new
+    controller: App\Controller\BoissonsController::create
+    methods: [GET, POST]
+
+boissons_edit:
+    path: /admin/boissons/{id}/edit
+    controller: App\Controller\BoissonsController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+boissons_delete:
+    path: /admin/boissons/{id}/delete
+    controller: App\Controller\BoissonsController::delete
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+boissons_show:
+    path: /admin/boissons/{id}
+    controller: App\Controller\BoissonsController::show
+    requirements:
+        id: '\d+'
+
+# CRUD FROMAGES
+fromages_list:
+    path: /admin/fromages
+    controller: App\Controller\FromagesController::list
+    methods: [GET]
+
+fromages_new:
+    path: /admin/fromages/new
+    controller: App\Controller\FromagesController::create
+    methods: [GET, POST]
+
+fromages_edit:
+    path: /admin/fromages/{id}/edit
+    controller: App\Controller\FromagesController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+fromages_delete:
+    path: /admin/fromages/{id}/delete
+    controller: App\Controller\FromagesController::delete
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+fromages_show:
+    path: /admin/fromages/{id}
+    controller: App\Controller\FromagesController::show
+    requirements:
+        id: '\d+'
+
+# CRUD MATERIEL
+materiel_list:
+    path: /admin/materiel
+    controller: App\Controller\MaterielController::list
+    methods: [GET]
+
+materiel_new:
+    path: /admin/materiel/new
+    controller: App\Controller\MaterielController::create
+    methods: [GET, POST]
+
+materiel_edit:
+    path: /admin/materiel/{id}/edit
+    controller: App\Controller\MaterielController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+materiel_delete:
+    path: /admin/materiel/{id}/delete
+    controller: App\Controller\MaterielController::delete
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+materiel_show:
+    path: /admin/materiel/{id}
+    controller: App\Controller\MaterielController::show
+    requirements:
+        id: '\d+'
+
+# CRUD PERSONNEL
+personnel_list:
+    path: /admin/personnel
+    controller: App\Controller\PersonnelController::list
+    methods: [GET]
+
+personnel_new:
+    path: /admin/personnel/new
+    controller: App\Controller\PersonnelController::create
+    methods: [GET, POST]
+
+personnel_edit:
+    path: /admin/personnel/{id}/edit
+    controller: App\Controller\PersonnelController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+personnel_delete:
+    path: /admin/personnel/{id}/delete
+    controller: App\Controller\PersonnelController::delete
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+personnel_show:
+    path: /admin/personnel/{id}
+    controller: App\Controller\PersonnelController::show
+    requirements:
+        id: '\d+'
+
+# CRUD HORAIRE
+horaire_list:
+    path: /admin/horaire
+    controller: App\Controller\HoraireController::list
+    methods: [GET]
+
+horaire_edit:
+    path: /admin/horaire/{id}/edit
+    controller: App\Controller\HoraireController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+horaire_show:
+    path: /admin/horaire/{id}
+    controller: App\Controller\HoraireController::show
+    requirements:
+        id: '\d+'
+
+# CRUD BADGE
+badge_list:
+    path : /admin/badge
+    controller: App\Controller\BadgeController::list
+    methods: [GET]
+
+badge_new:
+    path : /admin/badge/new
+    controller: App\Controller\BadgeController::create
+    methods: [GET, POST]
+
+badge_edit:
+    path: /admin/badge/{id}/edit
+    controller: App\Controller\BadgeController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+badge_delete:
+    path: /admin/badge/{id}/delete
+    controller: App\Controller\BadgeController::delete
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+badge_show:
+    path: /admin/badge/{id}
+    controller: App\Controller\BadgeController::show
+    requirements:
+        id: '\d+'
+
+# CRUD CATEGORYFOOD
+categoryfood_list:
+    path : /admin/categoryfood
+    controller: App\Controller\CategoryFoodController::list
+
+categoryfood_new:
+    path : /admin/categoryfood/new
+    controller: App\Controller\CategoryFoodController::create
+    methods: [GET, POST]
+
+categoryfood_edit:
+    path: /admin/categoryfood/{id}/edit
+    controller: App\Controller\CategoryFoodController::edit
+
+categoryfood_delete:
+    path: /admin/categoryfood/{id}/delete
+    controller: App\Controller\CategoryFoodController::delete
+    methods: [POST]
+
+categoryfood_show:
+    path: /admin/categoryfood/{id}
+    controller: App\Controller\CategoryFoodController::show
+
+# CRUD CATEGORYDRINK
+categorydrink_list:
+    path : /admin/categorydrink
+    controller: App\Controller\CategoryDrinkController::list
+    methods: [GET]
+
+categorydrink_new:
+    path : /admin/categorydrink/new
+    controller: App\Controller\CategoryDrinkController::create
+    methods: [GET, POST]
+
+categorydrink_edit:
+    path: /admin/categorydrink/{id}/edit
+    controller: App\Controller\CategoryDrinkController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+categorydrink_delete:
+    path: /admin/categorydrink/{id}/delete
+    controller: App\Controller\CategoryDrinkController::delete
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+categorydrink_show:
+    path: /admin/categorydrink/{id}
+    controller: App\Controller\CategoryDrinkController::show
+    requirements:
+        id: '\d+'
+
+# CRUD CATEGORYCHEESE
+categorycheese_list:
+    path : /admin/categorycheese
+    controller: App\Controller\CategoryCheeseController::list
+    methods: [GET]
+
+categorycheese_new:
+    path : /admin/categorycheese/new
+    controller: App\Controller\CategoryCheeseController::create
+    methods: [GET, POST]
+
+categorycheese_edit:
+    path: /admin/categorycheese/{id}/edit
+    controller: App\Controller\CategoryCheeseController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+categorycheese_delete:
+    path: /admin/categorycheese/{id}/delete
+    controller: App\Controller\CategoryCheeseController::delete
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+categorycheese_show:
+    path: /admin/categorycheese/{id}
+    controller: App\Controller\CategoryCheeseController::show
+    requirements:
+        id: '\d+'
+
+# CRUD CATEGORYMATERIEL
+categorymateriel_list:
+    path : /admin/categorymateriel
+    controller: App\Controller\CategoryMaterielController::list
+    methods: [GET]
+
+categorymateriel_new:
+    path : /admin/categorymateriel/new
+    controller: App\Controller\CategoryMaterielController::create
+    methods: [GET, POST]
+
+categorymateriel_edit:
+    path: /admin/categorymateriel/{id}/edit
+    controller: App\Controller\CategoryMaterielController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+categorymateriel_delete:
+    path: /admin/categorymateriel/{id}/delete
+    controller: App\Controller\CategoryMaterielController::delete
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+categorymateriel_show:
+    path: /admin/categorymateriel/{id}
+    controller: App\Controller\CategoryMaterielController::show
+    requirements:
+        id: '\d+'
+
+# CRUD CATEGORYPERSONNEL
+categorypersonnel_list:
+    path : /admin/categorypersonnel
+    controller: App\Controller\CategoryPersonnelController::list
+    methods: [GET]
+
+categorypersonnel_new:
+    path : /admin/categorypersonnel/new
+    controller: App\Controller\CategoryPersonnelController::create
+    methods: [GET, POST]
+
+categorypersonnel_edit:
+    path: /admin/categorypersonnel/{id}/edit
+    controller: App\Controller\CategoryPersonnelController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+categorypersonnel_delete:
+    path: /admin/categorypersonnel/{id}/delete
+    controller: App\Controller\CategoryPersonnelController::delete
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+categorypersonnel_show:
+    path: /admin/categorypersonnel/{id}
+    controller: App\Controller\CategoryPersonnelController::show
+    requirements:
+        id: '\d+'
+
+# CRUD CONDITION
+condition_list:
+    path : /admin/condition
+    controller: App\Controller\ConditionController::list
+
+condition_new:
+    path : /admin/condition/new
+    controller: App\Controller\ConditionController::create
+    methods: [GET, POST]
+
+condition_edit:
+    path: /admin/condition/{id}/edit
+    controller: App\Controller\ConditionController::edit
+    methods: [GET, POST]
+
+condition_delete:
+    path: /admin/condition/{id}/delete
+    controller: App\Controller\ConditionController::delete
+    methods: [POST]
+
+condition_show:
+    path: /admin/condition/{id}
+    controller: App\Controller\ConditionController::show
+
+# CRUD REDUCTION
+reduction_list:
+    path : /admin/reduction
+    controller: App\Controller\ReductionController::list
+
+reduction_new:
+    path : /admin/reduction/new
+    controller: App\Controller\ReductionController::create
+
+reduction_edit:
+    path: /admin/reduction/{id}/edit
+    controller: App\Controller\ReductionController::edit
+
+reduction_delete:
+    path: /admin/reduction/{id}/delete
+    controller: App\Controller\ReductionController::delete
+    methods: [POST]
+
+reduction_show:
+    path: /admin/reduction/{id}
+    controller: App\Controller\ReductionController::show
+
+# CRUD COMMANDE
+commande_list:
+    path : /admin/commande
+    controller: App\Controller\CommandeController::list
+
+commande_new:
+    path : /admin/commande/new
+    controller: App\Controller\CommandeController::create
+
+commande_edit:
+    path: /admin/commande/{id}/edit
+    controller: App\Controller\CommandeController::edit
+    methods: [GET, POST]
+
+commande_delete:
+    path: /admin/commande/{id}/delete
+    controller: App\Controller\CommandeController::delete
+    methods: [POST]
+
+commande_show:
+    path: /admin/commande/{id}
+    controller: App\Controller\CommandeController::show
+
+# CRUD STATUT COMMANDE
+statutcommande_list: 
+    path : /admin/statutcommande
+    controller: App\Controller\StatutCommandeController::list
+
+statutcommande_new:
+    path : /admin/statutcommande/new
+    controller: App\Controller\StatutCommandeController::create
+
+statutcommande_edit:
+    path: /admin/statutcommande/{id}/edit
+    controller: App\Controller\StatutCommandeController::edit
+
+statutcommande_delete:
+    path: /admin/statutcommande/{id}/delete
+    controller: App\Controller\StatutCommandeController::delete
+    methods: [POST]
+
+statutcommande_show:
+    path: /admin/statutcommande/{id}
+    controller: App\Controller\StatutCommandeController::show
+
+
+# CRUD STATUT AVIS
+statutavis_list: 
+    path : /admin/statutavis
+    controller: App\Controller\StatutAvisController::list
+
+statutavis_new:
+    path : /admin/statutavis/new
+    controller: App\Controller\StatutAvisController::create
+
+statutavis_edit:
+    path: /admin/statutavis/{id}/edit
+    controller: App\Controller\StatutAvisController::edit
+
+statutavis_delete:
+    path: /admin/statutavis/{id}/delete
+    controller: App\Controller\StatutAvisController::delete
+    methods: [POST]
+
+statutavis_show:
+    path: /admin/statutavis/{id}
+    controller: App\Controller\StatutAvisController::show
+
+# CRUD EMPLOYE
+employe_list: 
+    path : /admin/employe
+    controller: App\Controller\AdminEmployeController::list
+    methods: [GET]
+
+employe_new:
+    path : /admin/employe/new
+    controller: App\Controller\AdminEmployeController::create
+    methods: [GET, POST]
+
+employe_edit:
+    path: /admin/employe/{id}/edit
+    controller: App\Controller\AdminEmployeController::edit
+    methods: [GET, POST]
+    requirements:
+        id: '\d+'
+
+employe_delete:
+    path: /admin/employe/{id}/delete
+    controller: App\Controller\AdminEmployeController::delete
+    methods: [POST]
+    requirements:
+        id: '\d+'
+
+employe_show:
+    path: /admin/employe/{id}
+    controller: App\Controller\AdminEmployeController::show
+    requirements:
+        id: '\d+'
+
+# FRONT
+homepage:
+    path: /
+    controller: App\Controller\Front\HomeController::homepage
+
+menus_list:
+    path: /menus 
+    controller: App\Controller\Front\HomeController::menuList 
+
+menu_detail:
+    path: /menu/{id}
+    controller: App\Controller\Front\MenuController::detail
+
+add_menu_to_cart:
+    path: /add-menu-to-cart
+    controller: App\Controller\Front\MenuController::addToCart
+    methods: [POST]
+
+contact:
+    path: /contact  
+    controller: App\Controller\Front\HomeController::contact
+
+panier: 
+    path: /panier
+    controller: App\Controller\Front\PanierController::index
+
+commande_validation:
+    path: /commande/validation
+    controller: App\Controller\Front\PanierController::validation
+    methods: [POST]
+
+panier_reset:
+    path: /panier/reset
+    controller: App\Controller\Front\PanierController::reset
+    methods: [POST]
+
+panier_update_option:
+    path: /panier/update-option/{optionType}/{id}
+    controller: App\Controller\Front\PanierController::updateOption
+    methods: [POST]
+
+panier_remove_option:
+    path: /panier/remove-option/{optionType}/{id}
+    controller: App\Controller\Front\PanierController::removeOption
+    methods: [POST]
+
+panier_update_menu:
+    path: /panier/update-menu/{id}
+    controller: App\Controller\Front\PanierController::updateMenu
+    methods: [POST]
+
+panier_count:
+    path: /panier/count
+    controller: App\Controller\Front\PanierController::count 
+
+cgv: 
+    path : /conditions-generales-de-vente
+    controller: App\Controller\Front\HomeController::cgv
+
+privacy: 
+    path: /privacy
+    controller: App\Controller\Front\HomeController::privacy
+
+faq:
+    path: /faq
+    controller: App\Controller\Front\HomeController::faq
+
+reviews:
+    path: /reviews
+    controller: App\Controller\Front\HomeController::reviews
+
+# OPTIONS
+fromages_options:
+    path: /fromages
+    controller: App\Controller\Front\OptionsController::fromages
+
+save_fromages_session:
+    path: /save-fromages-session
+    controller: App\Controller\Front\OptionsController::saveFromagesSession
+    methods: [POST]
+
+boissons_options:
+    path: /boissons
+    controller: App\Controller\Front\OptionsController::boissons
+
+save_boissons_session:
+    path: /save-boissons-session
+    controller: App\Controller\Front\OptionsController::saveBoissonsSession
+    methods: [POST]
+
+materiel_options: 
+    path: /materiel
+    controller: App\Controller\Front\OptionsController::materiel
+
+save_materiel_session:
+    path: /save-materiel-session
+    controller: App\Controller\Front\OptionsController::saveMaterielSession
+    methods: [POST]
+
+personnel_options: 
+    path: /personnel
+    controller: App\Controller\Front\OptionsController::personnel
+
+save_personnel_session:
+    path: /save-personnel-session
+    controller: App\Controller\Front\OptionsController::savePersonnelSession
+    methods: [POST]
+
+# CRUD AVIS
+avis_list:
+    path : /admin/avis
+    controller: App\Controller\AvisController::list
+
+avis_new:
+    path : /admin/avis/new
+    controller: App\Controller\AvisController::create
+
+avis_edit:
+    path: /admin/avis/{id}/edit
+    controller: App\Controller\AvisController::edit
+
+avis_delete:
+    path: /admin/avis/{id}/delete
+    controller: App\Controller\AvisController::delete
+    methods: POST
+
+avis_show:
+    path: /admin/avis/{id}
+    controller: App\Controller\AvisController::show
+
+# AVIS
+# utilisateur
+avis_user_new:
+    path: /avis/new/{commandeId}
+    controller: App\Controller\AvisController::new
+    methods: [GET, POST]
+
+#employe & admin
+avis_list_admin:
+    path: /admin/avis
+    controller: App\Controller\AvisController::list
+    methods: [GET]
+
+avis_edit_admin:
+    path: /admin/avis/{id}/edit
+    controller: App\Controller\AvisController::edit
+
+avis_show_admin:
+    path: /admin/avis/{id}
+    controller: App\Controller\AvisController::show
+
+# API pour les 3 derniers avis
+avis_recent_api:   
+    path: /avis/recent
+    controller: App\Controller\AvisController::recent
+

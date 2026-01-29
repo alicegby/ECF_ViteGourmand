@@ -415,5 +415,14 @@ h1 {
     .menu-conditions { font-size: 0.85rem; }
     .view-menu { font-size: 1rem; padding: 8px 0; }
     .btn-icon { width: 14px; height: 14px; }
-    .gallery-slide img { height: 400px; }
+    .menus-container { grid-template-columns: 1fr; }
+    .menu-gallery, .gallery-container, .gallery-wrapper, .gallery-slide {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .gallery-slide img { 
+       width: 100%;
+       height: auto;
+       object-fit: cover;
+    }
 }

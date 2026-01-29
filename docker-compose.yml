@@ -1,0 +1,96 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vite_gourmand_php
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      APP_ENV: dev
+      DATABASE_URL: "mysql://root:root@vite_gourmand_mysql:3306/vite_gourmand?serverVersion=8.0"
+      MONGODB_URL: "mongodb://admin:admin123@mongo:27017"
+      MONGODB_DB: vite_gourmand_stats
+    depends_on:
+      - vite_gourmand_mysql
+      - mongo
+    networks:
+      - vite_gourmand_network
+
+  vite_gourmand_mysql:
+    image: mysql:8.0
+    container_name: vite_gourmand_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: vite_gourmand
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - vite_gourmand_network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: vite_gourmand_phpmyadmin
+    ports:
+      - "8888:80"
+    environment:
+      PMA_HOST: vite_gourmand_mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    depends_on:
+      - vite_gourmand_mysql
+    networks:
+      - vite_gourmand_network
+
+  mongo:
+    image: mongo:7.0
+    container_name: vite_gourmand_mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: vite_gourmand_stats
+    volumes:
+      - mongo_data:/data/db
+      - ./docker/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+    networks:
+      - vite_gourmand_network
+
+  mongo_express:
+    image: mongo-express:latest
+    container_name: vite_gourmand_mongo_express
+    ports:
+      - "8082:8082"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin123
+      ME_CONFIG_MONGODB_URL: "mongodb://admin:admin123@mongo:27017/"
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    depends_on:
+      - mongo
+    networks:
+      - vite_gourmand_network
+
+  mailer:
+    image: axllent/mailpit
+    container_name: vite_gourmand_mailer
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - vite_gourmand_network
+
+volumes:
+  mysql_data:
+  mongo_data:
+
+networks:
+  vite_gourmand_network:
+    driver: bridge

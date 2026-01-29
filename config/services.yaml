@@ -1,0 +1,38 @@
+parameters:
+    menus_images_directory: '%kernel.project_dir%/public/Visuels/Food/Menu' 
+    plats_images_directory: '%kernel.project_dir%/public/Visuels/Food/Plats' 
+    fromages_images_directory: '%kernel.project_dir%/public/Visuels/Food/Fromage' 
+    boissons_images_directory: '%kernel.project_dir%/public/Visuels/Food/Boisson' 
+    materiel_images_directory: '%kernel.project_dir%/public/Visuels/Mobilier' 
+    badge_icons_directory: '%kernel.project_dir%/public/Visuels/Badge'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\Security\LoginSuccessHandler:
+        arguments:
+            $router: '@router'
+
+    App\Service\MongoService: 
+        arguments:
+            $mongoUrl: '%env(MONGODB_URL)%'
+    
+    MongoDB\Client:
+        arguments:
+            $uri: '%env(MONGODB_URL)%'
+
+    App\EventListener\CommandeListener:
+        arguments:
+            $mongoService: '@App\Service\MongoService'
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postUpdate }
+            
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'

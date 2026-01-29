@@ -1,0 +1,41 @@
+# Symfony
+/vendor/
+/var/
+/public/bundles/
+/.env.local
+.env.local.php
+.env.*.local
+/symfony.lock
+
+# Docker
+.docker/
+/docker-compose.override.yml
+/dockerfile
+
+# IDE
+.vscode/
+
+# Mac
+.DS_Store
+
+# Logs
+*.log
+
+# MySQL / SQL
+*.sql
+*.sqlite
+
+# MongoDB
+dump/
+
+# Node / NPM
+/node_modules/
+/package-lock.json
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Cypress
+/cypress/videos/
+/cypress/screenshots/
+/cypress/reports/

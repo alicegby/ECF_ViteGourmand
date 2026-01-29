@@ -331,6 +331,7 @@ body {
 }
 
 /* MOBILE (max-width: 600px) */
+/* MOBILE (max-width: 600px) */
 @media (max-width: 600px) {
     .main-layout {
         display: grid;
@@ -341,8 +342,11 @@ body {
             "equipe"
             "avis"
             "boutons";
-        gap: 20px;
+        gap: 15px;
         padding: 10px;
+        width: 100%;
+        box-sizing: border-box; /* important pour que padding ne fasse pas dépasser */
+        overflow-x: hidden;
     }
 
     .main-left-galerie,
@@ -351,129 +355,66 @@ body {
     .main-right-notes,
     .main-left-boutons {
         width: 100%;
-        max-height: none;
-        height: auto;
-    }
-
-    /* Galerie encore plus compacte */
-    .galerie-container {
-        height: 250px;
-    }
-
-    /* Images équipe réduites */
-    .main-right-equipe img {
-        height: 180px;
-        max-height: 180px;
-    }
-
-    /* Boutons plus petits pour tenir */
-    .bouton-main a {
-        font-size: 1.2rem;
-        padding: 8px 12px;
-        height: auto;
-        min-height: 80px;
-    }
-
-    /* Notes / avis adaptatifs */
-    .avis-box {
         max-width: 100%;
-        flex: 1 1 auto;
-        margin-bottom: 10px;
-    }
-
-    .notes-btn {
-        width: 100%;
-        padding: 8px 12px;
-        font-size: 0.9rem;
-    }
-}
-
-/* MOBILE EXTRA-PETIT (max-width: 320px) */
-@media (max-width: 320px) {
-    .main-layout {
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-areas:
-            "galerie"
-            "entreprise"
-            "equipe"
-            "avis"
-            "boutons";
-        gap: 2px;
-        padding: 1px;
-    }
-
-    .main-left-galerie,
-    .main-middle,
-    .main-right-equipe,
-    .main-right-notes,
-    .main-left-boutons {
-        width: 95%;
-        max-width: 95%;
         height: auto;
-        padding: 1px;
+        padding: 5px 5px;
         box-sizing: border-box;
-        margin: 0 auto;
+        margin: 0;
     }
 
-    /* Galerie compacte */
+    /* Galerie */
     .galerie-container {
-        height: 80px;
-        min-height: 70px;
-    }
-
-    .main-middle h2,
-    .main-right-equipe h2 {
-        font-size: 0.8rem;
-        margin-bottom: 1px;
-    }
-
-    .main-middle p,
-    .main-right-equipe p {
-        font-size: 0.6rem;
-        line-height: 0.95;
-    }
-
-    /* Images équipe adaptatives */
-    .main-right-equipe img {
-        height: auto;
-        max-height: 60px;
         width: 100%;
+        max-width: 100%;
+        height: 200px; /* hauteur raisonnable */
+    }
+
+    .slide img {
+        width: 100%;
+        height: 100%;
         object-fit: cover;
-        margin-top: 0;
     }
 
-    /* Boutons ultra-compacts */
-    .bouton-main a {
-        font-size: 0.7rem;
-        padding: 2px 4px;
-        min-height: 30px;
+    /* Images équipe */
+    .main-right-equipe img {
+        width: 100%;
         height: auto;
+        max-height: 150px;
+        object-fit: cover;
     }
 
-    /* Avis adaptatifs */
+    /* Boutons */
+    .bouton-main a {
+        width: 100%;
+        font-size: 1rem;
+        padding: 6px 10px;
+        height: auto;
+        min-height: 60px;
+        box-sizing: border-box;
+    }
+
+    /* Notes / Avis */
     .avis-container {
         flex-wrap: wrap;
-        gap: 1px;
+        gap: 5px;
         justify-content: center;
     }
 
     .avis-box {
         flex: 1 1 100%;
-        max-width: 95%;
-        padding: 2px;
-        font-size: 0.6rem;
+        max-width: 100%;
+        padding: 5px;
+        font-size: 0.8rem;
     }
 
     .notes-btn {
-        width: 95%;
-        padding: 2px 4px;
-        font-size: 0.6rem;
-        margin-bottom: 4px;
+        width: 100%;
+        padding: 5px 8px;
+        font-size: 0.8rem;
     }
 
     html, body {
         overflow-x: hidden;
-        overflow-y: auto;
     }
 }
+
