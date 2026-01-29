@@ -104,10 +104,17 @@ Le frontend fournit l'interface utilisateur accessible aux clients, employés et
 
 4. Configure le fichier .env.local
     - Renseigner les informations de connexion à la base de données relationnelle (DATABASE_URL), à MongoDB (MONGODB_URL) et à l'envoie de mail automatique (MAILER_DSN)
-    DEFAULT_URI=http://localhost
-    DATABASE_URL="mysql://root:root@vite_gourmand_mysql:3306/vite_gourmand?serverVersion=8.0"
-    MAILER_DSN="smtp://viteetgourmand%40gmail.com:uehaqsggktnxulvd@smtp.gmail.com:465?encryption=ssl&auth_mode=login"
-    MONGODB_URL="mongodb://admin:admin123@mongo:27017"  
+    - URL de base du projet :
+        DEFAULT_URI=http://localhost
+      
+    - Base de données SQL : 
+        DATABASE_URL="mysql://<username>:<password>@<host>:<port>/<database>?serverVersion=8.0"
+      
+    - Serveur SMTP pour l'envoi d'emails : 
+        MAILER_DSN="smtp://<username>:<password>@<host>:<port>?encryption=<ssl/tls>&auth_mode=login"
+      
+    - Base de données MongoDB : 
+        MONGODB_URL="mongodb://<username>:<password>@<host>:<port>"
 
 5. Création de la base de données
     php bin/console doctrine:database:create
